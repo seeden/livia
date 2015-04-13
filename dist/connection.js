@@ -14,40 +14,38 @@ var EventEmitter = require("events").EventEmitter;
 
 var Model = _interopRequire(require("./model"));
 
-var ReadyState = _interopRequire(require("./constants/readystate"));
-
 var Query = _interopRequire(require("./query"));
 
 var Connection = (function (_EventEmitter) {
-	function Connection(options) {
+	function Connection(adapter, callback) {
 		_classCallCheck(this, Connection);
 
 		_get(Object.getPrototypeOf(Connection.prototype), "constructor", this).call(this);
 
 		options = options || {};
 
-		this._options = options;
+		this._adapter = adapter;
 		this._models = new Map();
-		this._readyState = ReadyState.DISCONNECTED;
+
+		adapter.connect(callback);
 	}
 
 	_inherits(Connection, _EventEmitter);
 
 	_createClass(Connection, {
-		db: {
+		adapter: {
 			get: function () {
-				throw new Error("Please override db getter");
+				return this._adapter;
 			}
 		},
 		ensureClass: {
 			value: function ensureClass(model, callback) {
-				throw new Error("Please override ensureClass method");
+				this.adapter.ensureClass(model, callback);
 			}
 		},
 		query: {
 			value: function query(model, options) {
-				throw new Error("Please override query method");
-				return new Query(model, options);
+				return this.adapter.query(model, callback);
 			}
 		},
 		model: {
@@ -91,11 +89,6 @@ var Connection = (function (_EventEmitter) {
 
 			value: function modelNames() {
 				return this._models.keys();
-			}
-		},
-		readyState: {
-			get: function () {
-				return this._readyState;
 			}
 		}
 	});

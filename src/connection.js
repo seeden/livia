@@ -1,30 +1,29 @@
 import { EventEmitter } from 'events';
 import Model from './model';
-import ReadyState from './constants/readystate';
 import Query from './query';
 
 export default class Connection extends EventEmitter {
-	constructor (options) {
+	constructor (adapter, callback) {
 		super();
 
 		options = options || {};
 
-		this._options    = options;
+		this._adapter    = adapter;
 		this._models     = new Map();
-		this._readyState = ReadyState.DISCONNECTED;
+
+		adapter.connect(callback);
 	}
 
-	get db () {
-		throw new Error('Please override db getter');
+	get adapter () {
+		return this._adapter;
 	}
 
 	ensureClass(model, callback) {
-		throw new Error('Please override ensureClass method');
+		this.adapter.ensureClass(model, callback);
 	}	
 
 	query (model, options) {
-		throw new Error('Please override query method');
-		return new Query(model, options);
+		return this.adapter.query(model, callback);
 	}
 
 	model (name, schema, options, callback) {
@@ -64,9 +63,5 @@ export default class Connection extends EventEmitter {
 	*/
 	modelNames() {
 		return this._models.keys();
-	}
-
-	get readyState() {
-		return this._readyState;
 	}
 }
