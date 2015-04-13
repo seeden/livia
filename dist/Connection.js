@@ -22,7 +22,7 @@ var Connection = (function (_EventEmitter) {
 
 		_get(Object.getPrototypeOf(Connection.prototype), "constructor", this).call(this);
 
-		options = options || {};
+		callback = callback || function () {};
 
 		this._adapter = adapter;
 		this._models = new Map();
@@ -45,7 +45,7 @@ var Connection = (function (_EventEmitter) {
 		},
 		query: {
 			value: function query(model, options) {
-				return this.adapter.query(model, callback);
+				return this.adapter.query(model, options);
 			}
 		},
 		model: {

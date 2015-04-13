@@ -127,7 +127,7 @@ export default class Query {
 				return items.push(query);
 			}
 
-			if(value && value.toString) {
+			if(value && value.toString && !_.isPlainObject(value)) {
 				value = value.toString();
 			}
 
@@ -138,8 +138,8 @@ export default class Query {
 
 			Object.keys(value).forEach(operation => {
 				var operationValue = value[operation];
-				if(value && value.toString) {
-					value = value.toString();
+				if(operationValue && operationValue.toString && !_.isPlainObject(operationValue)) {
+					operationValue = operationValue.toString();
 				}
 
 				var query = null;
@@ -194,14 +194,14 @@ export default class Query {
 			if(conditions instanceof Document) {
 				this._target = conditions;
 				conditions = void 0;
-			} else if(conditions && conditions.toString) {
-				this._target = conditions.toString();
+			} else if(conditions && !_.isPlainObject(conditions)) {
+				this._target = conditions;
 				conditions = void 0;
 			} else {
 				this.where(conditions);
 			}
 		}
-
+		
 		return callback ? this.exec(callback) : this;
 	}
 
@@ -402,4 +402,6 @@ export default class Query {
 	exec(callback) {
 		throw new Error('Override exec method for query');
 	}		
-}
+};
+
+Query.Operation = Operation;

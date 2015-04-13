@@ -35,21 +35,23 @@ export default class Model extends ModelBase {
 		this._schema = schema;
 		this._connection = connection;
 
-		this._documentClass = Document.createClass(this);
+		this._DocumentClass = Document.createClass(this);
 
 		if(options.ensure !== false) {
-			this.ensureClass((err, model) => {
+			return this.ensureClass((err, model) => {
 				if(err) {
 					log('Model ' + this.name + ': ' + err.message);
 				}
 
 				callback(err, model);
 			});	
-		}
+		} 
+
+		callback(null, this);
 	}
 
 	get DocumentClass() {
-		return this._documentClass;
+		return this._DocumentClass;
 	}
 
 	get schema() {

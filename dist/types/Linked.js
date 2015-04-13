@@ -10,22 +10,22 @@ var _inherits = function (subClass, superClass) { if (typeof superClass !== "fun
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
-var RIDType = _interopRequire(require("./rid"));
-
 var _ = _interopRequire(require("lodash"));
+
+var StringType = _interopRequire(require("./String"));
 
 var Document = _interopRequire(require("../document"));
 
-var LinkedType = (function (_RIDType) {
+var LinkedType = (function (_StringType) {
 	function LinkedType() {
 		_classCallCheck(this, LinkedType);
 
-		if (_RIDType != null) {
-			_RIDType.apply(this, arguments);
+		if (_StringType != null) {
+			_StringType.apply(this, arguments);
 		}
 	}
 
-	_inherits(LinkedType, _RIDType);
+	_inherits(LinkedType, _StringType);
 
 	_createClass(LinkedType, {
 		_serialize: {
@@ -76,17 +76,16 @@ var LinkedType = (function (_RIDType) {
 
 				return _get(Object.getPrototypeOf(LinkedType.prototype), "isModified", this);
 			}
-
-			/*
-   get linkedClass() {
-   	var type = this.options.type;
-   	return type.modelName ? type.modelName : null;
-   }*/
-
+		},
+		linkedClass: {
+			get: function () {
+				var type = this.options.type;
+				return type.modelName ? type.modelName : null;
+			}
 		}
 	});
 
 	return LinkedType;
-})(RIDType);
+})(StringType);
 
 module.exports = LinkedType;

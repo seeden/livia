@@ -12,7 +12,7 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
 
 var Type = _interopRequire(require("./type"));
 
-var Schema = _interopRequire(require("../schemas/index"));
+var Schema = _interopRequire(require("../schemas/Schema"));
 
 var ArrayType = (function (_Type) {
 	function ArrayType(data, prop, name, mainData) {

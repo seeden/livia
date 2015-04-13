@@ -2,6 +2,8 @@
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
+var Type = _interopRequire(require("./Type"));
+
 var BooleanType = _interopRequire(require("./Boolean"));
 
 var NumberType = _interopRequire(require("./Number"));
@@ -17,6 +19,7 @@ var MixedType = _interopRequire(require("./Mixed"));
 var DateType = _interopRequire(require("./Date"));
 
 module.exports = {
+	Type: Type,
 	Boolean: BooleanType,
 	String: StringType,
 	Number: NumberType,

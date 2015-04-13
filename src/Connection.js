@@ -6,7 +6,7 @@ export default class Connection extends EventEmitter {
 	constructor (adapter, callback) {
 		super();
 
-		options = options || {};
+		callback = callback || function() {};
 
 		this._adapter    = adapter;
 		this._models     = new Map();
@@ -23,7 +23,7 @@ export default class Connection extends EventEmitter {
 	}	
 
 	query (model, options) {
-		return this.adapter.query(model, callback);
+		return this.adapter.query(model, options);
 	}
 
 	model (name, schema, options, callback) {

@@ -1,3 +1,4 @@
+import Type from './Type';
 import BooleanType from './Boolean';
 import NumberType from './Number';
 import StringType from './String';
@@ -7,6 +8,7 @@ import MixedType from './Mixed';
 import DateType from './Date';
 
 export default {
+	Type         : Type,
 	'Boolean'    : BooleanType,
 	'String'     : StringType,
 	'Number'     : NumberType,

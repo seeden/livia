@@ -61,10 +61,10 @@ var Model = (function (_ModelBase) {
 		this._schema = schema;
 		this._connection = connection;
 
-		this._documentClass = Document.createClass(this);
+		this._DocumentClass = Document.createClass(this);
 
 		if (options.ensure !== false) {
-			this.ensureClass(function (err, model) {
+			return this.ensureClass(function (err, model) {
 				if (err) {
 					log("Model " + _this.name + ": " + err.message);
 				}
@@ -72,6 +72,8 @@ var Model = (function (_ModelBase) {
 				callback(err, model);
 			});
 		}
+
+		callback(null, this);
 	}
 
 	_inherits(Model, _ModelBase);
@@ -79,7 +81,7 @@ var Model = (function (_ModelBase) {
 	_createClass(Model, {
 		DocumentClass: {
 			get: function () {
-				return this._documentClass;
+				return this._DocumentClass;
 			}
 		},
 		schema: {

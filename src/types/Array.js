@@ -1,5 +1,5 @@
 import Type from './type';
-import Schema from '../schemas/index';
+import Schema from '../schemas/Schema';
 
 export default class ArrayType extends Type {
 	constructor(data, prop, name, mainData) {

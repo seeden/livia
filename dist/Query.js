@@ -156,7 +156,7 @@ var Query = (function () {
 						return items.push(query);
 					}
 
-					if (value && value.toString) {
+					if (value && value.toString && !_.isPlainObject(value)) {
 						value = value.toString();
 					}
 
@@ -167,8 +167,8 @@ var Query = (function () {
 
 					Object.keys(value).forEach(function (operation) {
 						var operationValue = value[operation];
-						if (value && value.toString) {
-							value = value.toString();
+						if (operationValue && operationValue.toString && !_.isPlainObject(operationValue)) {
+							operationValue = operationValue.toString();
 						}
 
 						var query = null;
@@ -233,8 +233,8 @@ var Query = (function () {
 					if (conditions instanceof Document) {
 						this._target = conditions;
 						conditions = void 0;
-					} else if (conditions && conditions.toString) {
-						this._target = conditions.toString();
+					} else if (conditions && !_.isPlainObject(conditions)) {
+						this._target = conditions;
 						conditions = void 0;
 					} else {
 						this.where(conditions);
@@ -512,3 +512,5 @@ var Query = (function () {
 })();
 
 module.exports = Query;
+
+Query.Operation = Operation;

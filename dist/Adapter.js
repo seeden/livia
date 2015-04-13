@@ -5,11 +5,23 @@ var _createClass = (function () { function defineProperties(target, props) { for
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
 var Adapter = (function () {
-	function Adapter() {
+	function Adapter(options) {
 		_classCallCheck(this, Adapter);
+
+		this._options = options || {};
 	}
 
 	_createClass(Adapter, {
+		options: {
+			get: function () {
+				return this._options;
+			}
+		},
+		connect: {
+			value: function connect(callback) {
+				throw new Error("Please override connect method");
+			}
+		},
 		ensureClass: {
 			value: function ensureClass(model, callback) {
 				throw new Error("Please override ensureClass method");
@@ -18,7 +30,6 @@ var Adapter = (function () {
 		query: {
 			value: function query(model, options) {
 				throw new Error("Please override query method");
-				return new Query(model, options);
 			}
 		}
 	});

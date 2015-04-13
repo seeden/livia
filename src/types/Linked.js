@@ -1,8 +1,8 @@
-import RIDType from './rid';
 import _ from 'lodash';
+import StringType from './String';
 import Document from '../document';
 
-export default class LinkedType extends RIDType {
+export default class LinkedType extends StringType {
 	_serialize(value) {
 		if(_.isPlainObject(value)) {
 			var doc = this._value = (this._value instanceof Document) 
@@ -50,9 +50,8 @@ export default class LinkedType extends RIDType {
 		return super.isModified;
 	}		
 
-	/*
 	get linkedClass() {
 		var type = this.options.type;
 		return type.modelName ? type.modelName : null;
-	}*/
+	}
 }
