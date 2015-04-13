@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
-import Model from './model';
-import Query from './query';
+import Model from './Model';
+import Query from './Query';
 
 export default class Connection extends EventEmitter {
 	constructor (adapter, callback) {

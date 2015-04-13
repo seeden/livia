@@ -1,12 +1,11 @@
-import SchemaBase from './schemabase';
 import Kareem from 'kareem';
 import _ from 'lodash';
-import VirtualType from '../types/virtual';
-import Data from '../data';
-import convertType from '../types/convert';
-import MixedType from '../types/mixed';
-import IndexType from '../constants/indextype';
 import debug from 'debug';
+import SchemaBase from './SchemaBase';
+import VirtualType from '../types/Virtual';
+import Data from '../Data';
+import MixedType from '../types/Mixed';
+import IndexType from '../constants/IndexType';
 
 const log = debug('orientose:schema');
 
@@ -429,7 +428,7 @@ export default class Schema extends SchemaBase {
 		var normalised = {
 			schema     : this,
 			type       : type,
-			schemaType : convertType(type, Schema),
+			schemaType : this.convertType(type, Schema),
 			options    : options
 		};
 

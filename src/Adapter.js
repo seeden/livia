@@ -6,5 +6,5 @@ export default class Adapter {
 	query (model, options) {
 		throw new Error('Please override query method');
 		return new Query(model, options);
-	}	
+	}
 }

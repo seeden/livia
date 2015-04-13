@@ -1,23 +1,17 @@
-import BooleanType from './boolean';
-import IntegerType from './integer';
-import LongType from './long';
-import NumberType from './number';
-import StringType from './string';
-import ArrayType from './array';
-import ObjectType from './object';
-import MixedType from './mixed';
-import RIDType from './rid';
-import DateType from './date';
+import BooleanType from './Boolean';
+import NumberType from './Number';
+import StringType from './String';
+import ArrayType from './Array';
+import ObjectType from './Object';
+import MixedType from './Mixed';
+import DateType from './Date';
 
 export default {
 	'Boolean'    : BooleanType,
-	'Integer'    : IntegerType,
-	'Long'       : LongType,
 	'String'     : StringType,
 	'Number'     : NumberType,
 	EmbeddedList : ArrayType,
 	Mixed        : MixedType,
-	Rid          : RIDType,
 	'Date'       : DateType,
 	Embedded     : ObjectType
 };

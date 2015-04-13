@@ -1,4 +1,4 @@
-import Schema from './index';
+import Schema from './Schema';
 
 export default class Graph extends Schema {
 }

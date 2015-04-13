@@ -1,12 +1,12 @@
 import OrientoQuery from 'oriento/lib/db/query';
 import debug from 'debug';
 import _ from 'lodash';
-import Document from './document';
-import GraphSchema from './schemas/graph';
-import EdgeSchema from './schemas/edge';
-import LogicOperators from './constants/logicoperators';
-import ComparisonOperators from './constants/comparisonoperators';
 import extend from 'node.extend';
+import Document from './Document';
+import GraphSchema from './schemas/Graph';
+import EdgeSchema from './schemas/Edge';
+import LogicOperators from './constants/LogicOperators';
+import ComparisonOperators from './constants/ComparisonOperators';
 
 const log = debug('orientose:query');
 

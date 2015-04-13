@@ -1,10 +1,10 @@
-import ModelBase from './modelbase';
-import Schema from './schemas/index';
-import Document from './document';
 import { waterfall, each, serial } from 'async';
 import extend from 'node.extend';
 import debug from 'debug';
 import _ from 'lodash';
+import ModelBase from './ModelBase';
+import Schema from './schemas/Schema';
+import Document from './Document';
 
 const log = debug('orientose:model');
 

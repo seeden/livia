@@ -1,7 +1,7 @@
-import Schema from './schemas/index';
 import _ from 'lodash';
-import VirtualType from './types/virtual';
 import debug from 'debug';
+import VirtualType from './types/Virtual';
+import Schema from './schemas/Schema';
 
 const log = debug('orientose:data');
 
