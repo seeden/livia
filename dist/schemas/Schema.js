@@ -500,7 +500,7 @@ var Schema = (function (_SchemaBase) {
 				var normalised = {
 					schema: this,
 					type: type,
-					schemaType: this.convertType(type, Schema),
+					schemaType: this.convertType(type),
 					options: options
 				};
 

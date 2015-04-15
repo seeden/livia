@@ -14,21 +14,7 @@ var EventEmitter = require("events").EventEmitter;
 
 var _ = _interopRequire(require("lodash"));
 
-var Type = _interopRequire(require("../types/Type"));
-
-var StringType = _interopRequire(require("../types/String"));
-
-var NumberType = _interopRequire(require("../types/Number"));
-
-var BooleanType = _interopRequire(require("../types/Boolean"));
-
-var DateType = _interopRequire(require("../types/Date"));
-
-var ObjectType = _interopRequire(require("../types/Object"));
-
-var LinkedType = _interopRequire(require("../types/Linked"));
-
-var ArrayType = _interopRequire(require("../types/Array"));
+var Type = _interopRequire(require("../types/index"));
 
 var Document = _interopRequire(require("../Document"));
 
@@ -57,19 +43,19 @@ var SchemaBase = (function (_EventEmitter) {
 				} else if (type.isSchemaType) {
 					return type;
 				} else if (type instanceof SchemaBase) {
-					return ObjectType;
-				} else if (type.prototype && type.prototype.constructor && type.prototype.constructor.__proto__ === Document) {
-					return LinkedType;
+					return Type.Object;
+				} else if (type.isDocumentClass) {
+					return Type.Linked;
 				} else if (_.isArray(type)) {
-					return ArrayType;
+					return Type.Array;
 				} else if (type === String) {
-					return StringType;
+					return Type.String;
 				} else if (type === Number) {
-					return NumberType;
+					return Type.Number;
 				} else if (type === Boolean) {
-					return BooleanType;
+					return Type.Boolean;
 				} else if (type === Date) {
-					return DateType;
+					return Type.Date;
 				}
 
 				throw new Error("Unrecognized type");

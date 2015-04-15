@@ -181,6 +181,11 @@ var Document = (function (_EventEmitter) {
 			}
 		}
 	}, {
+		isDocumentClass: {
+			get: function () {
+				return true;
+			}
+		},
 		findById: {
 			value: function findById(id, callback) {
 				this.findOne(id, callback);

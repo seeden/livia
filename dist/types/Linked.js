@@ -14,7 +14,7 @@ var _ = _interopRequire(require("lodash"));
 
 var StringType = _interopRequire(require("./String"));
 
-var Document = _interopRequire(require("../document"));
+var Document = _interopRequire(require("../Document"));
 
 var LinkedType = (function (_StringType) {
 	function LinkedType() {

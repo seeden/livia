@@ -6,8 +6,6 @@ var _createClass = (function () { function defineProperties(target, props) { for
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
-var OrientoQuery = _interopRequire(require("oriento/lib/db/query"));
-
 var debug = _interopRequire(require("debug"));
 
 var _ = _interopRequire(require("lodash"));

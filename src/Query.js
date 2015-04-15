@@ -1,4 +1,3 @@
-import OrientoQuery from 'oriento/lib/db/query';
 import debug from 'debug';
 import _ from 'lodash';
 import extend from 'node.extend';

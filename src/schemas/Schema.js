@@ -416,8 +416,6 @@ export default class Schema extends SchemaBase {
 
 		var SubSchema = this.getSubdocumentSchemaConstructor();
 
-
-
 		//create schema from plain object
 		if(_.isPlainObject(type)) {
 			type = Object.keys(type).length
@@ -428,7 +426,7 @@ export default class Schema extends SchemaBase {
 		var normalised = {
 			schema     : this,
 			type       : type,
-			schemaType : this.convertType(type, Schema),
+			schemaType : this.convertType(type),
 			options    : options
 		};
 

@@ -6,14 +6,16 @@ import ArrayType from './Array';
 import ObjectType from './Object';
 import MixedType from './Mixed';
 import DateType from './Date';
+import LinkedType from './Linked';
 
 export default {
-	Type         : Type,
+	'Type'       : Type,
 	'Boolean'    : BooleanType,
 	'String'     : StringType,
 	'Number'     : NumberType,
-	EmbeddedList : ArrayType,
-	Mixed        : MixedType,
 	'Date'       : DateType,
-	Embedded     : ObjectType
+	'Array'      : ArrayType,
+	'Mixed'      : MixedType,
+	'Object'     : ObjectType,
+	'Linked'     : LinkedType
 };

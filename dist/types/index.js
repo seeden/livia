@@ -18,13 +18,16 @@ var MixedType = _interopRequire(require("./Mixed"));
 
 var DateType = _interopRequire(require("./Date"));
 
+var LinkedType = _interopRequire(require("./Linked"));
+
 module.exports = {
 	Type: Type,
 	Boolean: BooleanType,
 	String: StringType,
 	Number: NumberType,
-	EmbeddedList: ArrayType,
-	Mixed: MixedType,
 	Date: DateType,
-	Embedded: ObjectType
+	Array: ArrayType,
+	Mixed: MixedType,
+	Object: ObjectType,
+	Linked: LinkedType
 };

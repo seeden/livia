@@ -150,6 +150,10 @@ export default class Document extends EventEmitter {
 		});
 	}
 
+	static get isDocumentClass() {
+		return true;
+	}
+
 	static findById(id, callback) {
 		this.findOne(id, callback);
 	}

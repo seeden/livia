@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import StringType from './String';
-import Document from '../document';
+import Document from '../Document';
 
 export default class LinkedType extends StringType {
 	_serialize(value) {

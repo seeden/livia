@@ -1,15 +1,7 @@
 import {EventEmitter} from 'events';
 import _ from 'lodash';
 
-import Type from '../types/Type';
-import StringType from '../types/String';
-import NumberType from '../types/Number';
-import BooleanType from '../types/Boolean';
-import DateType from '../types/Date';
-import ObjectType from '../types/Object';
-import LinkedType from '../types/Linked';
-import ArrayType from '../types/Array';
-
+import Type from '../types/index';
 import Document from '../Document';
 
 export default class SchemaBase extends EventEmitter {
@@ -30,19 +22,19 @@ export default class SchemaBase extends EventEmitter {
 		} else if(type.isSchemaType) {
 			return type;
 		} else if(type instanceof SchemaBase) {
-			return ObjectType;
-		} else if(type.prototype && type.prototype.constructor && type.prototype.constructor.__proto__ === Document) {
-			return LinkedType;
+			return Type.Object;
+		} else if(type.isDocumentClass) {
+			return Type.Linked;
 		} else if(_.isArray(type)) {
-			return ArrayType;
+			return Type.Array;
 		} else if(type === String) {
-			return StringType;
+			return Type.String;
 		} else if(type === Number) {
-			return NumberType;
+			return Type.Number;
 		} else if(type === Boolean) {
-			return BooleanType;
+			return Type.Boolean;
 		} else if(type === Date) {
-			return DateType;
+			return Type.Date;
 		}
 
 		throw new Error('Unrecognized type');
