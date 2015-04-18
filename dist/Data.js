@@ -80,6 +80,10 @@ var Data = (function () {
 						return;
 					}
 
+					if (typeof options.exclude === "function" && options.exclude(prop.name, prop.options)) {
+						return;
+					}
+
 					var value = prop.toJSON(options);
 					if (typeof value === "undefined") {
 						return;

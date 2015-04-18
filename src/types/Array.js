@@ -63,6 +63,12 @@ export default class ArrayType extends Type {
 		});
 	}	
 
+	filter(fn) {
+		return this._value.filter(function(item) {
+			return fn(item.value);
+		});
+	}	
+
 	toJSON(options) {
 		return this._value.map(function(item) {
 			return item.toJSON(options);
