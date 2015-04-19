@@ -8,6 +8,7 @@ import Model from './Model';
 import Query from './Query';
 import Document from './Document';
 import Type from './types/index';
+import Index from './constants/IndexType';
 
 Schema.Vertex = Vertex;
 Schema.Edge = Edge;
@@ -19,5 +20,7 @@ Connection.Type = Type;
 Connection.Adapter = Adapter;
 Connection.Query = Query;
 Connection.Document = Document;
+
+Connection.Index = Index;
 
 export default Connection;

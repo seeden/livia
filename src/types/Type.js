@@ -53,6 +53,10 @@ export default class Type {
 		return !!this.options.metadata;
 	}
 
+	get isRecordID() {
+		return !!this.options.isRecordID;
+	}	
+
 	set value(value) {
 		this._value = this._preSerialize(value);
 	}

@@ -1,8 +1,8 @@
 import keymirror from "keymirror";
 
 export default keymirror({
-	NOTUNIQUE: null,    //basic index
-	UNIQUE: null,       //unique index
-	FULLTEXT: null,     //text index
-	DICTIONARY: null    //
+	BASIC     : null,    //basic index
+	DICTIONARY: null,    //dictionary index
+	FULLTEXT  : null,    //text index
+	SPATIAL   : null
 });

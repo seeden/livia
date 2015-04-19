@@ -1,40 +1,60 @@
-"use strict";
+'use strict';
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
-var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
 
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var debug = _interopRequire(require("debug"));
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
 
-var _ = _interopRequire(require("lodash"));
+var _debug = require('debug');
 
-var extend = _interopRequire(require("node.extend"));
+var _debug2 = _interopRequireWildcard(_debug);
 
-var Document = _interopRequire(require("./Document"));
+var _import = require('lodash');
 
-var GraphSchema = _interopRequire(require("./schemas/Graph"));
+var _import2 = _interopRequireWildcard(_import);
 
-var EdgeSchema = _interopRequire(require("./schemas/Edge"));
+var _extend = require('node.extend');
 
-var LogicOperators = _interopRequire(require("./constants/LogicOperators"));
+var _extend2 = _interopRequireWildcard(_extend);
 
-var ComparisonOperators = _interopRequire(require("./constants/ComparisonOperators"));
+var _Document = require('./Document');
 
-var log = debug("orientose:query");
+var _Document2 = _interopRequireWildcard(_Document);
+
+var _GraphSchema = require('./schemas/Graph');
+
+var _GraphSchema2 = _interopRequireWildcard(_GraphSchema);
+
+var _EdgeSchema = require('./schemas/Edge');
+
+var _EdgeSchema2 = _interopRequireWildcard(_EdgeSchema);
+
+var _LogicOperators = require('./constants/LogicOperators');
+
+var _LogicOperators2 = _interopRequireWildcard(_LogicOperators);
+
+var _ComparisonOperators = require('./constants/ComparisonOperators');
+
+var _ComparisonOperators2 = _interopRequireWildcard(_ComparisonOperators);
+
+var log = _debug2['default']('orientose:query');
 
 var Operation = {
-	DELETE: "DELETE",
-	UPDATE: "UPDATE",
-	SELECT: "SELECT",
-	INSERT: "INSERT"
+	DELETE: 'DELETE',
+	UPDATE: 'UPDATE',
+	SELECT: 'SELECT',
+	INSERT: 'INSERT'
 };
 
 var Operator = {
-	OR: "or",
-	AND: "and",
-	WHERE: "where"
+	OR: 'or',
+	AND: 'and',
+	WHERE: 'where'
 };
 
 var Query = (function () {
@@ -44,7 +64,7 @@ var Query = (function () {
 		options = options || {};
 
 		if (!model) {
-			throw new Error("Model is not defined");
+			throw new Error('Model is not defined');
 		}
 
 		this._paramIndex = 1;
@@ -72,443 +92,440 @@ var Query = (function () {
 		this._set = null;
 	}
 
-	_createClass(Query, {
-		model: {
-			get: function () {
-				return this._model;
-			}
-		},
-		schema: {
-			get: function () {
-				return this.model.schema;
-			}
-		},
-		paramify: {
-			value: function paramify(key) {
-				return key.replace(/([^A-Za-z0-9])/g, "");
-			}
-		},
-		nextParamName: {
-			value: function nextParamName(propertyName) {
-				return this.paramify(propertyName) + "_op_" + this._paramIndex++;
-			}
-		},
-		addParam: {
-			value: function addParam(paramName, value) {
-				this._params[paramName] = value;
-			}
-		},
-		addParams: {
-			value: function addParams(params) {
-				params = params || {};
-				extend(this._params, params);
-			}
-		},
-		createComparisonQuery: {
-			value: function createComparisonQuery(propertyName, operator, value) {
-				var paramName = this.nextParamName(propertyName);
+	_createClass(Query, [{
+		key: 'model',
+		get: function () {
+			return this._model;
+		}
+	}, {
+		key: 'schema',
+		get: function () {
+			return this.model.schema;
+		}
+	}, {
+		key: 'paramify',
+		value: function paramify(key) {
+			return key.replace(/([^A-Za-z0-9])/g, '');
+		}
+	}, {
+		key: 'nextParamName',
+		value: function nextParamName(propertyName) {
+			return this.paramify(propertyName) + '_op_' + this._paramIndex++;
+		}
+	}, {
+		key: 'addParam',
+		value: function addParam(paramName, value) {
+			this._params[paramName] = value;
+		}
+	}, {
+		key: 'addParams',
+		value: function addParams(params) {
+			params = params || {};
+			_extend2['default'](this._params, params);
+		}
+	}, {
+		key: 'createComparisonQuery',
+		value: function createComparisonQuery(propertyName, operator, value) {
+			var paramName = this.nextParamName(propertyName);
 
-				if (value === null) {
-					if (operator === "=") {
-						return propertyName + " IS NULL";
-					} else if (operator === "!=" || operator === "<>" || operator === "NOT") {
-						return propertyName + " IS NOT NULL";
-					}
+			if (value === null) {
+				if (operator === '=') {
+					return propertyName + ' IS NULL';
+				} else if (operator === '!=' || operator === '<>' || operator === 'NOT') {
+					return propertyName + ' IS NOT NULL';
+				}
+			}
+
+			this.addParam(paramName, value);
+			return propertyName + ' ' + operator + ' :' + paramName;
+		}
+	}, {
+		key: 'queryLanguage',
+		value: function queryLanguage(conditions) {
+			var _this = this;
+
+			var items = [];
+
+			Object.keys(conditions).forEach(function (propertyName) {
+				var value = conditions[propertyName];
+				if (typeof value === 'undefined') {
+					return;
 				}
 
-				this.addParam(paramName, value);
-				return propertyName + " " + operator + " :" + paramName;
-			}
-		},
-		queryLanguage: {
-			value: function queryLanguage(conditions) {
-				var _this = this;
+				if (_LogicOperators2['default'][propertyName]) {
+					var subQueries = [];
 
-				var items = [];
-
-				Object.keys(conditions).forEach(function (propertyName) {
-					var value = conditions[propertyName];
-					if (typeof value === "undefined") {
-						return;
-					}
-
-					if (LogicOperators[propertyName]) {
-						var subQueries = [];
-
-						value.forEach(function (conditions) {
-							var query = _this.queryLanguage(conditions);
-							if (!query) {
-								return;
-							}
-
-							subQueries.push(query);
-						});
-
-						if (!subQueries.length) {
-							return;
-						} else if (subQueries.length === 1) {
-							return items.push(subQueries[0]);
-						}
-
-						var query = "(" + subQueries.join(") " + LogicOperators[propertyName] + " (") + ")";
-						return items.push(query);
-					}
-
-					if (value && value.toString && !_.isPlainObject(value)) {
-						value = value.toString();
-					}
-
-					if (!_.isObject(value)) {
-						var query = _this.createComparisonQuery(propertyName, "=", value);
-						return items.push(query);
-					}
-
-					Object.keys(value).forEach(function (operation) {
-						var operationValue = value[operation];
-						if (operationValue && operationValue.toString && !_.isPlainObject(operationValue)) {
-							operationValue = operationValue.toString();
-						}
-
-						var query = null;
-						if (ComparisonOperators[operation]) {
-							query = _this.createComparisonQuery(propertyName, ComparisonOperators[operation], operationValue);
-						}
-
+					value.forEach(function (conditions) {
+						var query = _this.queryLanguage(conditions);
 						if (!query) {
 							return;
 						}
 
-						items.push(query);
+						subQueries.push(query);
 					});
-				});
 
-				if (!items.length) {
-					return null;
+					if (!subQueries.length) {
+						return;
+					} else if (subQueries.length === 1) {
+						return items.push(subQueries[0]);
+					}
+
+					var query = '(' + subQueries.join(') ' + _LogicOperators2['default'][propertyName] + ' (') + ')';
+					return items.push(query);
 				}
 
-				return items.join(" AND ");
+				if (value && value.toString && !_import2['default'].isPlainObject(value)) {
+					value = value.toString();
+				}
+
+				if (!_import2['default'].isObject(value)) {
+					var query = _this.createComparisonQuery(propertyName, '=', value);
+					return items.push(query);
+				}
+
+				Object.keys(value).forEach(function (operation) {
+					var operationValue = value[operation];
+					if (operationValue && operationValue.toString && !_import2['default'].isPlainObject(operationValue)) {
+						operationValue = operationValue.toString();
+					}
+
+					var query = null;
+					if (_ComparisonOperators2['default'][operation]) {
+						query = _this.createComparisonQuery(propertyName, _ComparisonOperators2['default'][operation], operationValue);
+					}
+
+					if (!query) {
+						return;
+					}
+
+					items.push(query);
+				});
+			});
+
+			if (!items.length) {
+				return null;
 			}
-		},
-		operator: {
-			value: (function (_operator) {
-				var _operatorWrapper = function operator(_x, _x2, _x3) {
-					return _operator.apply(this, arguments);
-				};
 
-				_operatorWrapper.toString = function () {
-					return _operator.toString();
-				};
+			return items.join(' AND ');
+		}
+	}, {
+		key: 'operator',
+		value: (function (_operator) {
+			function operator(_x, _x2, _x3) {
+				return _operator.apply(this, arguments);
+			}
 
-				return _operatorWrapper;
-			})(function (operator, conditions, callback) {
-				var query = this.queryLanguage(conditions);
+			operator.toString = function () {
+				return _operator.toString();
+			};
 
-				if (!query) {
-					return this;
-				}
+			return operator;
+		})(function (operator, conditions, callback) {
+			var query = this.queryLanguage(conditions);
 
-				this._operators.push({
-					type: operator,
-					query: query
-				});
-
+			if (!query) {
 				return this;
-			})
-		},
-		condExec: {
-			value: function condExec(conditions, callback) {
-				if (typeof conditions === "function") {
-					callback = conditions;
-					conditions = void 0;
-				}
+			}
 
-				if (typeof conditions === "string") {
+			this._operators.push({
+				type: operator,
+				query: query
+			});
+
+			return this;
+		})
+	}, {
+		key: 'condExec',
+		value: function condExec(conditions, callback) {
+			if (typeof conditions === 'function') {
+				callback = conditions;
+				conditions = void 0;
+			}
+
+			if (typeof conditions === 'string') {
+				this._target = conditions;
+				conditions = void 0;
+			}
+
+			if (_import2['default'].isObject(conditions)) {
+				if (conditions instanceof _Document2['default']) {
 					this._target = conditions;
 					conditions = void 0;
+				} else if (conditions && !_import2['default'].isPlainObject(conditions)) {
+					this._target = conditions;
+					conditions = void 0;
+				} else {
+					this.where(conditions);
 				}
-
-				if (_.isObject(conditions)) {
-					if (conditions instanceof Document) {
-						this._target = conditions;
-						conditions = void 0;
-					} else if (conditions && !_.isPlainObject(conditions)) {
-						this._target = conditions;
-						conditions = void 0;
-					} else {
-						this.where(conditions);
-					}
-				}
-
-				return callback ? this.exec(callback) : this;
 			}
-		},
-		or: {
-			value: function or(conditions) {
-				var self = this;
-				conditions.forEach(function (condition) {
-					self = self.operator(Operator.OR, condition);
-				});
-				return self;
-			}
-		},
-		and: {
-			value: function and(conditions) {
-				var self = this;
-				conditions.forEach(function (condition) {
-					self = self.operator(Operator.AND, condition);
-				});
-				return self;
-			}
-		},
-		where: {
-			value: function where(conditions, callback) {
-				conditions = conditions || {};
-				this.operator(Operator.WHERE, conditions);
 
-				return this.condExec(callback);
-			}
-		},
-		operation: {
-			value: (function (_operation) {
-				var _operationWrapper = function operation(_x4) {
-					return _operation.apply(this, arguments);
-				};
-
-				_operationWrapper.toString = function () {
-					return _operation.toString();
-				};
-
-				return _operationWrapper;
-			})(function (operation) {
-				if (this._operation && this._operation !== operation) {
-					throw new Error("Operation is already set");
-				}
-				this._operation = operation;
-				return this;
-			})
-		},
-		set: {
-			value: function set(doc) {
-				this._set = doc;
-				return this;
-			}
-		},
-		first: {
-			value: function first(useFirst) {
-				this._first = !!useFirst;
-				return this;
-			}
-		},
-		scalar: {
-			value: function scalar(useScalar) {
-				this._scalar = !!useScalar;
-				return this;
-			}
-		},
-		limit: {
-			value: (function (_limit) {
-				var _limitWrapper = function limit(_x5) {
-					return _limit.apply(this, arguments);
-				};
-
-				_limitWrapper.toString = function () {
-					return _limit.toString();
-				};
-
-				return _limitWrapper;
-			})(function (limit) {
-				this._limit = limit;
-				return this;
-			})
-		},
-		skip: {
-			value: (function (_skip) {
-				var _skipWrapper = function skip(_x6) {
-					return _skip.apply(this, arguments);
-				};
-
-				_skipWrapper.toString = function () {
-					return _skip.toString();
-				};
-
-				return _skipWrapper;
-			})(function (skip) {
-				this._skip = skip;
-				return this;
-			})
-		},
-		from: {
-			value: function from(value) {
-				this._from = value;
-				return this;
-			}
-		},
-		to: {
-			value: function to(value) {
-				this._to = value;
-				return this;
-			}
-		},
-		fetchPlan: {
-			value: function fetchPlan(value) {
-				this._fetchPlan = value;
-				return this;
-			}
-		},
-		"return": {
-			value: function _return(value) {
-				this._return = value;
-				return this;
-			}
-		},
-		sort: {
-			value: (function (_sort) {
-				var _sortWrapper = function sort(_x7) {
-					return _sort.apply(this, arguments);
-				};
-
-				_sortWrapper.toString = function () {
-					return _sort.toString();
-				};
-
-				return _sortWrapper;
-			})(function (sort) {
-				if (typeof sort === "string") {
-					var order = {};
-
-					var parts = sort.split(" ");
-					parts.forEach(function (part) {
-						var direction = 1;
-						if (part[0] === "-") {
-							part = part.substr(1);
-							direction = -1;
-						}
-
-						order[part] = direction;
-					});
-
-					sort = order;
-				}
-
-				this._sort = sort;
-				return this;
-			})
-		},
-		create: {
-			/**
-   update(doc, [callback])
-   */
-
-			value: function create(doc, callback) {
-				if (typeof doc === "function") {
-					callback = doc;
-					doc = {};
-				}
-
-				return this.operation(Operation.INSERT).set(doc).first(true).condExec(callback);
-			}
-		},
-		options: {
-			value: (function (_options) {
-				var _optionsWrapper = function options(_x8) {
-					return _options.apply(this, arguments);
-				};
-
-				_optionsWrapper.toString = function () {
-					return _options.toString();
-				};
-
-				return _optionsWrapper;
-			})(function (options) {
-				options = options || {};
-
-				if (options.multi) {
-					options.limit = null;
-				}
-
-				if (options["new"]) {
-					options["return"] = "AFTER @this";
-				}
-
-				if (typeof options.fetchPlan !== "undefined") {
-					this.fetchPlan(options.fetchPlan);
-				}
-
-				if (typeof options["return"] !== "undefined") {
-					this["return"](options["return"]);
-				}
-
-				if (typeof options.limit !== "undefined") {
-					this.limit(options.limit);
-				}
-
-				if (typeof options.scalar !== "undefined") {
-					this.scalar(options.scalar);
-				}
-
-				return this;
-			})
-		},
-		update: {
-
-			/**
-   update(conditions, update, [options], [callback])
-   */
-
-			value: function update(conditions, doc, options, callback) {
-				if (typeof options === "function") {
-					callback = options;
-					options = {};
-				}
-
-				if (typeof conditions === "undefined" || typeof doc === "undefined") {
-					throw new Error("One of parameters is missing");
-				}
-
-				var defaultOptions = {
-					scalar: true,
-					limit: 1
-				};
-
-				options = extend({}, defaultOptions, options || {});
-
-				return this.operation(Operation.UPDATE).options(options).set(doc).condExec(conditions, callback);
-			}
-		},
-		find: {
-
-			//find([conditions], [callback])
-
-			value: function find(conditions, callback) {
-				return this.operation(Operation.SELECT).condExec(conditions, callback);
-			}
-		},
-		findOne: {
-
-			//findOne([criteria], [callback])
-
-			value: function findOne(conditions, callback) {
-				return this.operation(Operation.SELECT).limit(1).first(true).condExec(conditions, callback);
-			}
-		},
-		remove: {
-
-			//remove([conditions], [callback])
-
-			value: function remove(conditions, callback) {
-				return this.operation(Operation.DELETE).scalar(true).condExec(conditions, callback);
-			}
-		},
-		exec: {
-			value: function exec(callback) {
-				throw new Error("Override exec method for query");
-			}
+			return callback ? this.exec(callback) : this;
 		}
-	});
+	}, {
+		key: 'or',
+		value: function or(conditions) {
+			var self = this;
+			conditions.forEach(function (condition) {
+				self = self.operator(Operator.OR, condition);
+			});
+			return self;
+		}
+	}, {
+		key: 'and',
+		value: function and(conditions) {
+			var self = this;
+			conditions.forEach(function (condition) {
+				self = self.operator(Operator.AND, condition);
+			});
+			return self;
+		}
+	}, {
+		key: 'where',
+		value: function where(conditions, callback) {
+			conditions = conditions || {};
+			this.operator(Operator.WHERE, conditions);
+
+			return this.condExec(callback);
+		}
+	}, {
+		key: 'operation',
+		value: (function (_operation) {
+			function operation(_x4) {
+				return _operation.apply(this, arguments);
+			}
+
+			operation.toString = function () {
+				return _operation.toString();
+			};
+
+			return operation;
+		})(function (operation) {
+			if (this._operation && this._operation !== operation) {
+				throw new Error('Operation is already set');
+			}
+			this._operation = operation;
+			return this;
+		})
+	}, {
+		key: 'set',
+		value: function set(doc) {
+			this._set = doc;
+			return this;
+		}
+	}, {
+		key: 'first',
+		value: function first(useFirst) {
+			this._first = !!useFirst;
+			return this;
+		}
+	}, {
+		key: 'scalar',
+		value: function scalar(useScalar) {
+			this._scalar = !!useScalar;
+			return this;
+		}
+	}, {
+		key: 'limit',
+		value: (function (_limit) {
+			function limit(_x5) {
+				return _limit.apply(this, arguments);
+			}
+
+			limit.toString = function () {
+				return _limit.toString();
+			};
+
+			return limit;
+		})(function (limit) {
+			this._limit = limit;
+			return this;
+		})
+	}, {
+		key: 'skip',
+		value: (function (_skip) {
+			function skip(_x6) {
+				return _skip.apply(this, arguments);
+			}
+
+			skip.toString = function () {
+				return _skip.toString();
+			};
+
+			return skip;
+		})(function (skip) {
+			this._skip = skip;
+			return this;
+		})
+	}, {
+		key: 'from',
+		value: function from(value) {
+			this._from = value;
+			return this;
+		}
+	}, {
+		key: 'to',
+		value: function to(value) {
+			this._to = value;
+			return this;
+		}
+	}, {
+		key: 'fetchPlan',
+		value: function fetchPlan(value) {
+			this._fetchPlan = value;
+			return this;
+		}
+	}, {
+		key: 'return',
+		value: function _return(value) {
+			this._return = value;
+			return this;
+		}
+	}, {
+		key: 'sort',
+		value: (function (_sort) {
+			function sort(_x7) {
+				return _sort.apply(this, arguments);
+			}
+
+			sort.toString = function () {
+				return _sort.toString();
+			};
+
+			return sort;
+		})(function (sort) {
+			if (typeof sort === 'string') {
+				var order = {};
+
+				var parts = sort.split(' ');
+				parts.forEach(function (part) {
+					var direction = 1;
+					if (part[0] === '-') {
+						part = part.substr(1);
+						direction = -1;
+					}
+
+					order[part] = direction;
+				});
+
+				sort = order;
+			}
+
+			this._sort = sort;
+			return this;
+		})
+	}, {
+		key: 'create',
+
+		/**
+  update(doc, [callback])
+  */
+		value: function create(doc, callback) {
+			if (typeof doc === 'function') {
+				callback = doc;
+				doc = {};
+			}
+
+			return this.operation(Operation.INSERT).set(doc).first(true).condExec(callback);
+		}
+	}, {
+		key: 'options',
+		value: (function (_options) {
+			function options(_x8) {
+				return _options.apply(this, arguments);
+			}
+
+			options.toString = function () {
+				return _options.toString();
+			};
+
+			return options;
+		})(function (options) {
+			options = options || {};
+
+			if (options.multi) {
+				options.limit = null;
+			}
+
+			if (options['new']) {
+				options['return'] = 'AFTER @this';
+			}
+
+			if (typeof options.fetchPlan !== 'undefined') {
+				this.fetchPlan(options.fetchPlan);
+			}
+
+			if (typeof options['return'] !== 'undefined') {
+				this['return'](options['return']);
+			}
+
+			if (typeof options.limit !== 'undefined') {
+				this.limit(options.limit);
+			}
+
+			if (typeof options.scalar !== 'undefined') {
+				this.scalar(options.scalar);
+			}
+
+			return this;
+		})
+	}, {
+		key: 'update',
+
+		/**
+  update(conditions, update, [options], [callback])
+  */
+		value: function update(conditions, doc, options, callback) {
+			if (typeof options === 'function') {
+				callback = options;
+				options = {};
+			}
+
+			if (typeof conditions === 'undefined' || typeof doc === 'undefined') {
+				throw new Error('One of parameters is missing');
+			}
+
+			var defaultOptions = {
+				scalar: true,
+				limit: 1
+			};
+
+			options = _extend2['default']({}, defaultOptions, options || {});
+
+			return this.operation(Operation.UPDATE).options(options).set(doc).condExec(conditions, callback);
+		}
+	}, {
+		key: 'find',
+
+		//find([conditions], [callback])
+		value: function find(conditions, callback) {
+			return this.operation(Operation.SELECT).condExec(conditions, callback);
+		}
+	}, {
+		key: 'findOne',
+
+		//findOne([criteria], [callback])
+		value: function findOne(conditions, callback) {
+			return this.operation(Operation.SELECT).limit(1).first(true).condExec(conditions, callback);
+		}
+	}, {
+		key: 'remove',
+
+		//remove([conditions], [callback])
+		value: function remove(conditions, callback) {
+			return this.operation(Operation.DELETE).scalar(true).condExec(conditions, callback);
+		}
+	}, {
+		key: 'exec',
+		value: function exec(callback) {
+			throw new Error('Override exec method for query');
+		}
+	}]);
 
 	return Query;
 })();
 
-module.exports = Query;
+exports['default'] = Query;
+;
 
 Query.Operation = Operation;
+module.exports = exports['default'];

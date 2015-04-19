@@ -1,14 +1,20 @@
-"use strict";
+'use strict';
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
-var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
 
-var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
-var Type = _interopRequire(require("./type"));
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
+
+var _Type2 = require('./type');
+
+var _Type3 = _interopRequireWildcard(_Type2);
 
 var NumberType = (function (_Type) {
 	function NumberType() {
@@ -21,31 +27,30 @@ var NumberType = (function (_Type) {
 
 	_inherits(NumberType, _Type);
 
-	_createClass(NumberType, {
-		_serialize: {
-			value: function _serialize(value) {
-				return Number(value);
-			}
-		},
-		_deserialize: {
-			value: function _deserialize(value) {
-				return value;
-			}
+	_createClass(NumberType, [{
+		key: '_serialize',
+		value: function _serialize(value) {
+			return Number(value);
 		}
 	}, {
-		toString: {
-			value: function toString() {
-				return "Number";
-			}
-		},
-		getDbType: {
-			value: function getDbType(options) {
-				return "DOUBLE";
-			}
+		key: '_deserialize',
+		value: function _deserialize(value) {
+			return value;
 		}
-	});
+	}], [{
+		key: 'toString',
+		value: function toString() {
+			return 'Number';
+		}
+	}, {
+		key: 'getDbType',
+		value: function getDbType(options) {
+			return 'DOUBLE';
+		}
+	}]);
 
 	return NumberType;
-})(Type);
+})(_Type3['default']);
 
-module.exports = NumberType;
+exports['default'] = NumberType;
+module.exports = exports['default'];

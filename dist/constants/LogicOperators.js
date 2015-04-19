@@ -1,6 +1,10 @@
-"use strict";
+'use strict';
 
-module.exports = {
-	$or: "OR",
-	$and: "AND"
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
+exports['default'] = {
+	$or: 'OR',
+	$and: 'AND'
 };
+module.exports = exports['default'];

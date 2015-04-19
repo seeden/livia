@@ -6,6 +6,7 @@ import VirtualType from '../types/Virtual';
 import Data from '../Data';
 import MixedType from '../types/Mixed';
 import IndexType from '../constants/IndexType';
+import extend from 'node.extend';
 
 const log = debug('orientose:schema');
 
@@ -72,37 +73,25 @@ export default class Schema extends SchemaBase {
 		}
 
 		var name = options.name || this._indexName(properties);
-		var type = options.type || IndexType.NOTUNIQUE;
-		if(options.unique) {
-			type = IndexType.UNIQUE;
-		} else if(options.text) {
+		var type = options.type || IndexType.BASIC;
+
+		if(type === true) {
+			type = IndexType.BASIC;
+		} else if(type === 'text' || type === 'fulltext' || options.text) {
 			type = IndexType.FULLTEXT;
+		} else if(type === '2dsphere') {
+			type = IndexType.SPATIAL;
 		}
 
 		if(this._indexes[name]) {
 			throw new Error('Index with name ${name} is already defined.');
 		}
 
-		//fix 2dsphere index from mongoose
-		if(type.toUpperCase() === '2DSPHERE') {
-			type = 'SPATIAL ENGINE LUCENE';
-
-			var keys = Object.keys(properties);
-			if(keys.length !== 1) {
-				throw new Error('We can not fix index on multiple properties');
-			}
-
-			properties = {
-				[keys[0] + '.coordinates']: 1
-			};
-		}
-
-		this._indexes[name] = {
+		this._indexes[name] = extend({}, options, {
 			properties: properties,
 			type: type,
-			nullValuesIgnored: !options.sparse,
-			options: options
-		};
+			nullValuesIgnored: !options.sparse
+		});
 
 		return this;
 	}
@@ -186,10 +175,13 @@ export default class Schema extends SchemaBase {
 			this.index({
 				[path]: path
 			}, {
-				name   : options.indexName,
-				unique : options.unique,
-				sparse : options.sparse,
-				type   : options.indexType 
+				unique : options.unique    || options.index.unique,
+				sparse : options.sparse    || options.index.sparse,
+				hash   : options.hash      || options.index.hash,
+				name   : options.indexName || options.index.name,
+				type   : options.indexType || options.index.type || options.index,
+				lucene : options.lucene    || options.index.lucene,
+				metadata: options.index.metadata
 			});
 
 			return this;

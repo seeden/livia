@@ -1,36 +1,67 @@
-"use strict";
+'use strict';
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
-var Adapter = _interopRequire(require("./Adapter"));
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
-var Connection = _interopRequire(require("./Connection"));
+var _Adapter = require('./Adapter');
 
-var Schema = _interopRequire(require("./schemas/Schema"));
+var _Adapter2 = _interopRequireWildcard(_Adapter);
 
-var Vertex = _interopRequire(require("./schemas/Vertex"));
+var _Connection = require('./Connection');
 
-var Edge = _interopRequire(require("./schemas/Edge"));
+var _Connection2 = _interopRequireWildcard(_Connection);
 
-var Graph = _interopRequire(require("./schemas/Graph"));
+var _Schema = require('./schemas/Schema');
 
-var Model = _interopRequire(require("./Model"));
+var _Schema2 = _interopRequireWildcard(_Schema);
 
-var Query = _interopRequire(require("./Query"));
+var _Vertex = require('./schemas/Vertex');
 
-var Document = _interopRequire(require("./Document"));
+var _Vertex2 = _interopRequireWildcard(_Vertex);
 
-var Type = _interopRequire(require("./types/index"));
+var _Edge = require('./schemas/Edge');
 
-Schema.Vertex = Vertex;
-Schema.Edge = Edge;
-Schema.Graph = Graph;
+var _Edge2 = _interopRequireWildcard(_Edge);
 
-Connection.Schema = Schema;
-Connection.Model = Model;
-Connection.Type = Type;
-Connection.Adapter = Adapter;
-Connection.Query = Query;
-Connection.Document = Document;
+var _Graph = require('./schemas/Graph');
 
-module.exports = Connection;
+var _Graph2 = _interopRequireWildcard(_Graph);
+
+var _Model = require('./Model');
+
+var _Model2 = _interopRequireWildcard(_Model);
+
+var _Query = require('./Query');
+
+var _Query2 = _interopRequireWildcard(_Query);
+
+var _Document = require('./Document');
+
+var _Document2 = _interopRequireWildcard(_Document);
+
+var _Type = require('./types/index');
+
+var _Type2 = _interopRequireWildcard(_Type);
+
+var _Index = require('./constants/IndexType');
+
+var _Index2 = _interopRequireWildcard(_Index);
+
+_Schema2['default'].Vertex = _Vertex2['default'];
+_Schema2['default'].Edge = _Edge2['default'];
+_Schema2['default'].Graph = _Graph2['default'];
+
+_Connection2['default'].Schema = _Schema2['default'];
+_Connection2['default'].Model = _Model2['default'];
+_Connection2['default'].Type = _Type2['default'];
+_Connection2['default'].Adapter = _Adapter2['default'];
+_Connection2['default'].Query = _Query2['default'];
+_Connection2['default'].Document = _Document2['default'];
+
+_Connection2['default'].Index = _Index2['default'];
+
+exports['default'] = _Connection2['default'];
+module.exports = exports['default'];

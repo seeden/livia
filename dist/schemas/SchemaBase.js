@@ -1,28 +1,38 @@
-"use strict";
+'use strict';
 
-var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
-var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
 
-var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
-var EventEmitter = require("events").EventEmitter;
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
 
-var _ = _interopRequire(require("lodash"));
+var _EventEmitter2 = require('events');
 
-var Type = _interopRequire(require("../types/index"));
+var _import = require('lodash');
 
-var Document = _interopRequire(require("../Document"));
+var _import2 = _interopRequireWildcard(_import);
+
+var _Type = require('../types/index');
+
+var _Type2 = _interopRequireWildcard(_Type);
+
+var _Document = require('../Document');
+
+var _Document2 = _interopRequireWildcard(_Document);
 
 var SchemaBase = (function (_EventEmitter) {
 	function SchemaBase(options) {
 		_classCallCheck(this, SchemaBase);
 
-		_get(Object.getPrototypeOf(SchemaBase.prototype), "constructor", this).call(this);
+		_get(Object.getPrototypeOf(SchemaBase.prototype), 'constructor', this).call(this);
 
 		this._props = {};
 		this._options = options || {};
@@ -30,40 +40,40 @@ var SchemaBase = (function (_EventEmitter) {
 
 	_inherits(SchemaBase, _EventEmitter);
 
-	_createClass(SchemaBase, {
-		options: {
-			get: function () {
-				return this._options;
-			}
-		},
-		convertType: {
-			value: function convertType(type) {
-				if (!type) {
-					throw new Error("Type is not defined");
-				} else if (type.isSchemaType) {
-					return type;
-				} else if (type instanceof SchemaBase) {
-					return Type.Object;
-				} else if (type.isDocumentClass) {
-					return Type.Linked;
-				} else if (_.isArray(type)) {
-					return Type.Array;
-				} else if (type === String) {
-					return Type.String;
-				} else if (type === Number) {
-					return Type.Number;
-				} else if (type === Boolean) {
-					return Type.Boolean;
-				} else if (type === Date) {
-					return Type.Date;
-				}
-
-				throw new Error("Unrecognized type");
-			}
+	_createClass(SchemaBase, [{
+		key: 'options',
+		get: function () {
+			return this._options;
 		}
-	});
+	}, {
+		key: 'convertType',
+		value: function convertType(type) {
+			if (!type) {
+				throw new Error('Type is not defined');
+			} else if (type.isSchemaType) {
+				return type;
+			} else if (type instanceof SchemaBase) {
+				return _Type2['default'].Object;
+			} else if (type.isDocumentClass) {
+				return _Type2['default'].Linked;
+			} else if (_import2['default'].isArray(type)) {
+				return _Type2['default'].Array;
+			} else if (type === String) {
+				return _Type2['default'].String;
+			} else if (type === Number) {
+				return _Type2['default'].Number;
+			} else if (type === Boolean) {
+				return _Type2['default'].Boolean;
+			} else if (type === Date) {
+				return _Type2['default'].Date;
+			}
+
+			throw new Error('Unrecognized type');
+		}
+	}]);
 
 	return SchemaBase;
-})(EventEmitter);
+})(_EventEmitter2.EventEmitter);
 
-module.exports = SchemaBase;
+exports['default'] = SchemaBase;
+module.exports = exports['default'];

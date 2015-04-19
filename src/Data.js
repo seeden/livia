@@ -44,6 +44,20 @@ export default class Data {
 		Object.keys(this._data).forEach(propName => {
 			var prop = this._data[propName];
 
+			if(prop.isRecordID && options.recordID) {
+				var value = prop.toJSON(options);
+				if(typeof value === 'undefined') {
+					return;
+				}
+
+				if(typeof options.recordID === 'string') {
+					propName = options.recordID
+				}
+
+				json[propName] = value;
+				return;
+			} 
+
 			if(prop instanceof VirtualType && !options.virtuals) {
 				return;
 			}
