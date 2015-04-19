@@ -236,18 +236,20 @@ var Schema = (function (_SchemaBase) {
 
 				this._props[path] = normalizedOptions;
 
-				if (!options.index) {
+				if (!options.index && !options.unique && !options.sparse) {
 					return this;
 				}
 
+				var index = options.index || {};
+
 				this.index(_defineProperty({}, path, path), {
-					unique: options.unique || options.index.unique,
-					sparse: options.sparse || options.index.sparse,
-					hash: options.hash || options.index.hash,
-					name: options.indexName || options.index.name,
-					type: options.indexType || options.index.type || options.index,
-					lucene: options.lucene || options.index.lucene,
-					metadata: options.index.metadata
+					unique: options.unique || index.unique,
+					sparse: options.sparse || index.sparse,
+					hash: options.hash || index.hash,
+					name: options.indexName || index.name,
+					engine: options.engine || index.engine,
+					type: options.indexType || index.type || index,
+					metadata: options.indexMetadata || index.metadata
 				});
 
 				return this;
