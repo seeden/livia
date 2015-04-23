@@ -100,12 +100,20 @@ export default class ArrayType extends Type {
 		return 'Array';
 	}
 
-	static getDbType(options) {
-		return 'EMBEDDEDLIST';
+	static getDbType(prop) {
+		const item = prop.item;
+
+		return item.type.isDocumentClass ? 'LINKLIST' : 'EMBEDDEDLIST';
 	}
 
-	static getPropertyConfig(propOptions) {
-		var item = propOptions.item;
+	static getPropertyConfig(prop) {
+		const item = prop.item;
+
+		if(item.type.isDocumentClass) {
+			return {
+				linkedClass: item.type.modelName
+			};
+		}
 
 		return {
 			linkedType: item.schemaType.getDbType(item.options)
@@ -115,4 +123,28 @@ export default class ArrayType extends Type {
 	static get isArray() {
 		return true;
 	}
-}
+
+	static isEmbedded(prop) {
+		const dbType = ArrayType.getDbType(prop);
+		return dbType === 'EMBEDDEDLIST';
+	}
+
+	static isAbstract(prop) {
+		const isEmbedded = this.isEmbedded(prop);
+		if(!isEmbedded) {
+			return false;
+		}
+
+		const item = prop.item;
+		return item.schemaType.isAbstract(item);
+	}
+
+	static getEmbeddedSchema(prop) {
+		if(!ArrayType.isEmbedded(prop)) {
+			return null;
+		}
+
+		const item = prop.item;
+		return item.schemaType.getEmbeddedSchema(item);
+	}	
+};

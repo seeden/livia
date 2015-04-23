@@ -2,35 +2,23 @@ import Type from './type';
 import _ from 'lodash';
 
 export default class ObjectType extends Type {
+	/*
 	constructor(data, prop, name, mainData) {
 		super(data, prop, name, mainData);
 
-		this._schema = prop.type;
+		//this._value = new this._schema.DataClass({}, this._computeClassName(data, prop), mainData);
+	}*/
 
-		this._value = new this._schema.DataClass({}, this._computeClassName(data, prop), mainData);
-	}
-
-	_computeClassName(data, prop) {
-		var schemaType = prop.schemaType;
-		var options = prop.options;
-		var className = data._className;
-		var type = schemaType.getDbType(options);
-
-		if(type === 'EMBEDDED' && schemaType.isObject) {
-			return className + 'A' + _.capitalize(this.name);
-		} else if(type === 'EMBEDDEDLIST' && schemaType.isArray && prop.item) {
-			var item = prop.item;
-			if(item.schemaType.isObject) {
-				return className + 'A' + _.capitalize(propName);
-			}
-		}
-
-		return;
+	get schema() {
+		return this.prop.type;
 	}
 
 	set(key, value) {
 		if(!this._value) {
-			this._value = new this._schema.DataClass({}, this._computeClassName(this.data, this.prop), this.mainData);
+			const className = this.data._className;
+			const abstractClassName = Type.computeAbstractClassName(className, this.name);
+
+			this._value = new this.schema.DataClass({}, abstractClassName, this.mainData);
 		}
 
 		this._value[key] = value;
@@ -63,17 +51,14 @@ export default class ObjectType extends Type {
 		}
 
 		var isModified = false;
-
 		this._value.forEach(true, function(prop) {
-			if(prop.isModified) {
-				isModified = true;
-			}
+			isModified = prop.isModified || isModified;
 		});
 
 		return isModified;
 	}	
 
-	static getDbType(options) {
+	static getDbType() {
 		return 'EMBEDDED';
 	}
 
@@ -83,5 +68,17 @@ export default class ObjectType extends Type {
 
 	static get isObject() {
 		return true;
+	}
+
+	static isEmbedded(prop) {
+		return true;
+	}	
+
+	static isAbstract(prop) {
+		return true;
+	}
+
+	static getEmbeddedSchema(prop) {
+		return prop.type;
 	}
 }

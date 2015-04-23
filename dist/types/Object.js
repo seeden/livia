@@ -6,8 +6,6 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
 var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
 Object.defineProperty(exports, '__esModule', {
@@ -23,42 +21,37 @@ var _import = require('lodash');
 var _import2 = _interopRequireWildcard(_import);
 
 var ObjectType = (function (_Type) {
-	function ObjectType(data, prop, name, mainData) {
+	function ObjectType() {
 		_classCallCheck(this, ObjectType);
 
-		_get(Object.getPrototypeOf(ObjectType.prototype), 'constructor', this).call(this, data, prop, name, mainData);
-
-		this._schema = prop.type;
-
-		this._value = new this._schema.DataClass({}, this._computeClassName(data, prop), mainData);
+		if (_Type != null) {
+			_Type.apply(this, arguments);
+		}
 	}
 
 	_inherits(ObjectType, _Type);
 
 	_createClass(ObjectType, [{
-		key: '_computeClassName',
-		value: function _computeClassName(data, prop) {
-			var schemaType = prop.schemaType;
-			var options = prop.options;
-			var className = data._className;
-			var type = schemaType.getDbType(options);
+		key: 'schema',
 
-			if (type === 'EMBEDDED' && schemaType.isObject) {
-				return className + 'A' + _import2['default'].capitalize(this.name);
-			} else if (type === 'EMBEDDEDLIST' && schemaType.isArray && prop.item) {
-				var item = prop.item;
-				if (item.schemaType.isObject) {
-					return className + 'A' + _import2['default'].capitalize(propName);
-				}
-			}
+		/*
+  constructor(data, prop, name, mainData) {
+  	super(data, prop, name, mainData);
+  
+  	//this._value = new this._schema.DataClass({}, this._computeClassName(data, prop), mainData);
+  }*/
 
-			return;
+		get: function () {
+			return this.prop.type;
 		}
 	}, {
 		key: 'set',
 		value: function set(key, value) {
 			if (!this._value) {
-				this._value = new this._schema.DataClass({}, this._computeClassName(this.data, this.prop), this.mainData);
+				var className = this.data._className;
+				var abstractClassName = _Type3['default'].computeAbstractClassName(className, this.name);
+
+				this._value = new this.schema.DataClass({}, abstractClassName, this.mainData);
 			}
 
 			this._value[key] = value;
@@ -96,18 +89,15 @@ var ObjectType = (function (_Type) {
 			}
 
 			var isModified = false;
-
 			this._value.forEach(true, function (prop) {
-				if (prop.isModified) {
-					isModified = true;
-				}
+				isModified = prop.isModified || isModified;
 			});
 
 			return isModified;
 		}
 	}], [{
 		key: 'getDbType',
-		value: function getDbType(options) {
+		value: function getDbType() {
 			return 'EMBEDDED';
 		}
 	}, {
@@ -119,6 +109,21 @@ var ObjectType = (function (_Type) {
 		key: 'isObject',
 		get: function () {
 			return true;
+		}
+	}, {
+		key: 'isEmbedded',
+		value: function isEmbedded(prop) {
+			return true;
+		}
+	}, {
+		key: 'isAbstract',
+		value: function isAbstract(prop) {
+			return true;
+		}
+	}, {
+		key: 'getEmbeddedSchema',
+		value: function getEmbeddedSchema(prop) {
+			return prop.type;
 		}
 	}]);
 

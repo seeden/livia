@@ -22,7 +22,7 @@ export default class BooleanType extends Type {
 		return 'Boolean';
 	}	
 
-	static getDbType(options) {
+	static getDbType() {
 		return 'BOOLEAN';
 	}
 }

@@ -143,13 +143,21 @@ var ArrayType = (function (_Type) {
 		}
 	}, {
 		key: 'getDbType',
-		value: function getDbType(options) {
-			return 'EMBEDDEDLIST';
+		value: function getDbType(prop) {
+			var item = prop.item;
+
+			return item.type.isDocumentClass ? 'LINKLIST' : 'EMBEDDEDLIST';
 		}
 	}, {
 		key: 'getPropertyConfig',
-		value: function getPropertyConfig(propOptions) {
-			var item = propOptions.item;
+		value: function getPropertyConfig(prop) {
+			var item = prop.item;
+
+			if (item.type.isDocumentClass) {
+				return {
+					linkedClass: item.type.modelName
+				};
+			}
 
 			return {
 				linkedType: item.schemaType.getDbType(item.options)
@@ -160,10 +168,38 @@ var ArrayType = (function (_Type) {
 		get: function () {
 			return true;
 		}
+	}, {
+		key: 'isEmbedded',
+		value: function isEmbedded(prop) {
+			var dbType = ArrayType.getDbType(prop);
+			return dbType === 'EMBEDDEDLIST';
+		}
+	}, {
+		key: 'isAbstract',
+		value: function isAbstract(prop) {
+			var isEmbedded = this.isEmbedded(prop);
+			if (!isEmbedded) {
+				return false;
+			}
+
+			var item = prop.item;
+			return item.schemaType.isAbstract(item);
+		}
+	}, {
+		key: 'getEmbeddedSchema',
+		value: function getEmbeddedSchema(prop) {
+			if (!ArrayType.isEmbedded(prop)) {
+				return null;
+			}
+
+			var item = prop.item;
+			return item.schemaType.getEmbeddedSchema(item);
+		}
 	}]);
 
 	return ArrayType;
 })(_Type3['default']);
 
 exports['default'] = ArrayType;
+;
 module.exports = exports['default'];

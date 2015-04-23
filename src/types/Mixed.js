@@ -13,7 +13,7 @@ export default class MixedType extends Type {
 		return 'Mixed';
 	}	
 
-	static getDbType(options) {
+	static getDbType() {
 		return void 0;
 	}
 }

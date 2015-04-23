@@ -13,7 +13,7 @@ export default class NumberType extends Type {
 		return 'Number';
 	}	
 
-	static getDbType(options) {
+	static getDbType() {
 		return 'DOUBLE';
 	}
 }

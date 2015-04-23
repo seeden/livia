@@ -36,7 +36,7 @@ export default class StringType extends Type {
 		return 'String';
 	}
 
-	static getDbType(options) {
+	static getDbType() {
 		return 'STRING';
 	}
 }

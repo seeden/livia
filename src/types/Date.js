@@ -24,7 +24,7 @@ export default class DateType extends Type {
 		return 'Date';
 	}		
 
-	static getDbType(options) {
+	static getDbType() {
 		return 'DATETIME';
 	}
 }

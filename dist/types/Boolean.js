@@ -53,7 +53,7 @@ var BooleanType = (function (_Type) {
 		}
 	}, {
 		key: 'getDbType',
-		value: function getDbType(options) {
+		value: function getDbType() {
 			return 'BOOLEAN';
 		}
 	}]);

@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 export default class Type {
 	constructor (data, prop, name, mainData) {
 		if(!data || !prop || !name || !mainData) {
@@ -144,7 +146,7 @@ export default class Type {
 		throw new Error('Method toString is not defined');
 	}
 
-	static getDbType(options) {
+	static getDbType() {
 		throw new Error('You need to override getter dbType');
 	}
 
@@ -155,4 +157,20 @@ export default class Type {
 	static getPropertyConfig(options) {
 		return {};
 	}
+
+	static computeAbstractClassName(className, propName) {
+		return className + 'A' + _.capitalize(propName);
+	}
+
+	static isEmbedded(prop) {
+		return false;
+	}		
+
+	static isAbstract(prop) {
+		return false;
+	}
+
+	static getEmbeddedSchema(prop) {
+		return null;
+	}	
 }
