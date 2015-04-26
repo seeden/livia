@@ -95,6 +95,20 @@ export default class Query {
 		return propertyName + ' ' + operator + ' :' + paramName;		
 	}
 
+	prepareValue(value) {
+		if(!value) {
+			return value;
+		} else if(value === true) {
+			return value;
+		} else if(value instanceof Date) {
+			return value;
+		} else if(value.toString && !_.isPlainObject(value)) {
+			return value.toString();
+		}
+
+		return value;	
+	}
+
 	queryLanguage(conditions) {
 		var items = [];
 
@@ -126,9 +140,7 @@ export default class Query {
 				return items.push(query);
 			}
 
-			if(value && value.toString && !_.isPlainObject(value)) {
-				value = value.toString();
-			}
+			value = this.prepareValue(value);
 
 			if(!_.isObject(value)) {
 				var query = this.createComparisonQuery(propertyName, '=', value);
@@ -136,11 +148,7 @@ export default class Query {
 			}
 
 			Object.keys(value).forEach(operation => {
-				var operationValue = value[operation];
-				if(operationValue && operationValue.toString && !_.isPlainObject(operationValue)) {
-					operationValue = operationValue.toString();
-				}
-
+				var operationValue = this.prepareValue(value[operation]);
 				var query = null;
 				if(ComparisonOperators[operation]) {
 					query = this.createComparisonQuery(propertyName, 

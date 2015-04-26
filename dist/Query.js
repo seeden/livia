@@ -140,6 +140,21 @@ var Query = (function () {
 			return propertyName + ' ' + operator + ' :' + paramName;
 		}
 	}, {
+		key: 'prepareValue',
+		value: function prepareValue(value) {
+			if (!value) {
+				return value;
+			} else if (value === true) {
+				return value;
+			} else if (value instanceof Date) {
+				return value;
+			} else if (value.toString && !_import2['default'].isPlainObject(value)) {
+				return value.toString();
+			}
+
+			return value;
+		}
+	}, {
 		key: 'queryLanguage',
 		value: function queryLanguage(conditions) {
 			var _this = this;
@@ -174,9 +189,7 @@ var Query = (function () {
 					return items.push(query);
 				}
 
-				if (value && value.toString && !_import2['default'].isPlainObject(value)) {
-					value = value.toString();
-				}
+				value = _this.prepareValue(value);
 
 				if (!_import2['default'].isObject(value)) {
 					var query = _this.createComparisonQuery(propertyName, '=', value);
@@ -184,11 +197,7 @@ var Query = (function () {
 				}
 
 				Object.keys(value).forEach(function (operation) {
-					var operationValue = value[operation];
-					if (operationValue && operationValue.toString && !_import2['default'].isPlainObject(operationValue)) {
-						operationValue = operationValue.toString();
-					}
-
+					var operationValue = _this.prepareValue(value[operation]);
 					var query = null;
 					if (_ComparisonOperators2['default'][operation]) {
 						query = _this.createComparisonQuery(propertyName, _ComparisonOperators2['default'][operation], operationValue);
