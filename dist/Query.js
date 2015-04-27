@@ -42,6 +42,10 @@ var _ComparisonOperators = require('./constants/ComparisonOperators');
 
 var _ComparisonOperators2 = _interopRequireWildcard(_ComparisonOperators);
 
+var _Type = require('./types/Type');
+
+var _Type2 = _interopRequireWildcard(_Type);
+
 var log = _debug2['default']('orientose:query');
 
 var Operation = {
@@ -142,14 +146,16 @@ var Query = (function () {
 	}, {
 		key: 'prepareValue',
 		value: function prepareValue(value) {
+			var _this = this;
+
 			if (!value) {
 				return value;
-			} else if (value === true) {
-				return value;
-			} else if (value instanceof Date) {
-				return value;
-			} else if (value.toString && !_import2['default'].isPlainObject(value)) {
-				return value.toString();
+			} else if (value instanceof _Document2['default']) {
+				return value.toObject();
+			} else if (_import2['default'].isArray(value)) {
+				return value.map(function (item) {
+					return _this.prepareValue(item);
+				});
 			}
 
 			return value;
@@ -157,7 +163,7 @@ var Query = (function () {
 	}, {
 		key: 'queryLanguage',
 		value: function queryLanguage(conditions) {
-			var _this = this;
+			var _this2 = this;
 
 			var items = [];
 
@@ -171,7 +177,7 @@ var Query = (function () {
 					var subQueries = [];
 
 					value.forEach(function (conditions) {
-						var query = _this.queryLanguage(conditions);
+						var query = _this2.queryLanguage(conditions);
 						if (!query) {
 							return;
 						}
@@ -189,18 +195,18 @@ var Query = (function () {
 					return items.push(query);
 				}
 
-				value = _this.prepareValue(value);
+				value = _this2.prepareValue(value);
 
-				if (!_import2['default'].isObject(value)) {
-					var query = _this.createComparisonQuery(propertyName, '=', value);
+				if (!_import2['default'].isPlainObject(value)) {
+					var query = _this2.createComparisonQuery(propertyName, '=', value);
 					return items.push(query);
 				}
 
 				Object.keys(value).forEach(function (operation) {
-					var operationValue = _this.prepareValue(value[operation]);
+					var operationValue = _this2.prepareValue(value[operation]);
 					var query = null;
 					if (_ComparisonOperators2['default'][operation]) {
-						query = _this.createComparisonQuery(propertyName, _ComparisonOperators2['default'][operation], operationValue);
+						query = _this2.createComparisonQuery(propertyName, _ComparisonOperators2['default'][operation], operationValue);
 					}
 
 					if (!query) {

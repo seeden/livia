@@ -75,17 +75,17 @@ var Model = (function (_ModelBase) {
 
 		this._DocumentClass = _Document2['default'].createClass(this);
 
-		if (options.ensure !== false) {
-			return this.ensureClass(function (err, model) {
-				if (err) {
-					log('Model ' + _this.name + ': ' + err.message);
-				}
-
-				callback(err, model);
-			});
+		if (options.ensure === false) {
+			return callback(null, this);
 		}
 
-		callback(null, this);
+		this.ensureClass(function (err, model) {
+			if (err) {
+				log('Model ' + _this.name + ': ' + err.message);
+			}
+
+			callback(err, model);
+		});
 	}
 
 	_inherits(Model, _ModelBase);

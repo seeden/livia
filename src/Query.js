@@ -6,6 +6,7 @@ import GraphSchema from './schemas/Graph';
 import EdgeSchema from './schemas/Edge';
 import LogicOperators from './constants/LogicOperators';
 import ComparisonOperators from './constants/ComparisonOperators';
+import Type from './types/Type';
 
 const log = debug('orientose:query');
 
@@ -98,12 +99,10 @@ export default class Query {
 	prepareValue(value) {
 		if(!value) {
 			return value;
-		} else if(value === true) {
-			return value;
-		} else if(value instanceof Date) {
-			return value;
-		} else if(value.toString && !_.isPlainObject(value)) {
-			return value.toString();
+		} else if(value instanceof Document) {
+			return value.toObject();
+		} else if(_.isArray(value)) {
+			return value.map(item => this.prepareValue(item));
 		}
 
 		return value;	
@@ -142,7 +141,7 @@ export default class Query {
 
 			value = this.prepareValue(value);
 
-			if(!_.isObject(value)) {
+			if(!_.isPlainObject(value)) {
 				var query = this.createComparisonQuery(propertyName, '=', value);
 				return items.push(query);
 			}

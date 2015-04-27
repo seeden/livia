@@ -1,8 +1,7 @@
 import should from "should";
-import Orientose from '../src/orientose';
-import Schema from '../src/schemas';
+import Schema from '../src/schemas/Schema';
 import mongoose, {Schema as SchemaMongoose} from 'mongoose';
-import {waterfall} from "async";
+import { waterfall } from "async";
 import extend from "node.extend";
 
 
@@ -118,7 +117,7 @@ describe('Mongoose compatibility', function() {
 		should.deepEqual(city.options, basicSchema.address.city);
 	}	
 
-	it('should be able to create simple orientose schema', function() {
+	it('should be able to create simple livia schema', function() {
 		schema = new Schema(extend(true, {}, basicSchema, {
 			sub: [new Schema(subSchema)]
 		}));

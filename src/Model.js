@@ -37,17 +37,17 @@ export default class Model extends ModelBase {
 
 		this._DocumentClass = Document.createClass(this);
 
-		if(options.ensure !== false) {
-			return this.ensureClass((err, model) => {
-				if(err) {
-					log('Model ' + this.name + ': ' + err.message);
-				}
+		if(options.ensure === false) {
+			return callback(null, this);
+		}
 
-				callback(err, model);
-			});	
-		} 
+		this.ensureClass((err, model) => {
+			if(err) {
+				log('Model ' + this.name + ': ' + err.message);
+			}
 
-		callback(null, this);
+			callback(err, model);
+		});	
 	}
 
 	get DocumentClass() {
