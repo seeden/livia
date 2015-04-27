@@ -6,5 +6,8 @@ export default {
 	'$gt': '>',
 	'$gte': '>=',
 	'$ne': '<>',
-	'$eq': '='
+	'$eq': '=',
+
+	'$lucene': 'LUCENE',
+	'$contains': 'CONTAINS'
 };

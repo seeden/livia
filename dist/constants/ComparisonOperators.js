@@ -11,6 +11,9 @@ exports['default'] = {
 	$gt: '>',
 	$gte: '>=',
 	$ne: '<>',
-	$eq: '='
+	$eq: '=',
+
+	$lucene: 'LUCENE',
+	$contains: 'CONTAINS'
 };
 module.exports = exports['default'];

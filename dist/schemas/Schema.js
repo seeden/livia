@@ -132,12 +132,18 @@ var Schema = (function (_SchemaBase) {
 				properties = _defineProperty({}, properties, 1);
 			}
 
+			var propNames = Object.keys(properties);
+			if (!propNames.length) {
+				throw new Error('You need to select a properties');
+			}
+
+			var firstProp = properties[propNames[0]];
 			var name = options.name || this._indexName(properties);
 			var type = options.type || _IndexType2['default'].BASIC;
 
 			if (type === true) {
 				type = _IndexType2['default'].BASIC;
-			} else if (type === 'text' || type === 'fulltext' || options.text) {
+			} else if (type === 'text' || type === 'fulltext' || options.text || firstProp === 'text') {
 				type = _IndexType2['default'].FULLTEXT;
 			} else if (type === '2dsphere') {
 				type = _IndexType2['default'].SPATIAL;

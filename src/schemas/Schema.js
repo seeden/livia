@@ -72,12 +72,18 @@ export default class Schema extends SchemaBase {
 			properties = { [properties]: 1 };
 		}
 
+		var propNames = Object.keys(properties);
+		if(!propNames.length) {
+			throw new Error('You need to select a properties');
+		}
+
+		var firstProp = properties[propNames[0]];
 		var name = options.name || this._indexName(properties);
 		var type = options.type || IndexType.BASIC;
 
 		if(type === true) {
 			type = IndexType.BASIC;
-		} else if(type === 'text' || type === 'fulltext' || options.text) {
+		} else if(type === 'text' || type === 'fulltext' || options.text || firstProp === 'text') {
 			type = IndexType.FULLTEXT;
 		} else if(type === '2dsphere') {
 			type = IndexType.SPATIAL;
