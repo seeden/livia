@@ -46,7 +46,7 @@ var DateType = (function (_Type) {
 		key: 'toObject',
 		value: function toObject(options) {
 			var value = this.value;
-			return value && value.getTime ? value.getTime() : value.value;
+			return value && value.getTime ? value.getTime() : value;
 		}
 	}], [{
 		key: 'toString',
