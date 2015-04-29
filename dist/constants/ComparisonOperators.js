@@ -14,6 +14,9 @@ exports['default'] = {
 	$eq: '=',
 
 	$lucene: 'LUCENE',
-	$contains: 'CONTAINS'
+	$contains: 'CONTAINS',
+	$within: 'WITHIN',
+	$near: 'NEAR',
+	$intersect: 'INTERSECT'
 };
 module.exports = exports['default'];

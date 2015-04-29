@@ -9,5 +9,8 @@ export default {
 	'$eq': '=',
 
 	'$lucene': 'LUCENE',
-	'$contains': 'CONTAINS'
+	'$contains': 'CONTAINS',
+	'$within': 'WITHIN',
+	'$near': 'NEAR',
+	'$intersect': 'INTERSECT'
 };
