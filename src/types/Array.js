@@ -1,4 +1,4 @@
-import Type from './type';
+import Type from './Type';
 import Schema from '../schemas/Schema';
 
 export default class ArrayType extends Type {

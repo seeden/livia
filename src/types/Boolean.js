@@ -1,4 +1,4 @@
-import Type from './type';
+import Type from './Type';
 
 export default class BooleanType extends Type {
 	_serialize(value) {

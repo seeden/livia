@@ -1,4 +1,4 @@
-import Type from './type';
+import Type from './Type';
 
 export default class Virtual extends Type {
 	_preSerialize(value) {

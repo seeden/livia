@@ -88,11 +88,29 @@ var Document = (function (_EventEmitter) {
 	}, {
 		key: 'toJSON',
 		value: function toJSON(options) {
+			options = options || {};
+
+			if (typeof options.transformDocument === 'function') {
+				var value = options.transformDocument(this);
+				if (typeof value !== 'undefined') {
+					return value;
+				}
+			}
+
 			return this._data.toJSON(options);
 		}
 	}, {
 		key: 'toObject',
 		value: function toObject(options) {
+			options = options || {};
+
+			if (typeof options.transformDocument === 'function') {
+				var value = options.transformDocument(this);
+				if (typeof value !== 'undefined') {
+					return value;
+				}
+			}
+
 			return this._data.toObject(options);
 		}
 	}, {
@@ -129,8 +147,6 @@ var Document = (function (_EventEmitter) {
 							create: true
 						});
 
-						console.log(properties);
-
 						_this._model.create(properties).from(_this._from).to(_this._to).options(options).exec(function (error, user) {
 							if (error) {
 								return callback(error);
@@ -151,8 +167,6 @@ var Document = (function (_EventEmitter) {
 						modified: true,
 						update: true
 					});
-
-					console.log(properties);
 
 					_this._model.update(_this, properties, options).exec(function (err, total) {
 						if (err) {

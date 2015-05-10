@@ -1,4 +1,4 @@
-import Type from './type';
+import Type from './Type';
 
 export default class NumberType extends Type {
 	_serialize(value) {

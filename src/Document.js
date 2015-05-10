@@ -55,10 +55,28 @@ export default class Document extends EventEmitter {
 	}
 
 	toJSON(options) {
+		options = options || {};
+
+		if(typeof options.transformDocument === 'function') {
+			const value = options.transformDocument(this);
+			if(typeof value !== 'undefined') {
+				return value;
+			}
+		}
+
 		return this._data.toJSON(options);
 	}
 
 	toObject(options) {
+		options = options || {};
+
+		if(typeof options.transformDocument === 'function') {
+			const value = options.transformDocument(this);
+			if(typeof value !== 'undefined') {
+				return value;
+			}
+		}
+
 		return this._data.toObject(options);
 	}
 
@@ -91,8 +109,6 @@ export default class Document extends EventEmitter {
 						create: true
 					});
 
-					console.log(properties);
-
 					this._model.create(properties)
 						.from(this._from)
 						.to(this._to)
@@ -117,9 +133,6 @@ export default class Document extends EventEmitter {
 					modified: true,
 					update: true
 				});
-
-				console.log(properties);
-
 
 				this._model.update(this, properties, options).exec((err, total) => {
 					if(err) {

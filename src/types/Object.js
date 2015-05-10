@@ -1,4 +1,4 @@
-import Type from './type';
+import Type from './Type';
 import _ from 'lodash';
 
 export default class ObjectType extends Type {

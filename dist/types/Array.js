@@ -14,7 +14,7 @@ Object.defineProperty(exports, '__esModule', {
 	value: true
 });
 
-var _Type2 = require('./type');
+var _Type2 = require('./Type');
 
 var _Type3 = _interopRequireWildcard(_Type2);
 
