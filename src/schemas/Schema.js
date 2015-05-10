@@ -129,15 +129,15 @@ export default class Schema extends SchemaBase {
 	}	
 
 	getPath(path, stopOnArray) {
-		var pos = path.indexOf('.');
+		const pos = path.indexOf('.');
 		if(pos === -1) {
 			return this._props[path];
 		}
 
-		var subPath = path.substr(pos + 1);
-		var propName = path.substr(0, pos);
+		const subPath = path.substr(pos + 1);
+		const propName = path.substr(0, pos);
 
-		var prop = this._props[propName];
+		const prop = this._props[propName];
 		if(!prop) {
 			return prop;
 		}
@@ -159,7 +159,7 @@ export default class Schema extends SchemaBase {
 
 		options = options || {};
 		
-		var pos = path.indexOf('.');
+		const pos = path.indexOf('.');
 		if(pos === -1) {
 			try {
 				var normalizedOptions = this.normalizeOptions(options, path);
@@ -178,7 +178,7 @@ export default class Schema extends SchemaBase {
 				return this;
 			}
 
-			var index = options.index || {};
+			const index = options.index || {};
 
 			this.index({
 				[path]: path
@@ -195,10 +195,10 @@ export default class Schema extends SchemaBase {
 			return this;
 		}
 
-		var subPath = path.substr(pos + 1);
-		var propName = path.substr(0, pos);
+		const subPath = path.substr(pos + 1);
+		const propName = path.substr(0, pos);
 
-		var prop = this._props[propName];
+		const prop = this._props[propName];
 		if(prop && prop.type instanceof Schema) {
 			prop.type.setPath(subPath, options);
 		}
