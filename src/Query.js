@@ -6,6 +6,7 @@ import GraphSchema from './schemas/Graph';
 import EdgeSchema from './schemas/Edge';
 import LogicOperators from './constants/LogicOperators';
 import ComparisonOperators from './constants/ComparisonOperators';
+import ChildrenOperators from './constants/ChildrenOperators';
 import Type from './types/Type';
 
 const log = debug('orientose:query');
@@ -64,6 +65,10 @@ export default class Query {
 		return this.model.schema;
 	}
 
+	get native() {
+		throw new Error('Please override native method');
+	}
+
 	paramify (key) {
   		return key.replace(/([^A-Za-z0-9])/g, '');
 	}
@@ -108,7 +113,7 @@ export default class Query {
 		return value;	
 	}
 
-	queryLanguage(conditions) {
+	queryLanguage(conditions, parentPath) {
 		var items = [];
 
 		Object.keys(conditions).forEach(propertyName => {
@@ -121,7 +126,7 @@ export default class Query {
 				var subQueries = [];
 				
 				value.forEach(conditions => {
-					var query = this.queryLanguage(conditions);
+					var query = this.queryLanguage(conditions, parentPath);
 					if(!query) {
 						return;
 					}
@@ -149,7 +154,19 @@ export default class Query {
 			Object.keys(value).forEach(operation => {
 				var operationValue = this.prepareValue(value[operation]);
 				var query = null;
-				if(ComparisonOperators[operation]) {
+
+				if(ChildrenOperators[operation]) {
+					const currentPath = parentPath 
+						? parentPath + '.' + propertyName 
+						: propertyName;
+					const subOperation = ChildrenOperators[operation];
+					const subQuery = this.queryLanguage(operationValue, currentPath);
+					if(!subQuery) {
+						return;
+					}
+
+					query = `propertyName ${subOperation} (${subQuery})`;
+				} else if(ComparisonOperators[operation]) {
 					query = this.createComparisonQuery(propertyName, 
 						ComparisonOperators[operation], operationValue);
 				}
@@ -159,7 +176,6 @@ export default class Query {
 				}
 
 				items.push(query);
-				
 			});
 		});
 

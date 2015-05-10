@@ -7,6 +7,10 @@ export default class Adapter {
 		return this._options;
 	}
 
+	get native() {
+		throw new Error('Please override native getter');
+	}	
+
 	connect(callback) {
 		throw new Error('Please override connect method');
 	}

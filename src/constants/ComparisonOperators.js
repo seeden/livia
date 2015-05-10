@@ -1,16 +1,24 @@
 export default {
-	'$in':  'IN',
-	'$nin': 'NOT IN', 
-	'$lt': '<',
-	'$lte': '<=',
-	'$gt': '>',
-	'$gte': '>=',
-	'$ne': '<>',
-	'$eq': '=',
+	$in  :  'IN',
+	$nin : 'NOT IN', 
+	$lt  : '<',
+	$lte : '<=',
+	$gt  : '>',
+	$gte : '>=',
+	$ne  : '<>',
+	$eq  : '=',
 
-	'$lucene': 'LUCENE',
-	'$contains': 'CONTAINS',
-	'$within': 'WITHIN',
-	'$near': 'NEAR',
-	'$intersect': 'INTERSECT'
+//	$contains  : 'CONTAINS',
+	$within    : 'WITHIN',
+	$near      : 'NEAR',
+	$intersect : 'INTERSECT',
+
+	$lucene        : 'LUCENE',
+	$containsKey   : 'CONTAINSKEY',
+	$containsValue : 'CONTAINSVALUE',
+	$containsText  : 'CONTAINSTEXT',
+
+	$is : 'IS',
+	$instanceof : 'INSTANCEOF',
+	$like : 'LIKE'
 };

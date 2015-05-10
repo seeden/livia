@@ -14,6 +14,10 @@ export default class Connection extends EventEmitter {
 		adapter.connect(callback);
 	}
 
+	get native() {
+		return this.adapter.native;
+	}
+
 	get adapter () {
 		return this._adapter;
 	}

@@ -1,4 +1,4 @@
 export default {
-	'$or': 'OR',
-	'$and': 'AND'
+	$or  : 'OR',
+	$and : 'AND'
 };

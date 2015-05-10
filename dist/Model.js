@@ -106,9 +106,9 @@ var Model = (function (_ModelBase) {
 			return this._connection;
 		}
 	}, {
-		key: 'db',
+		key: 'native',
 		get: function () {
-			return this.connection.db;
+			return this.connection.native;
 		}
 	}, {
 		key: 'model',

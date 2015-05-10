@@ -13,10 +13,18 @@ exports['default'] = {
 	$ne: '<>',
 	$eq: '=',
 
-	$lucene: 'LUCENE',
-	$contains: 'CONTAINS',
+	//	$contains  : 'CONTAINS',
 	$within: 'WITHIN',
 	$near: 'NEAR',
-	$intersect: 'INTERSECT'
+	$intersect: 'INTERSECT',
+
+	$lucene: 'LUCENE',
+	$containsKey: 'CONTAINSKEY',
+	$containsValue: 'CONTAINSVALUE',
+	$containsText: 'CONTAINSTEXT',
+
+	$is: 'IS',
+	$instanceof: 'INSTANCEOF',
+	$like: 'LIKE'
 };
 module.exports = exports['default'];

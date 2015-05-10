@@ -21,6 +21,11 @@ var Adapter = (function () {
 			return this._options;
 		}
 	}, {
+		key: 'native',
+		get: function () {
+			throw new Error('Please override native getter');
+		}
+	}, {
 		key: 'connect',
 		value: function connect(callback) {
 			throw new Error('Please override connect method');

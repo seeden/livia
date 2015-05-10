@@ -41,6 +41,11 @@ var Connection = (function (_EventEmitter) {
 	_inherits(Connection, _EventEmitter);
 
 	_createClass(Connection, [{
+		key: 'native',
+		get: function () {
+			return this.adapter.native;
+		}
+	}, {
 		key: 'adapter',
 		get: function () {
 			return this._adapter;

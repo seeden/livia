@@ -1,4 +1,5 @@
 import should from "should";
+import Query from '../src/Query';
 import Schema from '../src/schemas/Schema';
 import mongoose, {Schema as SchemaMongoose} from 'mongoose';
 import { waterfall } from "async";
@@ -163,5 +164,25 @@ describe('Mongoose compatibility', function() {
 
 		validateChangedSchema(schemaMongoose);
 		validateChangedSchema(schema);
-	});			
+	});				
+});	
+
+describe('Query', function() {
+	var model = {
+		name: 'FictiveModel'
+	};
+
+	it('should be able to use contains correctly', function() {
+		const q = new Query(model);
+		q.findOne({
+			providers: {
+				$contains: {
+					nameUID: 'facebook_123456'
+				}
+			}
+		});
+
+		q._operators[0].query.should.equal('propertyName CONTAINS (nameUID = :nameUID_op_1)');
+	});	
+			
 });	

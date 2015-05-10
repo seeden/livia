@@ -42,6 +42,10 @@ var _ComparisonOperators = require('./constants/ComparisonOperators');
 
 var _ComparisonOperators2 = _interopRequireWildcard(_ComparisonOperators);
 
+var _ChildrenOperators = require('./constants/ChildrenOperators');
+
+var _ChildrenOperators2 = _interopRequireWildcard(_ChildrenOperators);
+
 var _Type = require('./types/Type');
 
 var _Type2 = _interopRequireWildcard(_Type);
@@ -107,6 +111,11 @@ var Query = (function () {
 			return this.model.schema;
 		}
 	}, {
+		key: 'native',
+		get: function () {
+			throw new Error('Please override native method');
+		}
+	}, {
 		key: 'paramify',
 		value: function paramify(key) {
 			return key.replace(/([^A-Za-z0-9])/g, '');
@@ -162,7 +171,7 @@ var Query = (function () {
 		}
 	}, {
 		key: 'queryLanguage',
-		value: function queryLanguage(conditions) {
+		value: function queryLanguage(conditions, parentPath) {
 			var _this2 = this;
 
 			var items = [];
@@ -177,7 +186,7 @@ var Query = (function () {
 					var subQueries = [];
 
 					value.forEach(function (conditions) {
-						var query = _this2.queryLanguage(conditions);
+						var query = _this2.queryLanguage(conditions, parentPath);
 						if (!query) {
 							return;
 						}
@@ -205,7 +214,17 @@ var Query = (function () {
 				Object.keys(value).forEach(function (operation) {
 					var operationValue = _this2.prepareValue(value[operation]);
 					var query = null;
-					if (_ComparisonOperators2['default'][operation]) {
+
+					if (_ChildrenOperators2['default'][operation]) {
+						var currentPath = parentPath ? parentPath + '.' + propertyName : propertyName;
+						var subOperation = _ChildrenOperators2['default'][operation];
+						var subQuery = _this2.queryLanguage(operationValue, currentPath);
+						if (!subQuery) {
+							return;
+						}
+
+						query = 'propertyName ' + subOperation + ' (' + subQuery + ')';
+					} else if (_ComparisonOperators2['default'][operation]) {
 						query = _this2.createComparisonQuery(propertyName, _ComparisonOperators2['default'][operation], operationValue);
 					}
 

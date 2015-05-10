@@ -62,8 +62,8 @@ export default class Model extends ModelBase {
 		return this._connection;
 	}
 
-	get db() {
-		return this.connection.db;
+	get native() {
+		return this.connection.native;
 	}
 
 	model(name) {
