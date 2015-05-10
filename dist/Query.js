@@ -223,7 +223,7 @@ var Query = (function () {
 							return;
 						}
 
-						query = 'propertyName ' + subOperation + ' (' + subQuery + ')';
+						query = '' + propertyName + ' ' + subOperation + ' (' + subQuery + ')';
 					} else if (_ComparisonOperators2['default'][operation]) {
 						query = _this2.createComparisonQuery(propertyName, _ComparisonOperators2['default'][operation], operationValue);
 					}

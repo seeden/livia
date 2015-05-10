@@ -165,7 +165,7 @@ export default class Query {
 						return;
 					}
 
-					query = `propertyName ${subOperation} (${subQuery})`;
+					query = `${propertyName} ${subOperation} (${subQuery})`;
 				} else if(ComparisonOperators[operation]) {
 					query = this.createComparisonQuery(propertyName, 
 						ComparisonOperators[operation], operationValue);
