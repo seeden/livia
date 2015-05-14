@@ -41,6 +41,11 @@ var Document = (function (_EventEmitter) {
 	_inherits(Document, _EventEmitter);
 
 	_createClass(Document, [{
+		key: 'currentModel',
+		get: function () {
+			return this._model;
+		}
+	}, {
 		key: 'from',
 		value: function from(value) {
 			this._from = value;

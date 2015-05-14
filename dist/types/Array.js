@@ -22,6 +22,28 @@ var _Schema = require('../schemas/Schema');
 
 var _Schema2 = _interopRequireWildcard(_Schema);
 
+/*
+TODO decide about prons and cons
+class ArrayExt extends Array {
+	constructor(base) {
+		super();
+
+		this._base = base;
+	}
+
+	get base() {
+		return this._base;
+	}
+
+	push(value) {
+		super.push(this.base.createItem(value));
+	}
+
+	get isModified() {
+		return this.base.isModified;
+	}
+}*/
+
 var ArrayType = (function (_Type) {
 	function ArrayType(data, prop, name, mainData) {
 		_classCallCheck(this, ArrayType);
@@ -39,8 +61,8 @@ var ArrayType = (function (_Type) {
 	_inherits(ArrayType, _Type);
 
 	_createClass(ArrayType, [{
-		key: '_createItem',
-		value: function _createItem(value) {
+		key: 'createItem',
+		value: function createItem(value) {
 			var item = new this.prop.item.schemaType(this.data, this.prop.item, this.name, this.mainData);
 			item.value = value;
 
@@ -70,20 +92,43 @@ var ArrayType = (function (_Type) {
 			return this;
 		}
 	}, {
+		key: 'length',
+		get: function () {
+			this._value.length;
+		}
+	}, {
 		key: 'set',
 		value: function set(index, value) {
-			return this._value[index] = this._createItem(value);
+			return this._value[index] = this.createItem(value);
+		}
+	}, {
+		key: 'get',
+		value: function get(index) {
+			var item = this._value[index];
+			return item ? item.value : item;
 		}
 	}, {
 		key: 'push',
 		value: function push(value) {
-			return this._value.push(this._createItem(value));
+			return this._value.push(this.createItem(value));
 		}
 	}, {
 		key: 'pop',
 		value: function pop() {
 			var item = this._value.pop();
 			return item ? item.value : item;
+		}
+	}, {
+		key: 'splice',
+		value: function splice() {
+			for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+				args[_key] = arguments[_key];
+			}
+
+			var value = this._value;
+			value.splice.apply(value, args).map(function (item) {
+				return item.value;
+			});
 		}
 	}, {
 		key: 'forEach',
@@ -104,6 +149,8 @@ var ArrayType = (function (_Type) {
 		value: function filter(fn) {
 			return this._value.filter(function (item) {
 				return fn(item.value);
+			}).map(function (item) {
+				return item.value;
 			});
 		}
 	}, {

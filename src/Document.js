@@ -17,6 +17,10 @@ export default class Document extends EventEmitter {
 		this._isNew = true;
 	}
 
+	get currentModel() {
+		return this._model;
+	}
+
 	from(value) {
 		this._from = value;
 		return this;

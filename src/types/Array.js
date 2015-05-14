@@ -1,6 +1,28 @@
 import Type from './Type';
 import Schema from '../schemas/Schema';
 
+/*
+TODO decide about prons and cons
+class ArrayExt extends Array {
+	constructor(base) {
+		super();
+
+		this._base = base;
+	}
+
+	get base() {
+		return this._base;
+	}
+
+	push(value) {
+		super.push(this.base.createItem(value));
+	}
+
+	get isModified() {
+		return this.base.isModified;
+	}
+}*/
+
 export default class ArrayType extends Type {
 	constructor(data, prop, name, mainData) {
 		super(data, prop, name, mainData);
@@ -13,7 +35,7 @@ export default class ArrayType extends Type {
 		this._value = [];
 	}
 
-	_createItem(value) {
+	createItem(value) {
 		var item = new this.prop.item.schemaType(this.data, this.prop.item, this.name, this.mainData);
 		item.value = value;
 
@@ -38,18 +60,34 @@ export default class ArrayType extends Type {
 		return this;
 	}
 
-	set(index, value) {
-		return this._value[index] = this._createItem(value);
+	get length() {
+		this._value.length;
 	}
 
+	set(index, value) {
+		return this._value[index] = this.createItem(value);
+	}
+
+	get(index) {
+		const item = this._value[index];
+		return item ? item.value : item;
+	}	
+
 	push(value) {
-		return this._value.push(this._createItem(value));
+		return this._value.push(this.createItem(value));
 	}
 
 	pop() {
-		var item = this._value.pop();
+		const item = this._value.pop();
 		return item ? item.value : item;
 	}
+
+	splice(...args) {
+		const value = this._value;
+		value.splice.apply(value, args).map(function(item) {
+			return item.value;
+		});
+	}	
 
 	forEach(fn) {
 		return this._value.forEach(function(item) {
@@ -66,6 +104,8 @@ export default class ArrayType extends Type {
 	filter(fn) {
 		return this._value.filter(function(item) {
 			return fn(item.value);
+		}).map(function(item) {
+			return item.value;
 		});
 	}	
 
