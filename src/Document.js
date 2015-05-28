@@ -61,11 +61,16 @@ export default class Document extends EventEmitter {
 	toJSON(options) {
 		options = options || {};
 
-		if(typeof options.transformDocument === 'function') {
-			const value = options.transformDocument(this);
+		if(typeof options.transform === 'function') {
+			const value = options.transform(this);
 			if(typeof value !== 'undefined') {
 				return value;
 			}
+		}
+
+		if(typeof options.transformChild === 'function') {
+			options.transform = options.transformChild;
+			delete options.transformChild;
 		}
 
 		return this._data.toJSON(options);
@@ -74,11 +79,16 @@ export default class Document extends EventEmitter {
 	toObject(options) {
 		options = options || {};
 
-		if(typeof options.transformDocument === 'function') {
-			const value = options.transformDocument(this);
+		if(typeof options.transform === 'function') {
+			const value = options.transform(this);
 			if(typeof value !== 'undefined') {
 				return value;
 			}
+		}
+
+		if(typeof options.transformChild === 'function') {
+			options.transform = options.transformChild;
+			delete options.transformChild;
 		}
 
 		return this._data.toObject(options);

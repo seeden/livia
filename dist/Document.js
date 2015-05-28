@@ -95,11 +95,16 @@ var Document = (function (_EventEmitter) {
 		value: function toJSON(options) {
 			options = options || {};
 
-			if (typeof options.transformDocument === 'function') {
-				var value = options.transformDocument(this);
+			if (typeof options.transform === 'function') {
+				var value = options.transform(this);
 				if (typeof value !== 'undefined') {
 					return value;
 				}
+			}
+
+			if (typeof options.transformChild === 'function') {
+				options.transform = options.transformChild;
+				delete options.transformChild;
 			}
 
 			return this._data.toJSON(options);
@@ -109,11 +114,16 @@ var Document = (function (_EventEmitter) {
 		value: function toObject(options) {
 			options = options || {};
 
-			if (typeof options.transformDocument === 'function') {
-				var value = options.transformDocument(this);
+			if (typeof options.transform === 'function') {
+				var value = options.transform(this);
 				if (typeof value !== 'undefined') {
 					return value;
 				}
+			}
+
+			if (typeof options.transformChild === 'function') {
+				options.transform = options.transformChild;
+				delete options.transformChild;
 			}
 
 			return this._data.toObject(options);
