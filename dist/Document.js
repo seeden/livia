@@ -222,7 +222,7 @@ var Document = (function (_EventEmitter) {
 	}, {
 		key: 'findById',
 		value: function findById(id, callback) {
-			this.findOne(id, callback);
+			return this.findOne(id, callback);
 		}
 	}, {
 		key: 'findOne',

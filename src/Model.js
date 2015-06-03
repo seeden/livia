@@ -9,7 +9,7 @@ import Document from './Document';
 const log = debug('orientose:model');
 
 export default class Model extends ModelBase {
-	constructor (name, schema, connection, options, callback) {
+	constructor(name, schema, connection, options, callback) {
 		if(!schema instanceof Schema) {
 			throw new Error('This is not a schema');
 		}
@@ -74,7 +74,7 @@ export default class Model extends ModelBase {
 		this.connection.ensureClass(this, callback);
 	}
 
-	createDocument (properties, className) {
+	createDocument(properties, className) {
 		var model = this.DocumentClass;
 		if(className) {
 			model = this.model(className);
@@ -91,11 +91,11 @@ export default class Model extends ModelBase {
 		return this.connection.query(this, options);
 	}
 
-	create (doc, callback) {
+	create(doc, callback) {
 		return this.query().create(doc, callback);
 	}
 
-	update (conditions, doc, options, callback) {
+	update(conditions, doc, options, callback) {
 		if(typeof options === 'function') {
 			callback = options;
 			options = {};
@@ -106,11 +106,11 @@ export default class Model extends ModelBase {
 		return this.query().update(conditions, doc, options, callback);
 	}
 
-	find (conditions, callback) {
+	find(conditions, callback) {
 		return this.query().find(conditions, callback);
 	}
 
-	findOne (conditions, callback) {
+	findOne(conditions, callback) {
 		return this.query().findOne(conditions, callback);
 	}	
 
@@ -127,7 +127,7 @@ export default class Model extends ModelBase {
 		return this.query().update(conditions, doc, options, callback);
 	}
 
-	remove (conditions, callback) {
+	remove(conditions, callback) {
 		return this.query().remove(conditions, callback);
 	}
 }

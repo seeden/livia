@@ -182,7 +182,7 @@ export default class Document extends EventEmitter {
 	}
 
 	static findById(id, callback) {
-		this.findOne(id, callback);
+		return this.findOne(id, callback);
 	}
 
 	static findOne(conditions, callback) {
