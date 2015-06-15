@@ -6,7 +6,7 @@ export default class ObjectType extends Type {
 	constructor(data, prop, name, mainData) {
 		super(data, prop, name, mainData);
 
-		//this._value = new this._schema.DataClass({}, this._computeClassName(data, prop), mainData);
+		//this._value = new this._schema.DataClass(this, {}, this._computeClassName(data, prop), mainData);
 	}*/
 
 	get schema() {
@@ -18,7 +18,7 @@ export default class ObjectType extends Type {
 			const className = this.data._className;
 			const abstractClassName = Type.computeAbstractClassName(className, this.name);
 
-			this._value = new this.schema.DataClass({}, abstractClassName, this.mainData);
+			this._value = new this.schema.DataClass(this, {}, abstractClassName, this.mainData);
 		}
 
 		this._value[key] = value;

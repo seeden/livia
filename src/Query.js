@@ -34,27 +34,30 @@ export default class Query {
 
 		this._paramIndex = 1;
 
-		this._model     = model;
-		this._target    = model.name;
+		this._model      = model;
+		this._target     = model.name;
 
-		this._first     = false;
-		this._scalar    = false;
+		this._first      = false;
+		this._scalar     = false;
+		this._scalarCast = null;
 
-		this._limit     = null;
-		this._skip      = null;
-		this._sort      = null;
-		this._fetchPlan = null;
-		this._return    = null;
+		this._select     = null;
 
-		this._from      = null;
-		this._to        = null;
+		this._limit      = null;
+		this._skip       = null;
+		this._sort       = null;
+		this._fetchPlan  = null;
+		this._return     = null;
 
-		this._operation = null;
+		this._from       = null;
+		this._to         = null;
 
-		this._params    = {};
+		this._operation  = null;
 
-		this._operators = [];
-		this._set    = null;
+		this._params     = {};
+
+		this._operators  = [];
+		this._set        = null;
 	}
 
 	get model() {
@@ -268,8 +271,15 @@ export default class Query {
 		return this;
 	}
 
-	scalar(useScalar) {
+	scalar(useScalar, castFn) {
 		this._scalar = !!useScalar;
+		this._scalarCast = castFn;
+
+		return this;
+	}
+
+	select(fields) {
+		this._select = fields;
 		return this;
 	}
 
@@ -364,7 +374,7 @@ export default class Query {
 		}
 
 		if(typeof options.scalar !== 'undefined') {
-			this.scalar(options.scalar);
+			this.scalar(options.scalar, options.scalarCast);
 		}		
 
 		return this;
@@ -383,17 +393,12 @@ export default class Query {
 			throw new Error('One of parameters is missing');
 		}
 
-		const defaultOptions = {
-			scalar: true,
-			limit: 1
-		};
-
-		options = extend({}, defaultOptions, options || {});
-
 		return this
 			.operation(Operation.UPDATE)
-			.options(options)
 			.set(doc)
+			.scalar(true)
+			.limit(1)
+			.options(options)
 			.condExec(conditions, callback);
 	}	
 

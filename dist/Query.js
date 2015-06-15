@@ -82,6 +82,9 @@ var Query = (function () {
 
 		this._first = false;
 		this._scalar = false;
+		this._scalarCast = null;
+
+		this._select = null;
 
 		this._limit = null;
 		this._skip = null;
@@ -354,8 +357,16 @@ var Query = (function () {
 		}
 	}, {
 		key: 'scalar',
-		value: function scalar(useScalar) {
+		value: function scalar(useScalar, castFn) {
 			this._scalar = !!useScalar;
+			this._scalarCast = castFn;
+
+			return this;
+		}
+	}, {
+		key: 'select',
+		value: function select(fields) {
+			this._select = fields;
 			return this;
 		}
 	}, {
@@ -497,7 +508,7 @@ var Query = (function () {
 			}
 
 			if (typeof options.scalar !== 'undefined') {
-				this.scalar(options.scalar);
+				this.scalar(options.scalar, options.scalarCast);
 			}
 
 			return this;
@@ -518,14 +529,7 @@ var Query = (function () {
 				throw new Error('One of parameters is missing');
 			}
 
-			var defaultOptions = {
-				scalar: true,
-				limit: 1
-			};
-
-			options = _extend2['default']({}, defaultOptions, options || {});
-
-			return this.operation(Operation.UPDATE).options(options).set(doc).condExec(conditions, callback);
+			return this.operation(Operation.UPDATE).set(doc).scalar(true).limit(1).options(options).condExec(conditions, callback);
 		}
 	}, {
 		key: 'find',

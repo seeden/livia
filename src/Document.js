@@ -8,7 +8,7 @@ export default class Document extends EventEmitter {
 		properties = properties || {};
 
 		this._model = model;
-		this._data  = new model.schema.DataClass(properties, model.name); 
+		this._data  = new model.schema.DataClass(this, properties, model.name); 
 		this._options = options || {};
 
 		this._from = null;

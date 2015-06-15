@@ -2,14 +2,16 @@ import _ from 'lodash';
 import debug from 'debug';
 import VirtualType from './types/Virtual';
 import Schema from './schemas/Schema';
+import Mixed from './types/Mixed';
 
 const log = debug('orientose:data');
 
 export default class Data {
-	constructor(schema, properties, className, mainData) {
+	constructor(holder, schema, properties, className, mainData) {
 		properties = properties || {};
 		mainData = mainData || this;
 
+		this._holder = holder;
 		this._schema = schema;
 		this._data = {};
 		this._className = className;
@@ -184,8 +186,13 @@ export default class Data {
 		if(pos === -1) {
 			var property = this._data[path];
 			if(!property) {
-				log('set Path not exists:' + path);
-				return this;
+				const schema = this._schema;
+				if(schema.isStrict) {
+					log('set Path not exists:' + path);
+					return this;
+				}
+
+				property = this.defineMixedProperty(path);
 			}
 			
 			property.value = value;
@@ -193,6 +200,7 @@ export default class Data {
 			if(setAsOriginal) {
 				property.setAsOriginal();
 			}
+
 			return this;
 		}
 
@@ -218,10 +226,33 @@ export default class Data {
 		this.set(properties, null, true);
 	}
 
+	defineMixedProperty(fieldName) {
+		const schema = this._schema;
+
+		const prop = {
+			schema     : schema,
+			type       : Mixed,
+			schemaType : schema.convertType(Mixed),
+			options    : {}
+		};
+
+		const property = this._data[fieldName] = new prop.schemaType(this, prop, fieldName, this._mainData);
+
+		//define getter and setter for holder
+		Object.defineProperty(this._holder, fieldName, {
+			enumerable: true,
+			configurable: true,
+			get: () => this.get(fieldName),
+			set: (value) => this.set(fieldName, value)
+		});
+
+		return property;
+	}
+
 	static createClass(schema) {
 		class DataClass extends Data {
-			constructor (properties, className, mainData) {
-				super(schema, properties, className, mainData);
+			constructor (holder, properties, className, mainData) {
+				super(holder, schema, properties, className, mainData);
 			}
 		};
 

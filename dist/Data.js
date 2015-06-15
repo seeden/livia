@@ -30,10 +30,14 @@ var _Schema = require('./schemas/Schema');
 
 var _Schema2 = _interopRequireWildcard(_Schema);
 
+var _Mixed = require('./types/Mixed');
+
+var _Mixed2 = _interopRequireWildcard(_Mixed);
+
 var log = _debug2['default']('orientose:data');
 
 var Data = (function () {
-	function Data(schema, properties, className, mainData) {
+	function Data(holder, schema, properties, className, mainData) {
 		var _this = this;
 
 		_classCallCheck(this, Data);
@@ -41,6 +45,7 @@ var Data = (function () {
 		properties = properties || {};
 		mainData = mainData || this;
 
+		this._holder = holder;
 		this._schema = schema;
 		this._data = {};
 		this._className = className;
@@ -228,8 +233,13 @@ var Data = (function () {
 			if (pos === -1) {
 				var property = this._data[path];
 				if (!property) {
-					log('set Path not exists:' + path);
-					return this;
+					var schema = this._schema;
+					if (schema.isStrict) {
+						log('set Path not exists:' + path);
+						return this;
+					}
+
+					property = this.defineMixedProperty(path);
 				}
 
 				property.value = value;
@@ -237,6 +247,7 @@ var Data = (function () {
 				if (setAsOriginal) {
 					property.setAsOriginal();
 				}
+
 				return this;
 			}
 
@@ -262,14 +273,44 @@ var Data = (function () {
 		value: function setupData(properties) {
 			this.set(properties, null, true);
 		}
+	}, {
+		key: 'defineMixedProperty',
+		value: function defineMixedProperty(fieldName) {
+			var _this6 = this;
+
+			var schema = this._schema;
+
+			var prop = {
+				schema: schema,
+				type: _Mixed2['default'],
+				schemaType: schema.convertType(_Mixed2['default']),
+				options: {}
+			};
+
+			var property = this._data[fieldName] = new prop.schemaType(this, prop, fieldName, this._mainData);
+
+			//define getter and setter for holder
+			Object.defineProperty(this._holder, fieldName, {
+				enumerable: true,
+				configurable: true,
+				get: function get() {
+					return _this6.get(fieldName);
+				},
+				set: function set(value) {
+					return _this6.set(fieldName, value);
+				}
+			});
+
+			return property;
+		}
 	}], [{
 		key: 'createClass',
 		value: function createClass(schema) {
 			var DataClass = (function (_Data) {
-				function DataClass(properties, className, mainData) {
+				function DataClass(holder, properties, className, mainData) {
 					_classCallCheck(this, DataClass);
 
-					_get(Object.getPrototypeOf(DataClass.prototype), 'constructor', this).call(this, schema, properties, className, mainData);
+					_get(Object.getPrototypeOf(DataClass.prototype), 'constructor', this).call(this, holder, schema, properties, className, mainData);
 				}
 
 				_inherits(DataClass, _Data);
