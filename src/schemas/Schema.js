@@ -10,6 +10,8 @@ import extend from 'node.extend';
 
 const log = debug('orientose:schema');
 
+const RESERVED_FIELDS = ['model', 'from', 'to', 'isNew', 'isModified', 'get', 'set'];
+
 export default class Schema extends SchemaBase {
 	constructor(props, options) {
 		super(options);
@@ -161,6 +163,10 @@ export default class Schema extends SchemaBase {
 		
 		const pos = path.indexOf('.');
 		if(pos === -1) {
+			if(RESERVED_FIELDS.indexOf(path) !== -1) {
+				throw new Error(`This field name ${path} is reserved`);
+			}
+
 			try {
 				var normalizedOptions = this.normalizeOptions(options, path);
 			} catch(e) {

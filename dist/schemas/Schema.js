@@ -54,6 +54,8 @@ var _extend2 = _interopRequireWildcard(_extend);
 
 var log = _debug2['default']('orientose:schema');
 
+var RESERVED_FIELDS = ['model', 'from', 'to', 'isNew', 'isModified', 'get', 'set'];
+
 var Schema = (function (_SchemaBase) {
 	function Schema(props, options) {
 		_classCallCheck(this, Schema);
@@ -229,6 +231,10 @@ var Schema = (function (_SchemaBase) {
 
 			var pos = path.indexOf('.');
 			if (pos === -1) {
+				if (RESERVED_FIELDS.indexOf(path) !== -1) {
+					throw new Error('This field name ' + path + ' is reserved');
+				}
+
 				try {
 					var normalizedOptions = this.normalizeOptions(options, path);
 				} catch (e) {
