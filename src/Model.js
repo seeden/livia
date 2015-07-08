@@ -4,6 +4,7 @@ import debug from 'debug';
 import _ from 'lodash';
 import ModelBase from './ModelBase';
 import Schema from './schemas/Schema';
+import Edge from './schemas/Edge';
 import Document from './Document';
 
 const log = debug('orientose:model');
@@ -64,6 +65,10 @@ export default class Model extends ModelBase {
 
 	get native() {
 		return this.connection.native;
+	}
+
+	get isEdge() {
+		return this.schema instanceof Edge;
 	}
 
 	model(name) {

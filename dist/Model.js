@@ -36,6 +36,10 @@ var _Schema = require('./schemas/Schema');
 
 var _Schema2 = _interopRequireWildcard(_Schema);
 
+var _Edge = require('./schemas/Edge');
+
+var _Edge2 = _interopRequireWildcard(_Edge);
+
 var _Document = require('./Document');
 
 var _Document2 = _interopRequireWildcard(_Document);
@@ -109,6 +113,11 @@ var Model = (function (_ModelBase) {
 		key: 'native',
 		get: function () {
 			return this.connection.native;
+		}
+	}, {
+		key: 'isEdge',
+		get: function () {
+			return this.schema instanceof _Edge2['default'];
 		}
 	}, {
 		key: 'model',

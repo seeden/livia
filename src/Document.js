@@ -11,24 +11,11 @@ export default class Document extends EventEmitter {
 		this._data  = new model.schema.DataClass(this, properties, model.name); 
 		this._options = options || {};
 
-		this._from = null;
-		this._to = null;
-
 		this._isNew = true;
 	}
 
 	get currentModel() {
 		return this._model;
-	}
-
-	from(value) {
-		this._from = value;
-		return this;
-	}
-
-	to(value) {
-		this._to = value;
-		return this;
 	}
 
 	model(name) {
@@ -118,15 +105,28 @@ export default class Document extends EventEmitter {
 				}
 
 				if(this.isNew) {
-					var properties = this.toObject({
+					const properties = this.toObject({
 						metadata: true,
 						create: true
 					});
 
-					this._model.create(properties)
-						.from(this._from)
-						.to(this._to)
-						.options(options)
+					const model = this._model;
+					const q = model.create(properties);
+
+					if(model.isEdge) {
+						const from = this.from();
+						const to = this.to();
+
+						if(from) {
+							q.from(from);
+						}
+
+						if(to) {
+							q.to(to);
+						}
+					}
+
+					q.options(options)
 						.exec((error, user) => {
 						if(error) {
 							return callback(error);
@@ -140,9 +140,9 @@ export default class Document extends EventEmitter {
 					});
 
 					return;
-				} 
+				}
 
-				var properties = this.toObject({
+				const properties = this.toObject({
 					metadata: true,
 					modified: true,
 					update: true

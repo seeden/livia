@@ -32,9 +32,6 @@ var Document = (function (_EventEmitter) {
 		this._data = new model.schema.DataClass(this, properties, model.name);
 		this._options = options || {};
 
-		this._from = null;
-		this._to = null;
-
 		this._isNew = true;
 	}
 
@@ -44,18 +41,6 @@ var Document = (function (_EventEmitter) {
 		key: 'currentModel',
 		get: function () {
 			return this._model;
-		}
-	}, {
-		key: 'from',
-		value: function from(value) {
-			this._from = value;
-			return this;
-		}
-	}, {
-		key: 'to',
-		value: function to(value) {
-			this._to = value;
-			return this;
 		}
 	}, {
 		key: 'model',
@@ -157,12 +142,28 @@ var Document = (function (_EventEmitter) {
 					}
 
 					if (_this.isNew) {
-						var properties = _this.toObject({
+						var _properties = _this.toObject({
 							metadata: true,
 							create: true
 						});
 
-						_this._model.create(properties).from(_this._from).to(_this._to).options(options).exec(function (error, user) {
+						var model = _this._model;
+						var q = model.create(_properties);
+
+						if (model.isEdge) {
+							var from = _this.from();
+							var to = _this.to();
+
+							if (from) {
+								q.from(from);
+							}
+
+							if (to) {
+								q.to(to);
+							}
+						}
+
+						q.options(options).exec(function (error, user) {
 							if (error) {
 								return callback(error);
 							}

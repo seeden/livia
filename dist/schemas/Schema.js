@@ -54,7 +54,7 @@ var _extend2 = _interopRequireWildcard(_extend);
 
 var log = _debug2['default']('orientose:schema');
 
-var RESERVED_FIELDS = ['model', 'from', 'to', 'isNew', 'isModified', 'get', 'set'];
+var RESERVED_FIELDS = ['model', 'isNew', 'isModified', 'get', 'set'];
 
 var Schema = (function (_SchemaBase) {
 	function Schema(props, options) {

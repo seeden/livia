@@ -10,7 +10,7 @@ import extend from 'node.extend';
 
 const log = debug('orientose:schema');
 
-const RESERVED_FIELDS = ['model', 'from', 'to', 'isNew', 'isModified', 'get', 'set'];
+const RESERVED_FIELDS = ['model', 'isNew', 'isModified', 'get', 'set'];
 
 export default class Schema extends SchemaBase {
 	constructor(props, options) {
