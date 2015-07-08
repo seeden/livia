@@ -1,6 +1,6 @@
 {
 	"name": "livia",
-	"version": "0.3.39",
+	"version": "0.3.42",
 	"description": "Universal database driver with support of schema",
 	"author": {
 		"name": "Zlatko Fedor",
@@ -43,18 +43,17 @@
 		"kareem": "~1.0.1",
 		"events": "~1.0.2",
 		"lodash": "~3.9.3",
-		"node.extend": "~1.1.4",
+		"node.extend": "~1.1.5",
 		"keymirror": "~0.1.1",
-		"async": "~1.0.0",
+		"async": "~1.2.1",
 		"debug": "~2.2.0"
 	},
 	"devDependencies": {
-		"gulp": "~3.8.11",
-		"gulp-mocha": "~2.1.0",
+		"gulp": "~3.9.0",
+		"gulp-mocha": "~2.1.2",
 		"gulp-babel": "~5.1.0",
-		"gulp-util": "~3.0.4",
-		"should": "~6.0.3",
-		"babel": "~5.4.7",
-		"mongoose": "~4.0.3"
+		"should": "~7.0.1",
+		"babel": "~5.6.10",
+		"mongoose": "~4.0.6"
 	}
 }

@@ -80,7 +80,7 @@ describe('Mongoose compatibility', function() {
 		should.deepEqual(city.options, basicSchema.address.city);
 	}
 
-	function validateChangedSchema(schema) {
+	function validateChangedSchema(schema, checkVirtualArray) {
 		var name = schema.path('name');
 		name.should.not.have.property('schema');
 		name.should.have.property('path');
@@ -116,14 +116,32 @@ describe('Mongoose compatibility', function() {
 		city.should.have.property('path');
 		city.path.should.equal('address.city');
 		should.deepEqual(city.options, basicSchema.address.city);
+
+
 	}	
+
+	it('should be able to create simple larray schema vith virtual field', function() {
+		const schema = new Schema({
+			images: [{
+				 size: { type: Number }
+			}]
+		});
+
+		schema.virtual('images.url').get(function(){
+			return 123;
+		});
+
+
+		//console.log(schema.path('images').schema);
+
+	});	
 
 	it('should be able to create simple livia schema', function() {
 		schema = new Schema(extend(true, {}, basicSchema, {
 			sub: [new Schema(subSchema)]
 		}));
 		applyVirtual(schema);
-		validateBasicSchema(schema);
+		validateBasicSchema(schema, true);
 	});
 
 	it('should be able to create simple mongoose schema', function() {

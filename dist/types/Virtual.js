@@ -54,7 +54,7 @@ var Virtual = (function (_Type) {
 				throw new Error('Getter is not defined');
 			}
 
-			return this.options.get.call(scope, this);
+			return this.options.get.call(scope, this, this.data);
 		}
 	}, {
 		key: 'applySet',
@@ -63,7 +63,7 @@ var Virtual = (function (_Type) {
 				return this;
 			}
 
-			this.options.set.call(scope, value, this);
+			this.options.set.call(scope, value, this, this.data);
 			return this;
 		}
 	}, {

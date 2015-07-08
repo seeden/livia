@@ -1,7 +1,12 @@
 import Type from './Type';
+import _ from 'lodash';
 
 export default class DateType extends Type {
 	_serialize(value) {
+		if(value instanceof Number || 'number' === typeof value || String(value) == Number(value)) {
+			value = Number(value);
+		}
+		
 		return new Date(value);
 	}
 

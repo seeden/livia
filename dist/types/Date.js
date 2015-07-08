@@ -16,6 +16,10 @@ var _Type2 = require('./Type');
 
 var _Type3 = _interopRequireWildcard(_Type2);
 
+var _import = require('lodash');
+
+var _import2 = _interopRequireWildcard(_import);
+
 var DateType = (function (_Type) {
 	function DateType() {
 		_classCallCheck(this, DateType);
@@ -30,6 +34,10 @@ var DateType = (function (_Type) {
 	_createClass(DateType, [{
 		key: '_serialize',
 		value: function _serialize(value) {
+			if (value instanceof Number || 'number' === typeof value || String(value) == Number(value)) {
+				value = Number(value);
+			}
+
 			return new Date(value);
 		}
 	}, {

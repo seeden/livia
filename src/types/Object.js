@@ -36,12 +36,12 @@ export default class ObjectType extends Type {
 	}
 
 	toJSON(options) {
-		var value = this.value;
+		const value = this.value;
 		return value ? value.toJSON(options) : value;
 	}
 
 	toObject(options) {
-		var value = this.value;
+		const value = this.value;
 		return value ? value.toObject(options) : value;
 	}
 

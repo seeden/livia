@@ -26,7 +26,7 @@ export default class Virtual extends Type {
 			throw new Error('Getter is not defined');
 		}
 
-		return this.options.get.call(scope, this);
+		return this.options.get.call(scope, this, this.data);
 	}
 
 	applySet (scope, value) {
@@ -34,7 +34,7 @@ export default class Virtual extends Type {
 			return this;
 		}
 
-		this.options.set.call(scope, value, this);
+		this.options.set.call(scope, value, this, this.data);
 		return this;
 	}
 
