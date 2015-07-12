@@ -71,7 +71,7 @@ export default class ArrayType extends Type {
 	get(index) {
 		const item = this._value[index];
 		return item ? item.value : item;
-	}	
+	}
 
 	push(value) {
 		return this._value.push(this.createItem(value));
@@ -87,19 +87,19 @@ export default class ArrayType extends Type {
 		value.splice.apply(value, args).map(function(item) {
 			return item.value;
 		});
-	}	
+	}
 
 	forEach(fn) {
-		return this._value.forEach(function(item) {
-			fn(item.value);
+		return this._value.forEach(function(item, index, array) {
+			fn(item.value, index, array);
 		});
 	}
 
 	map(fn) {
-		return this._value.map(function(item) {
-			return fn(item.value);
+		return this._value.map(function(item, index, array) {
+			return fn(item.value, index, array);
 		});
-	}	
+	}
 
 	filter(fn) {
 		return this._value.filter(function(item) {
@@ -107,7 +107,7 @@ export default class ArrayType extends Type {
 		}).map(function(item) {
 			return item.value;
 		});
-	}	
+	}
 
 	toJSON(options) {
 		return this._value.map(function(item) {
@@ -134,7 +134,7 @@ export default class ArrayType extends Type {
 		});
 
 		return isModified;
-	}		
+	}
 
 	static toString() {
 		return 'Array';
@@ -186,5 +186,5 @@ export default class ArrayType extends Type {
 
 		const item = prop.item;
 		return item.schemaType.getEmbeddedSchema(item);
-	}	
+	}
 };

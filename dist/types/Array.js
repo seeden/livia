@@ -133,15 +133,15 @@ var ArrayType = (function (_Type) {
 	}, {
 		key: 'forEach',
 		value: function forEach(fn) {
-			return this._value.forEach(function (item) {
-				fn(item.value);
+			return this._value.forEach(function (item, index, array) {
+				fn(item.value, index, array);
 			});
 		}
 	}, {
 		key: 'map',
 		value: function map(fn) {
-			return this._value.map(function (item) {
-				return fn(item.value);
+			return this._value.map(function (item, index, array) {
+				return fn(item.value, index, array);
 			});
 		}
 	}, {
