@@ -1,30 +1,30 @@
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
-	value: true
+  value: true
 });
 exports['default'] = {
-	$in: 'IN',
-	$nin: 'NOT IN',
-	$lt: '<',
-	$lte: '<=',
-	$gt: '>',
-	$gte: '>=',
-	$ne: '<>',
-	$eq: '=',
+  $in: 'IN',
+  $nin: 'NOT IN',
+  $lt: '<',
+  $lte: '<=',
+  $gt: '>',
+  $gte: '>=',
+  $ne: '<>',
+  $eq: '=',
 
-	//	$contains  : 'CONTAINS',
-	$within: 'WITHIN',
-	$near: 'NEAR',
-	$intersect: 'INTERSECT',
+  //  $contains  : 'CONTAINS',
+  $within: 'WITHIN',
+  $near: 'NEAR',
+  $intersect: 'INTERSECT',
 
-	$lucene: 'LUCENE',
-	$containsKey: 'CONTAINSKEY',
-	$containsValue: 'CONTAINSVALUE',
-	$containsText: 'CONTAINSTEXT',
+  $lucene: 'LUCENE',
+  $containsKey: 'CONTAINSKEY',
+  $containsValue: 'CONTAINSVALUE',
+  $containsText: 'CONTAINSTEXT',
 
-	$is: 'IS',
-	$instanceof: 'INSTANCEOF',
-	$like: 'LIKE'
+  $is: 'IS',
+  $instanceof: 'INSTANCEOF',
+  $like: 'LIKE'
 };
 module.exports = exports['default'];

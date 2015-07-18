@@ -9,13 +9,13 @@ import DateType from './Date';
 import LinkedType from './Linked';
 
 export default {
-	'Type'       : Type,
-	'Boolean'    : BooleanType,
-	'String'     : StringType,
-	'Number'     : NumberType,
-	'Date'       : DateType,
-	'Array'      : ArrayType,
-	'Mixed'      : MixedType,
-	'Object'     : ObjectType,
-	'Linked'     : LinkedType
+  'Type': Type,
+  'Boolean': BooleanType,
+  'String': StringType,
+  'Number': NumberType,
+  'Date': DateType,
+  'Array': ArrayType,
+  'Mixed': MixedType,
+  'Object': ObjectType,
+  'Linked': LinkedType
 };

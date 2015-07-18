@@ -11,22 +11,12 @@ var _get = function get(object, property, receiver) { var desc = Object.getOwnPr
 var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
 Object.defineProperty(exports, '__esModule', {
-	value: true
+  value: true
 });
-
-var _waterfall$each$serial = require('async');
-
-var _extend = require('node.extend');
-
-var _extend2 = _interopRequireWildcard(_extend);
 
 var _debug = require('debug');
 
 var _debug2 = _interopRequireWildcard(_debug);
-
-var _import = require('lodash');
-
-var _import2 = _interopRequireWildcard(_import);
 
 var _ModelBase2 = require('./ModelBase');
 
@@ -47,156 +37,156 @@ var _Document2 = _interopRequireWildcard(_Document);
 var log = _debug2['default']('orientose:model');
 
 var Model = (function (_ModelBase) {
-	function Model(name, schema, connection, options, callback) {
-		var _this = this;
+  function Model(name, schema, connection, options, callback) {
+    var _this = this;
 
-		_classCallCheck(this, Model);
+    _classCallCheck(this, Model);
 
-		if (!schema instanceof _Schema2['default']) {
-			throw new Error('This is not a schema');
-		}
+    if (!schema instanceof _Schema2['default']) {
+      throw new Error('This is not a schema');
+    }
 
-		if (!connection) {
-			throw new Error('Connection is undefined');
-		}
+    if (!connection) {
+      throw new Error('Connection is undefined');
+    }
 
-		if (typeof options === 'function') {
-			callback = options;
-			options = {};
-		}
+    if (typeof options === 'function') {
+      callback = options;
+      options = {};
+    }
 
-		options = options || {};
+    options = options || {};
 
-		options.dropUnusedProperties = options.dropUnusedProperties || false;
-		options.dropUnusedIndexes = options.dropUnusedIndexes || false;
+    options.dropUnusedProperties = options.dropUnusedProperties || false;
+    options.dropUnusedIndexes = options.dropUnusedIndexes || false;
 
-		_get(Object.getPrototypeOf(Model.prototype), 'constructor', this).call(this, name, options);
+    _get(Object.getPrototypeOf(Model.prototype), 'constructor', this).call(this, name, options);
 
-		callback = callback || function () {};
+    callback = callback || function () {};
 
-		this._schema = schema;
-		this._connection = connection;
+    this._schema = schema;
+    this._connection = connection;
 
-		this._DocumentClass = _Document2['default'].createClass(this);
+    this._DocumentClass = _Document2['default'].createClass(this);
 
-		if (options.ensure === false) {
-			return callback(null, this);
-		}
+    if (options.ensure === false) {
+      return callback(null, this);
+    }
 
-		this.ensureClass(function (err, model) {
-			if (err) {
-				log('Model ' + _this.name + ': ' + err.message);
-			}
+    this.ensureClass(function (err, model) {
+      if (err) {
+        log('Model ' + _this.name + ': ' + err.message);
+      }
 
-			callback(err, model);
-		});
-	}
+      callback(err, model);
+    });
+  }
 
-	_inherits(Model, _ModelBase);
+  _inherits(Model, _ModelBase);
 
-	_createClass(Model, [{
-		key: 'DocumentClass',
-		get: function () {
-			return this._DocumentClass;
-		}
-	}, {
-		key: 'schema',
-		get: function () {
-			return this._schema;
-		}
-	}, {
-		key: 'connection',
-		get: function () {
-			return this._connection;
-		}
-	}, {
-		key: 'native',
-		get: function () {
-			return this.connection.native;
-		}
-	}, {
-		key: 'isEdge',
-		get: function () {
-			return this.schema instanceof _Edge2['default'];
-		}
-	}, {
-		key: 'model',
-		value: function model(name) {
-			return this.connection.model(name);
-		}
-	}, {
-		key: 'ensureClass',
-		value: function ensureClass(callback) {
-			this.connection.ensureClass(this, callback);
-		}
-	}, {
-		key: 'createDocument',
-		value: function createDocument(properties, className) {
-			var model = this.DocumentClass;
-			if (className) {
-				model = this.model(className);
-			}
+  _createClass(Model, [{
+    key: 'DocumentClass',
+    get: function () {
+      return this._DocumentClass;
+    }
+  }, {
+    key: 'schema',
+    get: function () {
+      return this._schema;
+    }
+  }, {
+    key: 'connection',
+    get: function () {
+      return this._connection;
+    }
+  }, {
+    key: 'native',
+    get: function () {
+      return this.connection.native;
+    }
+  }, {
+    key: 'isEdge',
+    get: function () {
+      return this.schema instanceof _Edge2['default'];
+    }
+  }, {
+    key: 'model',
+    value: function model(name) {
+      return this.connection.model(name);
+    }
+  }, {
+    key: 'ensureClass',
+    value: function ensureClass(callback) {
+      this.connection.ensureClass(this, callback);
+    }
+  }, {
+    key: 'createDocument',
+    value: function createDocument(properties, className) {
+      var ModelClass = this.DocumentClass;
+      if (className) {
+        ModelClass = this.model(className);
+      }
 
-			if (!model) {
-				throw new Error('There is no model for class: ' + className);
-			}
+      if (!ModelClass) {
+        throw new Error('There is no model for class: ' + className);
+      }
 
-			return new model({}).setupData(properties);
-		}
-	}, {
-		key: 'query',
-		value: function query(options) {
-			return this.connection.query(this, options);
-		}
-	}, {
-		key: 'create',
-		value: function create(doc, callback) {
-			return this.query().create(doc, callback);
-		}
-	}, {
-		key: 'update',
-		value: function update(conditions, doc, options, callback) {
-			if (typeof options === 'function') {
-				callback = options;
-				options = {};
-			}
+      return new ModelClass({}).setupData(properties);
+    }
+  }, {
+    key: 'query',
+    value: function query(options) {
+      return this.connection.query(this, options);
+    }
+  }, {
+    key: 'create',
+    value: function create(doc, callback) {
+      return this.query().create(doc, callback);
+    }
+  }, {
+    key: 'update',
+    value: function update(conditions, doc, options, callback) {
+      if (typeof options === 'function') {
+        callback = options;
+        options = {};
+      }
 
-			options = options || {};
+      options = options || {};
 
-			return this.query().update(conditions, doc, options, callback);
-		}
-	}, {
-		key: 'find',
-		value: function find(conditions, callback) {
-			return this.query().find(conditions, callback);
-		}
-	}, {
-		key: 'findOne',
-		value: function findOne(conditions, callback) {
-			return this.query().findOne(conditions, callback);
-		}
-	}, {
-		key: 'findOneAndUpdate',
-		value: function findOneAndUpdate(conditions, doc, options, callback) {
-			if (typeof options === 'function') {
-				callback = options;
-				options = {};
-			}
+      return this.query().update(conditions, doc, options, callback);
+    }
+  }, {
+    key: 'find',
+    value: function find(conditions, callback) {
+      return this.query().find(conditions, callback);
+    }
+  }, {
+    key: 'findOne',
+    value: function findOne(conditions, callback) {
+      return this.query().findOne(conditions, callback);
+    }
+  }, {
+    key: 'findOneAndUpdate',
+    value: function findOneAndUpdate(conditions, doc, options, callback) {
+      if (typeof options === 'function') {
+        callback = options;
+        options = {};
+      }
 
-			options = options || {};
-			options.scalar = false;
-			options['new'] = true;
+      options = options || {};
+      options.scalar = false;
+      options['new'] = true;
 
-			return this.query().update(conditions, doc, options, callback);
-		}
-	}, {
-		key: 'remove',
-		value: function remove(conditions, callback) {
-			return this.query().remove(conditions, callback);
-		}
-	}]);
+      return this.query().update(conditions, doc, options, callback);
+    }
+  }, {
+    key: 'remove',
+    value: function remove(conditions, callback) {
+      return this.query().remove(conditions, callback);
+    }
+  }]);
 
-	return Model;
+  return Model;
 })(_ModelBase3['default']);
 
 exports['default'] = Model;

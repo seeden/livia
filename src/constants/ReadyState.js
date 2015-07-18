@@ -1,8 +1,8 @@
-import keymirror from "keymirror";
+import keymirror from 'keymirror';
 
 export default keymirror({
-	DISCONNECTED: null,
-	CONNECTED: null,
-	CONNECTING: null,
-	DISCONNECTING: null
+  DISCONNECTED: null,
+  CONNECTED: null,
+  CONNECTING: null,
+  DISCONNECTING: null
 });

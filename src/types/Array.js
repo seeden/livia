@@ -1,190 +1,190 @@
 import Type from './Type';
-import Schema from '../schemas/Schema';
 
 /*
 TODO decide about prons and cons
 class ArrayExt extends Array {
-	constructor(base) {
-		super();
+  constructor(base) {
+    super();
 
-		this._base = base;
-	}
+    this._base = base;
+  }
 
-	get base() {
-		return this._base;
-	}
+  get base() {
+    return this._base;
+  }
 
-	push(value) {
-		super.push(this.base.createItem(value));
-	}
+  push(value) {
+    super.push(this.base.createItem(value));
+  }
 
-	get isModified() {
-		return this.base.isModified;
-	}
+  get isModified() {
+    return this.base.isModified;
+  }
 }*/
 
 export default class ArrayType extends Type {
-	constructor(data, prop, name, mainData) {
-		super(data, prop, name, mainData);
+  constructor(data, prop, name, mainData) {
+    super(data, prop, name, mainData);
 
-		if(!prop.item) {
-			throw new Error('Type of the array item is not defined');
-		}
+    if (!prop.item) {
+      throw new Error('Type of the array item is not defined');
+    }
 
-		this._original = [];
-		this._value = [];
-	}
+    this._original = [];
+    this._value = [];
+  }
 
-	createItem(value) {
-		var item = new this.prop.item.schemaType(this.data, this.prop.item, this.name, this.mainData);
-		item.value = value;
+  createItem(value) {
+    const item = new this.prop.item.SchemaType(this.data, this.prop.item, this.name, this.mainData);
+    item.value = value;
 
-		return item;
-	}
+    return item;
+  }
 
-	_empty() {
-		this._value = [];
-	}
+  _empty() {
+    this._value = [];
+  }
 
-	_serialize(items) {
-		this._empty();
+  _serialize(items) {
+    this._empty();
 
-		items.forEach(item => {
-			this.push(item);
-		});
+    items.forEach(item => {
+      this.push(item);
+    });
 
-		return this._value;
-	}
+    return this._value;
+  }
 
-	_deserialize() {
-		return this;
-	}
+  _deserialize() {
+    return this;
+  }
 
-	get length() {
-		this._value.length;
-	}
+  get length() {
+    return this._value.length;
+  }
 
-	set(index, value) {
-		return this._value[index] = this.createItem(value);
-	}
+  set(index, value) {
+    this._value[index] = this.createItem(value);
+    return this;
+  }
 
-	get(index) {
-		const item = this._value[index];
-		return item ? item.value : item;
-	}
+  get(index) {
+    const item = this._value[index];
+    return item ? item.value : item;
+  }
 
-	push(value) {
-		return this._value.push(this.createItem(value));
-	}
+  push(value) {
+    return this._value.push(this.createItem(value));
+  }
 
-	pop() {
-		const item = this._value.pop();
-		return item ? item.value : item;
-	}
+  pop() {
+    const item = this._value.pop();
+    return item ? item.value : item;
+  }
 
-	splice(...args) {
-		const value = this._value;
-		value.splice.apply(value, args).map(function(item) {
-			return item.value;
-		});
-	}
+  splice(...args) {
+    const value = this._value;
+    value.splice.apply(value, args).map(function(item) {
+      return item.value;
+    });
+  }
 
-	forEach(fn) {
-		return this._value.forEach(function(item, index, array) {
-			fn(item.value, index, array);
-		});
-	}
+  forEach(fn) {
+    return this._value.forEach(function(item, index, array) {
+      fn(item.value, index, array);
+    });
+  }
 
-	map(fn) {
-		return this._value.map(function(item, index, array) {
-			return fn(item.value, index, array);
-		});
-	}
+  map(fn) {
+    return this._value.map(function(item, index, array) {
+      return fn(item.value, index, array);
+    });
+  }
 
-	filter(fn) {
-		return this._value.filter(function(item) {
-			return fn(item.value);
-		}).map(function(item) {
-			return item.value;
-		});
-	}
+  filter(fn) {
+    return this._value.filter(function(item) {
+      return fn(item.value);
+    }).map(function(item) {
+      return item.value;
+    });
+  }
 
-	toJSON(options) {
-		return this._value.map(function(item) {
-			return item.toJSON(options);
-		});
-	}
+  toJSON(options) {
+    return this._value.map(function(item) {
+      return item.toJSON(options);
+    });
+  }
 
-	toObject(options) {
-		return this._value.map(function(item) {
-			return item.toObject(options);
-		});
-	}
+  toObject(options) {
+    return this._value.map(function(item) {
+      return item.toObject(options);
+    });
+  }
 
-	get isModified() {
-		if(this._original.length !== this._value.length) {
-			return true;
-		}
+  get isModified() {
+    if (this._original.length !== this._value.length) {
+      return true;
+    }
 
-		var isModified = false;
-		this._value.forEach(function(prop) {
-			if(prop.isModified) {
-				isModified = true;
-			}
-		});
+    let isModified = false;
+    this._value.forEach(function(prop) {
+      if (prop.isModified) {
+        isModified = true;
+      }
+    });
 
-		return isModified;
-	}
+    return isModified;
+  }
 
-	static toString() {
-		return 'Array';
-	}
+  static toString() {
+    return 'Array';
+  }
 
-	static getDbType(prop) {
-		const item = prop.item;
+  static getDbType(prop) {
+    const item = prop.item;
 
-		return item.type.isDocumentClass ? 'LINKLIST' : 'EMBEDDEDLIST';
-	}
+    return item.type.isDocumentClass ? 'LINKLIST' : 'EMBEDDEDLIST';
+  }
 
-	static getPropertyConfig(prop) {
-		const item = prop.item;
+  static getPropertyConfig(prop) {
+    const item = prop.item;
 
-		if(item.type.isDocumentClass) {
-			return {
-				linkedClass: item.type.modelName
-			};
-		}
+    if (item.type.isDocumentClass) {
+      return {
+        linkedClass: item.type.modelName
+      };
+    }
 
-		return {
-			linkedType: item.schemaType.getDbType(item.options)
-		};
-	}
+    return {
+      linkedType: item.SchemaType.getDbType(item.options)
+    };
+  }
 
-	static get isArray() {
-		return true;
-	}
+  static get isArray() {
+    return true;
+  }
 
-	static isEmbedded(prop) {
-		const dbType = ArrayType.getDbType(prop);
-		return dbType === 'EMBEDDEDLIST';
-	}
+  static isEmbedded(prop) {
+    const dbType = ArrayType.getDbType(prop);
+    return dbType === 'EMBEDDEDLIST';
+  }
 
-	static isAbstract(prop) {
-		const isEmbedded = this.isEmbedded(prop);
-		if(!isEmbedded) {
-			return false;
-		}
+  static isAbstract(prop) {
+    const isEmbedded = this.isEmbedded(prop);
+    if (!isEmbedded) {
+      return false;
+    }
 
-		const item = prop.item;
-		return item.schemaType.isAbstract(item);
-	}
+    const item = prop.item;
+    return item.SchemaType.isAbstract(item);
+  }
 
-	static getEmbeddedSchema(prop) {
-		if(!ArrayType.isEmbedded(prop)) {
-			return null;
-		}
+  static getEmbeddedSchema(prop) {
+    if (!ArrayType.isEmbedded(prop)) {
+      return null;
+    }
 
-		const item = prop.item;
-		return item.schemaType.getEmbeddedSchema(item);
-	}
-};
+    const item = prop.item;
+    return item.SchemaType.getEmbeddedSchema(item);
+  }
+}

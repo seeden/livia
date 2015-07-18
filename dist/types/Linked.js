@@ -11,7 +11,7 @@ var _get = function get(object, property, receiver) { var desc = Object.getOwnPr
 var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
 Object.defineProperty(exports, '__esModule', {
-	value: true
+  value: true
 });
 
 var _import = require('lodash');
@@ -27,74 +27,82 @@ var _Document = require('../Document');
 var _Document2 = _interopRequireWildcard(_Document);
 
 var LinkedType = (function (_StringType) {
-	function LinkedType() {
-		_classCallCheck(this, LinkedType);
+  function LinkedType() {
+    _classCallCheck(this, LinkedType);
 
-		if (_StringType != null) {
-			_StringType.apply(this, arguments);
-		}
-	}
+    if (_StringType != null) {
+      _StringType.apply(this, arguments);
+    }
+  }
 
-	_inherits(LinkedType, _StringType);
+  _inherits(LinkedType, _StringType);
 
-	_createClass(LinkedType, [{
-		key: '_serialize',
-		value: function _serialize(value) {
-			if (_import2['default'].isPlainObject(value)) {
-				var doc = this._value = this._value instanceof _Document2['default'] ? this._value : new this.options.type({});
+  _createClass(LinkedType, [{
+    key: '_serialize',
+    value: function _serialize(value) {
+      if (_import2['default'].isPlainObject(value)) {
+        var doc = this._value = this._value instanceof _Document2['default'] ? this._value : new this.options.type({});
 
-				doc.set(value);
-				return doc;
-			}
+        doc.set(value);
+        return doc;
+      }
 
-			return _get(Object.getPrototypeOf(LinkedType.prototype), '_serialize', this).call(this, value);
-		}
-	}, {
-		key: 'toJSON',
-		value: function toJSON(options) {
-			var value = this.value;
-			if (value instanceof _Document2['default']) {
-				return value.toJSON(options);
-			}
+      return _get(Object.getPrototypeOf(LinkedType.prototype), '_serialize', this).call(this, value);
+    }
+  }, {
+    key: 'toJSON',
+    value: function toJSON(options) {
+      var value = this.value;
+      if (value instanceof _Document2['default']) {
+        return value.toJSON(options);
+      }
 
-			return _get(Object.getPrototypeOf(LinkedType.prototype), 'toJSON', this).call(this, options);
-		}
-	}, {
-		key: 'toObject',
-		value: function toObject(options) {
-			var value = this.value;
-			if (value instanceof _Document2['default']) {
-				return value.toObject(options);
-			}
+      return _get(Object.getPrototypeOf(LinkedType.prototype), 'toJSON', this).call(this, options);
+    }
+  }, {
+    key: 'toObject',
+    value: function toObject(options) {
+      var value = this.value;
+      if (value instanceof _Document2['default']) {
+        return value.toObject(options);
+      }
 
-			return _get(Object.getPrototypeOf(LinkedType.prototype), 'toObject', this).call(this, options);
-		}
-	}, {
-		key: 'isModified',
-		get: function () {
-			if (this._value instanceof _Document2['default']) {
-				var isModified = false;
+      return _get(Object.getPrototypeOf(LinkedType.prototype), 'toObject', this).call(this, options);
+    }
+  }, {
+    key: 'isModified',
+    get: function () {
+      var _this = this;
 
-				this._value.forEach(true, function (prop) {
-					if (prop.isModified) {
-						isModified = true;
-					}
-				});
+      if (this._value instanceof _Document2['default']) {
+        var _ret = (function () {
+          var isModified = false;
 
-				return isModified;
-			}
+          _this._value.forEach(true, function (prop) {
+            if (prop.isModified) {
+              isModified = true;
+            }
+          });
 
-			return _get(Object.getPrototypeOf(LinkedType.prototype), 'isModified', this);
-		}
-	}, {
-		key: 'linkedClass',
-		get: function () {
-			var type = this.options.type;
-			return type.modelName ? type.modelName : null;
-		}
-	}]);
+          return {
+            v: isModified
+          };
+        })();
 
-	return LinkedType;
+        if (typeof _ret === 'object') return _ret.v;
+      }
+
+      return _get(Object.getPrototypeOf(LinkedType.prototype), 'isModified', this);
+    }
+  }, {
+    key: 'linkedClass',
+    get: function () {
+      var type = this.options.type;
+      return type.modelName ? type.modelName : null;
+    }
+  }]);
+
+  return LinkedType;
 })(_StringType3['default']);
 
 exports['default'] = LinkedType;

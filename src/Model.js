@@ -1,7 +1,4 @@
-import { waterfall, each, serial } from 'async';
-import extend from 'node.extend';
 import debug from 'debug';
-import _ from 'lodash';
 import ModelBase from './ModelBase';
 import Schema from './schemas/Schema';
 import Edge from './schemas/Edge';
@@ -10,129 +7,129 @@ import Document from './Document';
 const log = debug('orientose:model');
 
 export default class Model extends ModelBase {
-	constructor(name, schema, connection, options, callback) {
-		if(!schema instanceof Schema) {
-			throw new Error('This is not a schema');
-		}
+  constructor(name, schema, connection, options, callback) {
+    if (!schema instanceof Schema) {
+      throw new Error('This is not a schema');
+    }
 
-		if(!connection) {
-			throw new Error('Connection is undefined');
-		}
+    if (!connection) {
+      throw new Error('Connection is undefined');
+    }
 
-		if(typeof options === 'function') {
-			callback = options;
-			options = {};
-		}
+    if (typeof options === 'function') {
+      callback = options;
+      options = {};
+    }
 
-		options = options || {};
+    options = options || {};
 
-		options.dropUnusedProperties = options.dropUnusedProperties || false;
-		options.dropUnusedIndexes = options.dropUnusedIndexes || false;
+    options.dropUnusedProperties = options.dropUnusedProperties || false;
+    options.dropUnusedIndexes = options.dropUnusedIndexes || false;
 
-		super(name, options);
+    super(name, options);
 
-		callback = callback || function() {};
+    callback = callback || function() {};
 
-		this._schema = schema;
-		this._connection = connection;
+    this._schema = schema;
+    this._connection = connection;
 
-		this._DocumentClass = Document.createClass(this);
+    this._DocumentClass = Document.createClass(this);
 
-		if(options.ensure === false) {
-			return callback(null, this);
-		}
+    if (options.ensure === false) {
+      return callback(null, this);
+    }
 
-		this.ensureClass((err, model) => {
-			if(err) {
-				log('Model ' + this.name + ': ' + err.message);
-			}
+    this.ensureClass((err, model) => {
+      if (err) {
+        log('Model ' + this.name + ': ' + err.message);
+      }
 
-			callback(err, model);
-		});	
-	}
+      callback(err, model);
+    });
+  }
 
-	get DocumentClass() {
-		return this._DocumentClass;
-	}
+  get DocumentClass() {
+    return this._DocumentClass;
+  }
 
-	get schema() {
-		return this._schema;
-	}
+  get schema() {
+    return this._schema;
+  }
 
-	get connection() {
-		return this._connection;
-	}
+  get connection() {
+    return this._connection;
+  }
 
-	get native() {
-		return this.connection.native;
-	}
+  get native() {
+    return this.connection.native;
+  }
 
-	get isEdge() {
-		return this.schema instanceof Edge;
-	}
+  get isEdge() {
+    return this.schema instanceof Edge;
+  }
 
-	model(name) {
-		return this.connection.model(name);
-	}
+  model(name) {
+    return this.connection.model(name);
+  }
 
-	ensureClass(callback) {
-		this.connection.ensureClass(this, callback);
-	}
+  ensureClass(callback) {
+    this.connection.ensureClass(this, callback);
+  }
 
-	createDocument(properties, className) {
-		var model = this.DocumentClass;
-		if(className) {
-			model = this.model(className);
-		}
+  createDocument(properties, className) {
+    let ModelClass = this.DocumentClass;
+    if (className) {
+      ModelClass = this.model(className);
+    }
 
-		if(!model) {
-			throw new Error('There is no model for class: ' + className);
-		}
+    if (!ModelClass) {
+      throw new Error('There is no model for class: ' + className);
+    }
 
-		return new model({}).setupData(properties);
-	}
+    return new ModelClass({}).setupData(properties);
+  }
 
-	query(options) {
-		return this.connection.query(this, options);
-	}
+  query(options) {
+    return this.connection.query(this, options);
+  }
 
-	create(doc, callback) {
-		return this.query().create(doc, callback);
-	}
+  create(doc, callback) {
+    return this.query().create(doc, callback);
+  }
 
-	update(conditions, doc, options, callback) {
-		if(typeof options === 'function') {
-			callback = options;
-			options = {};
-		}
+  update(conditions, doc, options, callback) {
+    if (typeof options === 'function') {
+      callback = options;
+      options = {};
+    }
 
-		options = options || {};
+    options = options || {};
 
-		return this.query().update(conditions, doc, options, callback);
-	}
+    return this.query().update(conditions, doc, options, callback);
+  }
 
-	find(conditions, callback) {
-		return this.query().find(conditions, callback);
-	}
+  find(conditions, callback) {
+    return this.query().find(conditions, callback);
+  }
 
-	findOne(conditions, callback) {
-		return this.query().findOne(conditions, callback);
-	}	
+  findOne(conditions, callback) {
+    return this.query().findOne(conditions, callback);
+  }
 
-	findOneAndUpdate(conditions, doc, options, callback) {
-		if(typeof options === 'function') {
-			callback = options;
-			options = {};
-		}
+  findOneAndUpdate(conditions, doc, options, callback) {
+    if (typeof options === 'function') {
+      callback = options;
+      options = {};
+    }
 
-		options = options || {};
-		options.scalar = false;
-		options.new = true;
+    options = options || {};
+    options.scalar = false;
+    options.new = true;
 
-		return this.query().update(conditions, doc, options, callback);
-	}
+    return this.query().update(conditions, doc, options, callback);
+  }
 
-	remove(conditions, callback) {
-		return this.query().remove(conditions, callback);
-	}
+  remove(conditions, callback) {
+    return this.query().remove(conditions, callback);
+  }
 }

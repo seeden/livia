@@ -11,7 +11,7 @@ var _get = function get(object, property, receiver) { var desc = Object.getOwnPr
 var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
 Object.defineProperty(exports, '__esModule', {
-	value: true
+  value: true
 });
 
 var _EventEmitter2 = require('events');
@@ -20,91 +20,87 @@ var _Model = require('./Model');
 
 var _Model2 = _interopRequireWildcard(_Model);
 
-var _Query = require('./Query');
-
-var _Query2 = _interopRequireWildcard(_Query);
-
 var Connection = (function (_EventEmitter) {
-	function Connection(adapter, callback) {
-		_classCallCheck(this, Connection);
+  function Connection(adapter) {
+    var callback = arguments[1] === undefined ? function () {} : arguments[1];
 
-		_get(Object.getPrototypeOf(Connection.prototype), 'constructor', this).call(this);
+    _classCallCheck(this, Connection);
 
-		callback = callback || function () {};
+    _get(Object.getPrototypeOf(Connection.prototype), 'constructor', this).call(this);
 
-		this._adapter = adapter;
-		this._models = new Map();
+    this._adapter = adapter;
+    this._models = new Map();
 
-		adapter.connect(callback);
-	}
+    adapter.connect(callback);
+  }
 
-	_inherits(Connection, _EventEmitter);
+  _inherits(Connection, _EventEmitter);
 
-	_createClass(Connection, [{
-		key: 'native',
-		get: function () {
-			return this.adapter.native;
-		}
-	}, {
-		key: 'adapter',
-		get: function () {
-			return this._adapter;
-		}
-	}, {
-		key: 'ensureClass',
-		value: function ensureClass(model, callback) {
-			this.adapter.ensureClass(model, callback);
-		}
-	}, {
-		key: 'query',
-		value: function query(model, options) {
-			return this.adapter.query(model, options);
-		}
-	}, {
-		key: 'model',
-		value: function model(name, schema, options, callback) {
-			if (typeof options === 'function') {
-				callback = options;
-				options = {};
-			}
+  _createClass(Connection, [{
+    key: 'native',
+    get: function () {
+      return this.adapter.native;
+    }
+  }, {
+    key: 'adapter',
+    get: function () {
+      return this._adapter;
+    }
+  }, {
+    key: 'ensureClass',
+    value: function ensureClass(model, callback) {
+      this.adapter.ensureClass(model, callback);
+    }
+  }, {
+    key: 'query',
+    value: function query(model, options) {
+      return this.adapter.query(model, options);
+    }
+  }, {
+    key: 'model',
+    value: function model(name, schema, options, callback) {
+      if (typeof options === 'function') {
+        callback = options;
+        options = {};
+      }
 
-			options = options || {};
-			callback = callback || function () {};
+      options = options || {};
+      callback = callback || function () {};
 
-			if (typeof schema === 'undefined') {
-				if (!this._models.has(name)) {
-					throw new Error('Model ' + name + ' does not exists');
-				}
+      if (typeof schema === 'undefined') {
+        if (!this._models.has(name)) {
+          throw new Error('Model ' + name + ' does not exists');
+        }
 
-				return this._models.get(name).DocumentClass;
-			}
+        return this._models.get(name).DocumentClass;
+      }
 
-			if (this._models.has(name)) {
-				throw new Error('Model already exists');
-			}
+      if (this._models.has(name)) {
+        throw new Error('Model already exists');
+      }
 
-			this._models.set(name, new _Model2['default'](name, schema, this, options, function (err, model) {
-				if (err) {
-					return callback(err);
-				}
+      this._models.set(name, new _Model2['default'](name, schema, this, options, function (err, model) {
+        if (err) {
+          return callback(err);
+        }
 
-				callback(null, model.DocumentClass);
-			}));
+        callback(null, model.DocumentClass);
+      }));
 
-			return this._models.get(name).DocumentClass;
-		}
-	}, {
-		key: 'modelNames',
+      return this._models.get(name).DocumentClass;
+    }
+  }, {
+    key: 'modelNames',
 
-		/*
-  Returns an array of model names created on this connection.
-  */
-		value: function modelNames() {
-			return this._models.keys();
-		}
-	}]);
+    /*
+    Returns an array of model names created on this connection.
+    */
+    value: function modelNames() {
+      return this._models.keys();
+    }
+  }]);
 
-	return Connection;
+  return Connection;
 })(_EventEmitter2.EventEmitter);
 
 exports['default'] = Connection;

@@ -3,7 +3,7 @@
 var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 Object.defineProperty(exports, '__esModule', {
-	value: true
+  value: true
 });
 
 var _Type = require('./Type');
@@ -43,14 +43,14 @@ var _LinkedType = require('./Linked');
 var _LinkedType2 = _interopRequireWildcard(_LinkedType);
 
 exports['default'] = {
-	Type: _Type2['default'],
-	Boolean: _BooleanType2['default'],
-	String: _StringType2['default'],
-	Number: _NumberType2['default'],
-	Date: _DateType2['default'],
-	Array: _ArrayType2['default'],
-	Mixed: _MixedType2['default'],
-	Object: _ObjectType2['default'],
-	Linked: _LinkedType2['default']
+  Type: _Type2['default'],
+  Boolean: _BooleanType2['default'],
+  String: _StringType2['default'],
+  Number: _NumberType2['default'],
+  Date: _DateType2['default'],
+  Array: _ArrayType2['default'],
+  Mixed: _MixedType2['default'],
+  Object: _ObjectType2['default'],
+  Linked: _LinkedType2['default']
 };
 module.exports = exports['default'];

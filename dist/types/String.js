@@ -9,7 +9,7 @@ var _createClass = (function () { function defineProperties(target, props) { for
 var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
 Object.defineProperty(exports, '__esModule', {
-	value: true
+  value: true
 });
 
 var _Type2 = require('./Type');
@@ -17,62 +17,62 @@ var _Type2 = require('./Type');
 var _Type3 = _interopRequireWildcard(_Type2);
 
 var StringType = (function (_Type) {
-	function StringType() {
-		_classCallCheck(this, StringType);
+  function StringType() {
+    _classCallCheck(this, StringType);
 
-		if (_Type != null) {
-			_Type.apply(this, arguments);
-		}
-	}
+    if (_Type != null) {
+      _Type.apply(this, arguments);
+    }
+  }
 
-	_inherits(StringType, _Type);
+  _inherits(StringType, _Type);
 
-	_createClass(StringType, [{
-		key: '_serialize',
-		value: function _serialize(value) {
-			var options = this.options;
-			var val = String(value);
+  _createClass(StringType, [{
+    key: '_serialize',
+    value: function _serialize(value) {
+      var options = this.options;
+      var val = String(value);
 
-			if (options['enum'] && options['enum'].indexOf(val) === -1) {
-				throw new Error('Value is not from enum values');
-			}
+      if (options['enum'] && options['enum'].indexOf(val) === -1) {
+        throw new Error('Value is not from enum values');
+      }
 
-			if (options.minlength && val.length < options.minlength) {
-				throw new Error('The value "' + val + '" is shorter than the minimum length ' + options.minlength);
-			}
+      if (options.minlength && val.length < options.minlength) {
+        throw new Error('The value "' + val + '" is shorter than the minimum length ' + options.minlength);
+      }
 
-			if (val && options.maxlength && val.length > options.maxlength) {
-				throw new Error('The value "' + val + '" is longer than the maxlength length ' + options.maxlength);
-			}
+      if (val && options.maxlength && val.length > options.maxlength) {
+        throw new Error('The value "' + val + '" is longer than the maxlength length ' + options.maxlength);
+      }
 
-			if (val && options.trim) {
-				val = val.trim();
-			}
+      if (val && options.trim) {
+        val = val.trim();
+      }
 
-			if (val && options.uppercase) {
-				val = val.toUpperCase();
-			}
+      if (val && options.uppercase) {
+        val = val.toUpperCase();
+      }
 
-			return val;
-		}
-	}, {
-		key: '_deserialize',
-		value: function _deserialize(value) {
-			return value;
-		}
-	}], [{
-		key: 'toString',
-		value: function toString() {
-			return 'String';
-		}
-	}, {
-		key: 'getDbType',
-		value: function getDbType() {
-			return 'STRING';
-		}
-	}]);
+      return val;
+    }
+  }, {
+    key: '_deserialize',
+    value: function _deserialize(value) {
+      return value;
+    }
+  }], [{
+    key: 'toString',
+    value: function toString() {
+      return 'String';
+    }
+  }, {
+    key: 'getDbType',
+    value: function getDbType() {
+      return 'STRING';
+    }
+  }]);
 
-	return StringType;
+  return StringType;
 })(_Type3['default']);
 
 exports['default'] = StringType;

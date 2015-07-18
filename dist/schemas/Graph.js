@@ -9,7 +9,7 @@ var _get = function get(object, property, receiver) { var desc = Object.getOwnPr
 var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
 Object.defineProperty(exports, '__esModule', {
-	value: true
+  value: true
 });
 
 var _Schema2 = require('./Schema');
@@ -17,15 +17,15 @@ var _Schema2 = require('./Schema');
 var _Schema3 = _interopRequireWildcard(_Schema2);
 
 var Graph = (function (_Schema) {
-	function Graph(props, options) {
-		_classCallCheck(this, Graph);
+  function Graph(props, options) {
+    _classCallCheck(this, Graph);
 
-		_get(Object.getPrototypeOf(Graph.prototype), 'constructor', this).call(this, props, options);
-	}
+    _get(Object.getPrototypeOf(Graph.prototype), 'constructor', this).call(this, props, options);
+  }
 
-	_inherits(Graph, _Schema);
+  _inherits(Graph, _Schema);
 
-	return Graph;
+  return Graph;
 })(_Schema3['default']);
 
 exports['default'] = Graph;

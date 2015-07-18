@@ -1,282 +1,274 @@
 import { EventEmitter } from 'events';
-import _ from 'lodash';
 
 export default class Document extends EventEmitter {
-	constructor(model, properties, options) {
-		super();
-		
-		properties = properties || {};
+  constructor(model, properties = {}, options = {}) {
+    super();
 
-		this._model = model;
-		this._data  = new model.schema.DataClass(this, properties, model.name); 
-		this._options = options || {};
+    this._model = model;
+    this._data = new model.schema.DataClass(this, properties, model.name);
+    this._options = options;
 
-		this._isNew = true;
-	}
+    this._isNew = true;
+  }
 
-	get currentModel() {
-		return this._model;
-	}
+  get currentModel() {
+    return this._model;
+  }
 
-	model(name) {
-		return this._model.model(name);
-	}
+  model(name) {
+    return this._model.model(name);
+  }
 
-	get(path) {
-		return this._data.get(path);
-	}
+  get(path) {
+    return this._data.get(path);
+  }
 
-	set(path, value) {
-		this._data.set(path, value);
-		return this;
-	}
+  set(path, value) {
+    this._data.set(path, value);
+    return this;
+  }
 
-	get isNew() {
-		return this._isNew;
-	}
+  get isNew() {
+    return this._isNew;
+  }
 
-	isModified(path) {
-		return this._data.isModified(path);
-	}
+  isModified(path) {
+    return this._data.isModified(path);
+  }
 
-	setupData(properties) {
-		this._data.setupData(properties);
-		this._isNew = false;
-		return this;
-	}
+  setupData(properties) {
+    this._data.setupData(properties);
+    this._isNew = false;
+    return this;
+  }
 
-	toJSON(options) {
-		options = options || {};
+  toJSON(options = {}) {
+    if (typeof options.transform === 'function') {
+      const value = options.transform(this);
+      if (typeof value !== 'undefined') {
+        return value;
+      }
+    }
 
-		if(typeof options.transform === 'function') {
-			const value = options.transform(this);
-			if(typeof value !== 'undefined') {
-				return value;
-			}
-		}
+    if (typeof options.transformChild === 'function') {
+      options.transform = options.transformChild;
+      delete options.transformChild;
+    }
 
-		if(typeof options.transformChild === 'function') {
-			options.transform = options.transformChild;
-			delete options.transformChild;
-		}
+    return this._data.toJSON(options);
+  }
 
-		return this._data.toJSON(options);
-	}
+  toObject(options = {}) {
+    if (typeof options.transform === 'function') {
+      const value = options.transform(this);
+      if (typeof value !== 'undefined') {
+        return value;
+      }
+    }
 
-	toObject(options) {
-		options = options || {};
+    if (typeof options.transformChild === 'function') {
+      options.transform = options.transformChild;
+      delete options.transformChild;
+    }
 
-		if(typeof options.transform === 'function') {
-			const value = options.transform(this);
-			if(typeof value !== 'undefined') {
-				return value;
-			}
-		}
+    return this._data.toObject(options);
+  }
 
-		if(typeof options.transformChild === 'function') {
-			options.transform = options.transformChild;
-			delete options.transformChild;
-		}
+  forEach(returnType, fn) {
+    return this._data.forEach(returnType, fn);
+  }
 
-		return this._data.toObject(options);
-	}
+  save(options, callback) {
+    if (typeof options === 'function') {
+      callback = options;
+      options = {};
+    }
 
-	forEach(returnType, fn) {
-		return this._data.forEach(returnType, fn);
-	}
+    options = options || {};
 
-	save(options, callback) {
-		if(typeof options === 'function') {
-			callback = options;
-			options = {};
-		}
+    const hooks = this._model.schema.hooks;
+    hooks.execPre('validate', this, error => {
+      if (error) {
+        return callback(error);
+      }
 
-		options = options || {};
+      hooks.execPre('save', this, error2 => {
+        if (error2) {
+          return callback(error2);
+        }
 
-		var hooks = this._model.schema.hooks;
-		hooks.execPre('validate', this, error => {
-			if(error) {
-				return callback(error);
-			}			
+        if (this.isNew) {
+          const properties = this.toObject({
+            metadata: true,
+            create: true
+          });
 
-			hooks.execPre('save', this, error => {
-				if(error) {
-					return callback(error);
-				}
+          const model = this._model;
+          const q = model.create(properties);
 
-				if(this.isNew) {
-					const properties = this.toObject({
-						metadata: true,
-						create: true
-					});
+          if (model.isEdge) {
+            const from = this.from();
+            const to = this.to();
 
-					const model = this._model;
-					const q = model.create(properties);
+            if (from) {
+              q.from(from);
+            }
 
-					if(model.isEdge) {
-						const from = this.from();
-						const to = this.to();
+            if (to) {
+              q.to(to);
+            }
+          }
 
-						if(from) {
-							q.from(from);
-						}
+          q.options(options)
+            .exec((error3, user) => {
+              if (error3) {
+                return callback(error3);
+              }
 
-						if(to) {
-							q.to(to);
-						}
-					}
+              this.setupData(user.toJSON({
+                metadata: true
+              }));
 
-					q.options(options)
-						.exec((error, user) => {
-						if(error) {
-							return callback(error);
-						}
+              callback(null, this);
+            });
 
-						this.setupData(user.toJSON({
-							metadata: true
-						}));
+          return null;
+        }
 
-						callback(null, this);
-					});
+        const properties = this.toObject({
+          metadata: true,
+          modified: true,
+          update: true
+        });
 
-					return;
-				}
+        this._model.update(this, properties, options).exec((err) => {
+          if (err) {
+            return callback(err);
+          }
 
-				const properties = this.toObject({
-					metadata: true,
-					modified: true,
-					update: true
-				});
+          this.setupData(properties);
+          callback(null, this);
+        });
+      });
+    });
+  }
 
-				this._model.update(this, properties, options).exec((err, total) => {
-					if(err) {
-						return callback(err);
-					}
+  remove(callback) {
+    const model = this._model;
+    const hooks = model.schema.hooks;
 
-					this.setupData(properties);
-					callback(null, this);
-				});
-			});
-		});
-	}
+    if (this.isNew) {
+      return callback(null, this);
+    }
 
-	remove(callback) {
-		var model = this._model;
-		var hooks = model.schema.hooks;
+    hooks.execPre('remove', this, (error) => {
+      if (error) {
+        return callback(error);
+      }
 
-		if(this.isNew) {
-			return callback(null, this);
-		}
+      model.remove(this, callback);
+    });
+  }
 
-		hooks.execPre('remove', this, (error) => {
-			if(error) {
-				return callback(error);
-			}
+  static get isDocumentClass() {
+    return true;
+  }
 
-			model.remove(this, callback);
-		});
-	}
+  static findById(id, callback) {
+    return this.findOne(id, callback);
+  }
 
-	static get isDocumentClass() {
-		return true;
-	}
+  static findOne(conditions, callback) {
+    return this.currentModel
+      .findOne(conditions, callback);
+  }
 
-	static findById(id, callback) {
-		return this.findOne(id, callback);
-	}
+  static find(conditions, callback) {
+    return this.currentModel
+      .find(conditions, callback);
+  }
 
-	static findOne(conditions, callback) {
-		return this.currentModel
-			.findOne(conditions, callback);
-	}
+  static findOneAndUpdate(conditions, doc, options, callback) {
+    return this.currentModel
+      .findOneAndUpdate(conditions, doc, options, callback);
+  }
 
-	static find(conditions, callback) {
-		return this.currentModel
-			.find(conditions, callback);
-	}
+  static create(properties, options, callback) {
+    if (typeof options === 'function') {
+      callback = options;
+      options = {};
+    }
 
-	static findOneAndUpdate(conditions, doc, options, callback) {
-		return this.currentModel
-			.findOneAndUpdate(conditions, doc, options, callback);
-	}
+    options = options || {};
 
-	static create(properties, options, callback) {
-		if(typeof options === 'function') {
-			callback = options;
-			options = {};
-		}
+    return new this(properties, options)
+      .save(callback);
+  }
 
-		options = options || {};
+  static update(conditions, doc, options, callback) {
+    return this.currentModel
+      .update(conditions, doc, options, callback);
+  }
 
-		return new this(properties, options)
-			.save(callback);
-	}
+  static remove(conditions, callback) {
+    return this.currentModel
+      .remove(conditions, callback);
+  }
 
-	static update(conditions, doc, options, callback) {
-		return this.currentModel
-			.update(conditions, doc, options, callback);
-	}
+  static createClass(model) {
+    class DocumentModel extends Document {
+      constructor(properties) {
+        super(model, properties);
+      }
 
-	static remove(conditions, callback) {
-		return this.currentModel
-			.remove(conditions, callback);
-	}
+      /**
+      Frized api mongoose
+      */
+      static model(modelName) {
+        return model.model(modelName);
+      }
 
-	static createClass (model) {
-		class DocumentModel extends Document {
-			constructor(properties) {
-				super(model, properties);
-			}
+      /**
+      Frized api mongoose
+      */
+      static get modelName() {
+        return model.name;
+      }
 
-			/**
-			Frized api mongoose
-			*/
-			static model(modelName) {
-				return model.model(modelName);
-			}
+      static get currentModel() {
+        return model;
+      }
+    }
 
-			/**
-			Frized api mongoose
-			*/
-			static get modelName() {
-				return model.name;
-			}
+    const schema = model.schema;
 
-			static get currentModel() {
-				return model;
-			}
+    // add basic data getters and setters
+    schema.traverse(function(fieldName) {
+      Object.defineProperty(DocumentModel.prototype, fieldName, {
+        enumerable: true,
+        configurable: true,
+        get: function() {
+          return this.get(fieldName);
+        },
+        set: function(value) {
+          this.set(fieldName, value);
+          return this;
+        }
+      });
+    });
 
-		};
+    // add methods
+    Object.keys(schema.methods).forEach(function(methodName) {
+      const fn = schema.methods[methodName];
+      DocumentModel.prototype[methodName] = fn;
+    });
 
-		var schema = model.schema;
+    // add statics
+    Object.keys(schema.statics).forEach(function(staticName) {
+      const fn = schema.statics[staticName];
+      DocumentModel[staticName] = fn;
+    });
 
-		//add basic data getters and setters
-		schema.traverse(function(fieldName, fieldOptions) {
-			Object.defineProperty(DocumentModel.prototype, fieldName, {
-				enumerable: true,
-				configurable: true,
-				get: function() {
-					return this.get(fieldName);
-				},
-				set: function(value) {
-					this.set(fieldName, value);
-					return this;
-				}
-			});
-		});
-
-		//add methods
-		for(var methodName in schema.methods) {
-			var fn = schema.methods[methodName];
-			DocumentModel.prototype[methodName] = fn;
-		}
-
-		//add statics
-		for(var staticName in schema.statics) {
-			var fn = schema.statics[staticName];
-			DocumentModel[staticName] = fn;
-		}
-
-		return DocumentModel;
-	}
+    return DocumentModel;
+  }
 }

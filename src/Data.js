@@ -1,275 +1,269 @@
 import _ from 'lodash';
 import debug from 'debug';
 import VirtualType from './types/Virtual';
-import Schema from './schemas/Schema';
 import Mixed from './types/Mixed';
 
 const log = debug('orientose:data');
 
 export default class Data {
-	constructor(holder, schema, properties, className, mainData) {
-		properties = properties || {};
-		mainData = mainData || this;
+  constructor(holder, schema, properties, className, mainData) {
+    properties = properties || {};
+    mainData = mainData || this;
 
-		this._holder = holder;
-		this._schema = schema;
-		this._data = {};
-		this._className = className;
-		this._mainData = mainData;	
+    this._holder = holder;
+    this._schema = schema;
+    this._data = {};
+    this._className = className;
+    this._mainData = mainData;
 
-		schema.traverse((propName, prop) => {
-			this._data[propName] = new prop.schemaType(this, prop, propName, mainData);
-		});	
+    schema.traverse((propName, prop) => {
+      this._data[propName] = new prop.SchemaType(this, prop, propName, mainData);
+    });
 
-		this.set(properties);
-	}
+    this.set(properties);
+  }
 
-	forEach(returnType, fn) {
-		if(typeof returnType === 'function') {
-			fn = returnType;
-			returnType = false;
-		}
+  forEach(returnType, fn) {
+    if (typeof returnType === 'function') {
+      fn = returnType;
+      returnType = false;
+    }
 
-		Object.keys(this._data).forEach(key => {
-			var value = returnType 
-				? this._data[key]
-				: this.get(key);
-			fn(value, key);
-		});
-	}
+    Object.keys(this._data).forEach(key => {
+      const value = returnType
+        ? this._data[key]
+        : this.get(key);
+      fn(value, key);
+    });
+  }
 
-	toJSON(options) {
-		var json = {};
+  toJSON(options) {
+    const json = {};
 
-		options = options || {};
+    options = options || {};
 
-		Object.keys(this._data).forEach(propName => {
-			var prop = this._data[propName];
+    Object.keys(this._data).forEach(propName => {
+      const prop = this._data[propName];
 
-			if(prop.isRecordID && options.recordID) {
-				var value = prop.toJSON(options);
-				if(typeof value === 'undefined') {
-					return;
-				}
+      if (prop.isRecordID && options.recordID) {
+        const value = prop.toJSON(options);
+        if (typeof value === 'undefined') {
+          return;
+        }
 
-				if(typeof options.recordID === 'string') {
-					propName = options.recordID
-				}
+        if (typeof options.recordID === 'string') {
+          propName = options.recordID;
+        }
 
-				json[propName] = value;
-				return;
-			} 
+        json[propName] = value;
+        return;
+      }
 
-			if(prop instanceof VirtualType && !options.virtuals) {
-				return;
-			}
+      if (prop instanceof VirtualType && !options.virtuals) {
+        return;
+      }
 
-			if(prop.isMetadata && !options.metadata) {
-				return;
-			}
+      if (prop.isMetadata && !options.metadata) {
+        return;
+      }
 
-			if(options.modified && !prop.isModified && !prop.hasDefault) {
-				return;
-			}
+      if (options.modified && !prop.isModified && !prop.hasDefault) {
+        return;
+      }
 
-			if(typeof options.exclude === 'function' && options.exclude(prop.name, prop.options)) {
-				return;
-			}
+      if (typeof options.exclude === 'function' && options.exclude(prop.name, prop.options)) {
+        return;
+      }
 
-			var value = prop.toJSON(options);
-			if(typeof value === 'undefined') {
-				return;
-			}
+      const value = prop.toJSON(options);
+      if (typeof value === 'undefined') {
+        return;
+      }
 
-			json[propName] = value;
-		});
+      json[propName] = value;
+    });
 
-		return json;
-	}
+    return json;
+  }
 
-	toObject(options) {
-		var json = {};
+  toObject(options = {}) {
+    const json = {};
 
-		options = options || {};
+    Object.keys(this._data).forEach(propName => {
+      const prop = this._data[propName];
 
-		Object.keys(this._data).forEach(propName => {
-			var prop = this._data[propName];
+      if (prop instanceof VirtualType && !options.virtuals) {
+        return;
+      }
 
-			if(prop instanceof VirtualType && !options.virtuals) {
-				return;
-			}
+      if (prop.isMetadata && !options.metadata) {
+        return;
+      }
 
-			if(prop.isMetadata && !options.metadata) {
-				return;
-			}
+      if (options.modified && !prop.isModified && !prop.hasDefault) {
+        return;
+      }
 
-			if(options.modified && !prop.isModified && !prop.hasDefault) {
-				return;
-			}
+      const value = prop.toObject(options);
+      if (typeof value === 'undefined') {
+        return;
+      }
 
-			var value = prop.toObject(options);
-			if(typeof value === 'undefined') {
-				return;
-			}
+      json[propName] = value;
+    });
 
-			json[propName] = value;
-		});
+    return json;
+  }
 
-		return json;
-	}
+  isModified(path) {
+    const pos = path.indexOf('.');
+    if (pos === -1) {
+      if (!this._data[path]) {
+        log('isModified Path not exists:' + path);
+        return null;
+      }
 
-	isModified(path) {
-		var pos = path.indexOf('.');
-		if(pos === -1) {
-			if(!this._data[path]) {
-				log('isModified Path not exists:' + path);
-				return;
-			}
-			
-			return this._data[path].isModified;
-		}
+      return this._data[path].isModified;
+    }
 
-		var currentKey = path.substr(0, pos);
-		var newPath = path.substr(pos + 1);
+    const currentKey = path.substr(0, pos);
+    const newPath = path.substr(pos + 1);
 
-		if(!this._data[currentKey]) {
-			log('isModified deep Path not exists:' + currentKey);
-			return;
-		}		
+    if (!this._data[currentKey]) {
+      log('isModified deep Path not exists:' + currentKey);
+      return null;
+    }
 
-		var data = this._data[currentKey].value;
-		if(!data || !data.get) {
-			return;
-			throw new Error('Subdocument is not defined or it is not an object');
-		}
+    const data = this._data[currentKey].value;
+    if (!data || !data.get) {
+      return null;
+    }
 
-		return data.get(newPath);		
-	}
+    return data.get(newPath);
+  }
 
-	get(path) {
-		var pos = path.indexOf('.');
-		if(pos === -1) {
-			if(!this._data[path]) {
-				log('get Path not exists:' + path);
-				return;
-			}
+  get(path) {
+    const pos = path.indexOf('.');
+    if (pos === -1) {
+      if (!this._data[path]) {
+        log('get Path not exists:' + path);
+        return void 0;
+      }
 
-			return this._data[path].value;
-		}
+      return this._data[path].value;
+    }
 
-		var currentKey = path.substr(0, pos);
-		var newPath = path.substr(pos + 1);
+    const currentKey = path.substr(0, pos);
+    const newPath = path.substr(pos + 1);
 
-		if(!this._data[currentKey]) {
-			log('get deep Path not exists:' + currentKey, path, newPath);
-			return;
-		}
+    if (!this._data[currentKey]) {
+      log('get deep Path not exists:' + currentKey, path, newPath);
+      return void 0;
+    }
 
-		var data = this._data[currentKey].value;
-		if(!data || !data.get) {
-			return;
-			throw new Error('Subdocument is not defined or it is not an object');
-		}
+    const data = this._data[currentKey].value;
+    if (!data || !data.get) {
+      return void 0;
+    }
 
-		return data.get(newPath);
-	}
+    return data.get(newPath);
+  }
 
-	set (path, value, setAsOriginal) {
-		if(_.isPlainObject(path)) {
-			Object.keys(path).forEach(key => {
-				this.set(key, path[key], setAsOriginal);
-			});
-			return this;
-		}
+  set(path, value, setAsOriginal) {
+    if (_.isPlainObject(path)) {
+      Object.keys(path).forEach(key => {
+        this.set(key, path[key], setAsOriginal);
+      });
+      return this;
+    }
 
-		var pos = path.indexOf('.');
-		if(pos === -1) {
-			var property = this._data[path];
-			if(!property) {
-				const schema = this._schema;
-				if(schema.isStrict) {
-					log('set Path not exists:' + path);
-					return this;
-				}
+    const pos = path.indexOf('.');
+    if (pos === -1) {
+      let property = this._data[path];
+      if (!property) {
+        const schema = this._schema;
+        if (schema.isStrict) {
+          log('set Path not exists:' + path);
+          return this;
+        }
 
-				property = this.defineMixedProperty(path);
-			}
-			
-			property.value = value;
+        property = this.defineMixedProperty(path);
+      }
 
-			if(setAsOriginal) {
-				property.setAsOriginal();
-			}
+      property.value = value;
 
-			return this;
-		}
+      if (setAsOriginal) {
+        property.setAsOriginal();
+      }
 
-		var currentKey = path.substr(0, pos);
-		var newPath = path.substr(pos + 1);
+      return this;
+    }
 
-		if(!this._data[currentKey]) {
-			log('set deep Path not exists:' + currentKey);
-			return;
-		}
+    const currentKey = path.substr(0, pos);
+    const newPath = path.substr(pos + 1);
 
-		var data = this._data[currentKey].value;
-		if(!data || !data.set) {
-			return this;
-			throw new Error('Subdocument is not defined or it is not an object');
-		}
+    if (!this._data[currentKey]) {
+      log('set deep Path not exists:' + currentKey);
+      return this;
+    }
 
-		data.set(newPath, value, setAsOriginal);
-		return this;
-	}
+    const data = this._data[currentKey].value;
+    if (!data || !data.set) {
+      return this;
+    }
 
-	setupData(properties) {
-		this.set(properties, null, true);
-	}
+    data.set(newPath, value, setAsOriginal);
+    return this;
+  }
 
-	defineMixedProperty(fieldName) {
-		const schema = this._schema;
+  setupData(properties) {
+    this.set(properties, null, true);
+  }
 
-		const prop = {
-			schema     : schema,
-			type       : Mixed,
-			schemaType : schema.convertType(Mixed),
-			options    : {}
-		};
+  defineMixedProperty(fieldName) {
+    const schema = this._schema;
 
-		const property = this._data[fieldName] = new prop.schemaType(this, prop, fieldName, this._mainData);
+    const prop = {
+      schema: schema,
+      type: Mixed,
+      SchemaType: schema.convertType(Mixed),
+      options: {}
+    };
 
-		//define getter and setter for holder
-		Object.defineProperty(this._holder, fieldName, {
-			enumerable: true,
-			configurable: true,
-			get: () => this.get(fieldName),
-			set: (value) => this.set(fieldName, value)
-		});
+    const property = this._data[fieldName] = new prop.SchemaType(this, prop, fieldName, this._mainData);
 
-		return property;
-	}
+    // define getter and setter for holder
+    Object.defineProperty(this._holder, fieldName, {
+      enumerable: true,
+      configurable: true,
+      get: () => this.get(fieldName),
+      set: (value) => this.set(fieldName, value)
+    });
 
-	static createClass(schema) {
-		class DataClass extends Data {
-			constructor (holder, properties, className, mainData) {
-				super(holder, schema, properties, className, mainData);
-			}
-		};
+    return property;
+  }
 
-		//define properties
-		schema.traverse(function(fieldName) {
-			Object.defineProperty(DataClass.prototype, fieldName, {
-				enumerable: true,
-				configurable: true,
-				get: function () {
-					return this.get(fieldName);
-				},
-				set: function(value) {
-					return this.set(fieldName, value);
-				}
-			});
-		});
+  static createClass(schema) {
+    class DataClass extends Data {
+      constructor(holder, properties, className, mainData) {
+        super(holder, schema, properties, className, mainData);
+      }
+    }
 
-		return DataClass;
-	}
+    // define properties
+    schema.traverse(function(fieldName) {
+      Object.defineProperty(DataClass.prototype, fieldName, {
+        enumerable: true,
+        configurable: true,
+        get: function() {
+          return this.get(fieldName);
+        },
+        set: function(value) {
+          return this.set(fieldName, value);
+        }
+      });
+    });
+
+    return DataClass;
+  }
 }

@@ -11,7 +11,7 @@ var _get = function get(object, property, receiver) { var desc = Object.getOwnPr
 var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
 Object.defineProperty(exports, '__esModule', {
-	value: true
+  value: true
 });
 
 var _EventEmitter2 = require('events');
@@ -24,55 +24,53 @@ var _Type = require('../types/index');
 
 var _Type2 = _interopRequireWildcard(_Type);
 
-var _Document = require('../Document');
-
-var _Document2 = _interopRequireWildcard(_Document);
-
 var SchemaBase = (function (_EventEmitter) {
-	function SchemaBase(options) {
-		_classCallCheck(this, SchemaBase);
+  function SchemaBase() {
+    var options = arguments[0] === undefined ? {} : arguments[0];
 
-		_get(Object.getPrototypeOf(SchemaBase.prototype), 'constructor', this).call(this);
+    _classCallCheck(this, SchemaBase);
 
-		this._props = {};
-		this._options = options || {};
-	}
+    _get(Object.getPrototypeOf(SchemaBase.prototype), 'constructor', this).call(this);
 
-	_inherits(SchemaBase, _EventEmitter);
+    this._props = {};
+    this._options = options;
+  }
 
-	_createClass(SchemaBase, [{
-		key: 'options',
-		get: function () {
-			return this._options;
-		}
-	}, {
-		key: 'convertType',
-		value: function convertType(type) {
-			if (!type) {
-				throw new Error('Type is not defined');
-			} else if (type.isSchemaType) {
-				return type;
-			} else if (type instanceof SchemaBase) {
-				return _Type2['default'].Object;
-			} else if (type.isDocumentClass) {
-				return _Type2['default'].Linked;
-			} else if (_import2['default'].isArray(type)) {
-				return _Type2['default'].Array;
-			} else if (type === String) {
-				return _Type2['default'].String;
-			} else if (type === Number) {
-				return _Type2['default'].Number;
-			} else if (type === Boolean) {
-				return _Type2['default'].Boolean;
-			} else if (type === Date) {
-				return _Type2['default'].Date;
-			}
+  _inherits(SchemaBase, _EventEmitter);
 
-			throw new Error('Unrecognized type');
-		}
-	}]);
+  _createClass(SchemaBase, [{
+    key: 'options',
+    get: function () {
+      return this._options;
+    }
+  }, {
+    key: 'convertType',
+    value: function convertType(type) {
+      if (!type) {
+        throw new Error('Type is not defined');
+      } else if (type.isSchemaType) {
+        return type;
+      } else if (type instanceof SchemaBase) {
+        return _Type2['default'].Object;
+      } else if (type.isDocumentClass) {
+        return _Type2['default'].Linked;
+      } else if (_import2['default'].isArray(type)) {
+        return _Type2['default'].Array;
+      } else if (type === String) {
+        return _Type2['default'].String;
+      } else if (type === Number) {
+        return _Type2['default'].Number;
+      } else if (type === Boolean) {
+        return _Type2['default'].Boolean;
+      } else if (type === Date) {
+        return _Type2['default'].Date;
+      }
 
-	return SchemaBase;
+      throw new Error('Unrecognized type');
+    }
+  }]);
+
+  return SchemaBase;
 })(_EventEmitter2.EventEmitter);
 
 exports['default'] = SchemaBase;

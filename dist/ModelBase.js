@@ -9,40 +9,40 @@ var _get = function get(object, property, receiver) { var desc = Object.getOwnPr
 var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
 Object.defineProperty(exports, '__esModule', {
-	value: true
+  value: true
 });
 
 var _EventEmitter2 = require('events');
 
 var ModelBase = (function (_EventEmitter) {
-	function ModelBase(name, options) {
-		_classCallCheck(this, ModelBase);
+  function ModelBase(name, options) {
+    _classCallCheck(this, ModelBase);
 
-		_get(Object.getPrototypeOf(ModelBase.prototype), 'constructor', this).call(this);
+    _get(Object.getPrototypeOf(ModelBase.prototype), 'constructor', this).call(this);
 
-		if (!name) {
-			throw new Error('Model name is not defined');
-		}
+    if (!name) {
+      throw new Error('Model name is not defined');
+    }
 
-		this._name = name;
-		this._options = options || {};
-	}
+    this._name = name;
+    this._options = options || {};
+  }
 
-	_inherits(ModelBase, _EventEmitter);
+  _inherits(ModelBase, _EventEmitter);
 
-	_createClass(ModelBase, [{
-		key: 'name',
-		get: function () {
-			return this._name;
-		}
-	}, {
-		key: 'options',
-		get: function () {
-			return this._options;
-		}
-	}]);
+  _createClass(ModelBase, [{
+    key: 'name',
+    get: function () {
+      return this._name;
+    }
+  }, {
+    key: 'options',
+    get: function () {
+      return this._options;
+    }
+  }]);
 
-	return ModelBase;
+  return ModelBase;
 })(_EventEmitter2.EventEmitter);
 
 exports['default'] = ModelBase;

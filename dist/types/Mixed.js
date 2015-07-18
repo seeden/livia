@@ -9,7 +9,7 @@ var _createClass = (function () { function defineProperties(target, props) { for
 var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
 Object.defineProperty(exports, '__esModule', {
-	value: true
+  value: true
 });
 
 var _Type2 = require('./Type');
@@ -17,39 +17,39 @@ var _Type2 = require('./Type');
 var _Type3 = _interopRequireWildcard(_Type2);
 
 var MixedType = (function (_Type) {
-	function MixedType() {
-		_classCallCheck(this, MixedType);
+  function MixedType() {
+    _classCallCheck(this, MixedType);
 
-		if (_Type != null) {
-			_Type.apply(this, arguments);
-		}
-	}
+    if (_Type != null) {
+      _Type.apply(this, arguments);
+    }
+  }
 
-	_inherits(MixedType, _Type);
+  _inherits(MixedType, _Type);
 
-	_createClass(MixedType, [{
-		key: '_serialize',
-		value: function _serialize(value) {
-			return value;
-		}
-	}, {
-		key: '_deserialize',
-		value: function _deserialize(value) {
-			return value;
-		}
-	}], [{
-		key: 'toString',
-		value: function toString() {
-			return 'Mixed';
-		}
-	}, {
-		key: 'getDbType',
-		value: function getDbType() {
-			return void 0;
-		}
-	}]);
+  _createClass(MixedType, [{
+    key: '_serialize',
+    value: function _serialize(value) {
+      return value;
+    }
+  }, {
+    key: '_deserialize',
+    value: function _deserialize(value) {
+      return value;
+    }
+  }], [{
+    key: 'toString',
+    value: function toString() {
+      return 'Mixed';
+    }
+  }, {
+    key: 'getDbType',
+    value: function getDbType() {
+      return void 0;
+    }
+  }]);
 
-	return MixedType;
+  return MixedType;
 })(_Type3['default']);
 
 exports['default'] = MixedType;

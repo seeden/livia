@@ -1,42 +1,42 @@
 import Type from './Type';
 
 export default class StringType extends Type {
-	_serialize(value) {
-		var options = this.options;
-		var val = String(value);
+  _serialize(value) {
+    const options = this.options;
+    let val = String(value);
 
-		if(options.enum && options.enum.indexOf(val) === -1) {
-			throw new Error('Value is not from enum values');
-		}
+    if (options.enum && options.enum.indexOf(val) === -1) {
+      throw new Error('Value is not from enum values');
+    }
 
-		if(options.minlength && val.length<options.minlength) {
-			throw new Error('The value "' + val + '" is shorter than the minimum length ' + options.minlength);
-		}	
+    if (options.minlength && val.length < options.minlength) {
+      throw new Error('The value "' + val + '" is shorter than the minimum length ' + options.minlength);
+    }
 
-		if(val && options.maxlength && val.length>options.maxlength) {
-			throw new Error('The value "' + val + '" is longer than the maxlength length ' + options.maxlength);
-		}				
+    if (val && options.maxlength && val.length > options.maxlength) {
+      throw new Error('The value "' + val + '" is longer than the maxlength length ' + options.maxlength);
+    }
 
-		if(val && options.trim) {
-			val = val.trim();
-		}
+    if (val && options.trim) {
+      val = val.trim();
+    }
 
-		if(val && options.uppercase) {
-			val = val.toUpperCase();
-		}
+    if (val && options.uppercase) {
+      val = val.toUpperCase();
+    }
 
-		return val;
-	}
+    return val;
+  }
 
-	_deserialize(value) {
-		return value;
-	}
+  _deserialize(value) {
+    return value;
+  }
 
-	static toString() {
-		return 'String';
-	}
+  static toString() {
+    return 'String';
+  }
 
-	static getDbType() {
-		return 'STRING';
-	}
+  static getDbType() {
+    return 'STRING';
+  }
 }

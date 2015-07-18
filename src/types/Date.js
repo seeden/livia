@@ -1,35 +1,34 @@
 import Type from './Type';
-import _ from 'lodash';
 
 export default class DateType extends Type {
-	_serialize(value) {
-		if(value instanceof Number || 'number' === typeof value || String(value) == Number(value)) {
-			value = Number(value);
-		}
-		
-		return new Date(value);
-	}
+  _serialize(value) {
+    if (value instanceof Number || typeof value === 'number' || String(value) == Number(value)) {
+      value = Number(value);
+    }
 
-	_deserialize(value) {
-		return value;
-	}
+    return new Date(value);
+  }
 
-	toJSON(options) {
-		return this.toObject();
-	}
+  _deserialize(value) {
+    return value;
+  }
 
-	toObject(options) {
-		var value = this.value;
-		return (value && value.getTime) 
-			? value.getTime()
-			: value;
-	}	
+  toJSON(options) {
+    return this.toObject(options);
+  }
 
-	static toString() {
-		return 'Date';
-	}		
+  toObject() {
+    const value = this.value;
+    return (value && value.getTime)
+      ? value.getTime()
+      : value;
+  }
 
-	static getDbType() {
-		return 'DATETIME';
-	}
+  static toString() {
+    return 'Date';
+  }
+
+  static getDbType() {
+    return 'DATETIME';
+  }
 }

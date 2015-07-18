@@ -1,28 +1,28 @@
 import Type from './Type';
 
 export default class BooleanType extends Type {
-	_serialize(value) {
-		if(typeof value === 'string') {
-			value = value.toLowerCase();
-			if(value==='true' || value==='yes' || value==='1') {
-				return true;
-			} 
-			
-			return false;
-		}
+  _serialize(value) {
+    if (typeof value === 'string') {
+      value = value.toLowerCase();
+      if (value === 'true' || value === 'yes' || value === '1') {
+        return true;
+      }
 
-		return Boolean(value);
-	}
+      return false;
+    }
 
-	_deserialize(value) {
-		return value;
-	}
+    return Boolean(value);
+  }
 
-	static toString() {
-		return 'Boolean';
-	}	
+  _deserialize(value) {
+    return value;
+  }
 
-	static getDbType() {
-		return 'BOOLEAN';
-	}
+  static toString() {
+    return 'Boolean';
+  }
+
+  static getDbType() {
+    return 'BOOLEAN';
+  }
 }
