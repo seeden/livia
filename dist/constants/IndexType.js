@@ -1,16 +1,16 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
-
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
 var _keymirror = require('keymirror');
 
-var _keymirror2 = _interopRequireWildcard(_keymirror);
+var _keymirror2 = _interopRequireDefault(_keymirror);
 
-exports['default'] = _keymirror2['default']({
+exports['default'] = (0, _keymirror2['default'])({
   BASIC: null, // basic index
   DICTIONARY: null, // dictionary index
   FULLTEXT: null, // text index

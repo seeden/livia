@@ -1,4 +1,5 @@
 import Type from './Type';
+import extend from 'node.extend';
 
 /*
 TODO decide about prons and cons
@@ -109,15 +110,25 @@ export default class ArrayType extends Type {
     });
   }
 
-  toJSON(options) {
+  toJSON(options = {}) {
+    let opt = options;
+    if (options.update && options.modified) {
+      opt = extend({}, options, { modified: false });
+    }
+
     return this._value.map(function(item) {
-      return item.toJSON(options);
+      return item.toJSON(opt);
     });
   }
 
-  toObject(options) {
+  toObject(options = {}) {
+    let opt = options;
+    if (options.update && options.modified) {
+      opt = extend({}, options, { modified: false });
+    }
+
     return this._value.map(function(item) {
-      return item.toObject(options);
+      return item.toObject(opt);
     });
   }
 

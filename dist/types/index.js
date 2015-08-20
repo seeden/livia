@@ -1,56 +1,56 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
-
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
 var _Type = require('./Type');
 
-var _Type2 = _interopRequireWildcard(_Type);
+var _Type2 = _interopRequireDefault(_Type);
 
-var _BooleanType = require('./Boolean');
+var _Boolean = require('./Boolean');
 
-var _BooleanType2 = _interopRequireWildcard(_BooleanType);
+var _Boolean2 = _interopRequireDefault(_Boolean);
 
-var _NumberType = require('./Number');
+var _Number = require('./Number');
 
-var _NumberType2 = _interopRequireWildcard(_NumberType);
+var _Number2 = _interopRequireDefault(_Number);
 
-var _StringType = require('./String');
+var _String = require('./String');
 
-var _StringType2 = _interopRequireWildcard(_StringType);
+var _String2 = _interopRequireDefault(_String);
 
-var _ArrayType = require('./Array');
+var _Array = require('./Array');
 
-var _ArrayType2 = _interopRequireWildcard(_ArrayType);
+var _Array2 = _interopRequireDefault(_Array);
 
-var _ObjectType = require('./Object');
+var _Object = require('./Object');
 
-var _ObjectType2 = _interopRequireWildcard(_ObjectType);
+var _Object2 = _interopRequireDefault(_Object);
 
-var _MixedType = require('./Mixed');
+var _Mixed = require('./Mixed');
 
-var _MixedType2 = _interopRequireWildcard(_MixedType);
+var _Mixed2 = _interopRequireDefault(_Mixed);
 
-var _DateType = require('./Date');
+var _Date = require('./Date');
 
-var _DateType2 = _interopRequireWildcard(_DateType);
+var _Date2 = _interopRequireDefault(_Date);
 
-var _LinkedType = require('./Linked');
+var _Linked = require('./Linked');
 
-var _LinkedType2 = _interopRequireWildcard(_LinkedType);
+var _Linked2 = _interopRequireDefault(_Linked);
 
 exports['default'] = {
-  Type: _Type2['default'],
-  Boolean: _BooleanType2['default'],
-  String: _StringType2['default'],
-  Number: _NumberType2['default'],
-  Date: _DateType2['default'],
-  Array: _ArrayType2['default'],
-  Mixed: _MixedType2['default'],
-  Object: _ObjectType2['default'],
-  Linked: _LinkedType2['default']
+  'Type': _Type2['default'],
+  'Boolean': _Boolean2['default'],
+  'String': _String2['default'],
+  'Number': _Number2['default'],
+  'Date': _Date2['default'],
+  'Array': _Array2['default'],
+  'Mixed': _Mixed2['default'],
+  'Object': _Object2['default'],
+  'Linked': _Linked2['default']
 };
 module.exports = exports['default'];

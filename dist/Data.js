@@ -1,36 +1,36 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
-
-var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
-var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
-
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
-var _import = require('lodash');
+var _get = function get(_x2, _x3, _x4) { var _again = true; _function: while (_again) { var object = _x2, property = _x3, receiver = _x4; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x2 = parent; _x3 = property; _x4 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
-var _import2 = _interopRequireWildcard(_import);
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var _lodash = require('lodash');
+
+var _lodash2 = _interopRequireDefault(_lodash);
 
 var _debug = require('debug');
 
-var _debug2 = _interopRequireWildcard(_debug);
+var _debug2 = _interopRequireDefault(_debug);
 
-var _VirtualType = require('./types/Virtual');
+var _typesVirtual = require('./types/Virtual');
 
-var _VirtualType2 = _interopRequireWildcard(_VirtualType);
+var _typesVirtual2 = _interopRequireDefault(_typesVirtual);
 
-var _Mixed = require('./types/Mixed');
+var _typesMixed = require('./types/Mixed');
 
-var _Mixed2 = _interopRequireWildcard(_Mixed);
+var _typesMixed2 = _interopRequireDefault(_typesMixed);
 
-var log = _debug2['default']('orientose:data');
+var log = (0, _debug2['default'])('orientose:data');
 
 var Data = (function () {
   function Data(holder, schema, properties, className, mainData) {
@@ -95,7 +95,7 @@ var Data = (function () {
           return;
         }
 
-        if (prop instanceof _VirtualType2['default'] && !options.virtuals) {
+        if (prop instanceof _typesVirtual2['default'] && !options.virtuals) {
           return;
         }
 
@@ -126,14 +126,14 @@ var Data = (function () {
     value: function toObject() {
       var _this4 = this;
 
-      var options = arguments[0] === undefined ? {} : arguments[0];
+      var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
       var json = {};
 
       Object.keys(this._data).forEach(function (propName) {
         var prop = _this4._data[propName];
 
-        if (prop instanceof _VirtualType2['default'] && !options.virtuals) {
+        if (prop instanceof _typesVirtual2['default'] && !options.virtuals) {
           return;
         }
 
@@ -216,7 +216,7 @@ var Data = (function () {
     value: function set(path, value, setAsOriginal) {
       var _this5 = this;
 
-      if (_import2['default'].isPlainObject(path)) {
+      if (_lodash2['default'].isPlainObject(path)) {
         Object.keys(path).forEach(function (key) {
           _this5.set(key, path[key], setAsOriginal);
         });
@@ -275,8 +275,8 @@ var Data = (function () {
 
       var prop = {
         schema: schema,
-        type: _Mixed2['default'],
-        SchemaType: schema.convertType(_Mixed2['default']),
+        type: _typesMixed2['default'],
+        SchemaType: schema.convertType(_typesMixed2['default']),
         options: {}
       };
 
@@ -300,18 +300,18 @@ var Data = (function () {
     key: 'createClass',
     value: function createClass(schema) {
       var DataClass = (function (_Data) {
+        _inherits(DataClass, _Data);
+
         function DataClass(holder, properties, className, mainData) {
           _classCallCheck(this, DataClass);
 
           _get(Object.getPrototypeOf(DataClass.prototype), 'constructor', this).call(this, holder, schema, properties, className, mainData);
         }
 
-        _inherits(DataClass, _Data);
-
+        // define properties
         return DataClass;
       })(Data);
 
-      // define properties
       schema.traverse(function (fieldName) {
         Object.defineProperty(DataClass.prototype, fieldName, {
           enumerable: true,

@@ -132,4 +132,15 @@ export default class Model extends ModelBase {
   remove(conditions, callback) {
     return this.query().remove(conditions, callback);
   }
+
+  findOneAndRemove(conditions, options, callback) {
+    if (typeof options === 'function') {
+      callback = options;
+      options = {};
+    }
+
+    options.limit = 1;
+
+    return this.query().remove(conditions).options(1).exec(callback);
+  }
 }

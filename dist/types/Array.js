@@ -1,22 +1,26 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
-
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
-var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
-
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x3, _x4, _x5) { var _again = true; _function: while (_again) { var object = _x3, property = _x4, receiver = _x5; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x3 = parent; _x4 = property; _x5 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 var _Type2 = require('./Type');
 
-var _Type3 = _interopRequireWildcard(_Type2);
+var _Type3 = _interopRequireDefault(_Type2);
+
+var _nodeExtend = require('node.extend');
+
+var _nodeExtend2 = _interopRequireDefault(_nodeExtend);
 
 /*
 TODO decide about prons and cons
@@ -41,6 +45,8 @@ class ArrayExt extends Array {
 }*/
 
 var ArrayType = (function (_Type) {
+  _inherits(ArrayType, _Type);
+
   function ArrayType(data, prop, name, mainData) {
     _classCallCheck(this, ArrayType);
 
@@ -53,8 +59,6 @@ var ArrayType = (function (_Type) {
     this._original = [];
     this._value = [];
   }
-
-  _inherits(ArrayType, _Type);
 
   _createClass(ArrayType, [{
     key: 'createItem',
@@ -88,11 +92,6 @@ var ArrayType = (function (_Type) {
       return this;
     }
   }, {
-    key: 'length',
-    get: function () {
-      return this._value.length;
-    }
-  }, {
     key: 'set',
     value: function set(index, value) {
       this._value[index] = this.createItem(value);
@@ -118,11 +117,12 @@ var ArrayType = (function (_Type) {
   }, {
     key: 'splice',
     value: function splice() {
+      var value = this._value;
+
       for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
         args[_key] = arguments[_key];
       }
 
-      var value = this._value;
       value.splice.apply(value, args).map(function (item) {
         return item.value;
       });
@@ -152,21 +152,40 @@ var ArrayType = (function (_Type) {
     }
   }, {
     key: 'toJSON',
-    value: function toJSON(options) {
+    value: function toJSON() {
+      var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+      var opt = options;
+      if (options.update && options.modified) {
+        opt = (0, _nodeExtend2['default'])({}, options, { modified: false });
+      }
+
       return this._value.map(function (item) {
-        return item.toJSON(options);
+        return item.toJSON(opt);
       });
     }
   }, {
     key: 'toObject',
-    value: function toObject(options) {
+    value: function toObject() {
+      var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+      var opt = options;
+      if (options.update && options.modified) {
+        opt = (0, _nodeExtend2['default'])({}, options, { modified: false });
+      }
+
       return this._value.map(function (item) {
-        return item.toObject(options);
+        return item.toObject(opt);
       });
     }
   }, {
+    key: 'length',
+    get: function get() {
+      return this._value.length;
+    }
+  }, {
     key: 'isModified',
-    get: function () {
+    get: function get() {
       if (this._original.length !== this._value.length) {
         return true;
       }
@@ -208,11 +227,6 @@ var ArrayType = (function (_Type) {
       };
     }
   }, {
-    key: 'isArray',
-    get: function () {
-      return true;
-    }
-  }, {
     key: 'isEmbedded',
     value: function isEmbedded(prop) {
       var dbType = ArrayType.getDbType(prop);
@@ -238,6 +252,11 @@ var ArrayType = (function (_Type) {
 
       var item = prop.item;
       return item.SchemaType.getEmbeddedSchema(item);
+    }
+  }, {
+    key: 'isArray',
+    get: function get() {
+      return true;
     }
   }]);
 

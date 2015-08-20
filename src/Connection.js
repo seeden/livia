@@ -8,7 +8,7 @@ export default class Connection extends EventEmitter {
     this._adapter = adapter;
     this._models = new Map();
 
-    adapter.connect(callback);
+    adapter.prepare(callback);
   }
 
   get native() {

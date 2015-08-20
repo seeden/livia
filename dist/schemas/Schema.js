@@ -1,62 +1,64 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
-
-var _defineProperty = function (obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: key == null || typeof Symbol == 'undefined' || key.constructor !== Symbol, configurable: true, writable: true }); };
-
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
-var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
-
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
-var _Kareem = require('kareem');
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _Kareem2 = _interopRequireWildcard(_Kareem);
+var _get = function get(_x5, _x6, _x7) { var _again = true; _function: while (_again) { var object = _x5, property = _x6, receiver = _x7; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x5 = parent; _x6 = property; _x7 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
-var _import = require('lodash');
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _import2 = _interopRequireWildcard(_import);
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _kareem = require('kareem');
+
+var _kareem2 = _interopRequireDefault(_kareem);
+
+var _lodash = require('lodash');
+
+var _lodash2 = _interopRequireDefault(_lodash);
 
 var _debug = require('debug');
 
-var _debug2 = _interopRequireWildcard(_debug);
+var _debug2 = _interopRequireDefault(_debug);
 
 var _SchemaBase2 = require('./SchemaBase');
 
-var _SchemaBase3 = _interopRequireWildcard(_SchemaBase2);
+var _SchemaBase3 = _interopRequireDefault(_SchemaBase2);
 
-var _VirtualType = require('../types/Virtual');
+var _typesVirtual = require('../types/Virtual');
 
-var _VirtualType2 = _interopRequireWildcard(_VirtualType);
+var _typesVirtual2 = _interopRequireDefault(_typesVirtual);
 
 var _Data = require('../Data');
 
-var _Data2 = _interopRequireWildcard(_Data);
+var _Data2 = _interopRequireDefault(_Data);
 
-var _MixedType = require('../types/Mixed');
+var _typesMixed = require('../types/Mixed');
 
-var _MixedType2 = _interopRequireWildcard(_MixedType);
+var _typesMixed2 = _interopRequireDefault(_typesMixed);
 
-var _IndexType = require('../constants/IndexType');
+var _constantsIndexType = require('../constants/IndexType');
 
-var _IndexType2 = _interopRequireWildcard(_IndexType);
+var _constantsIndexType2 = _interopRequireDefault(_constantsIndexType);
 
-var _extend = require('node.extend');
+var _nodeExtend = require('node.extend');
 
-var _extend2 = _interopRequireWildcard(_extend);
+var _nodeExtend2 = _interopRequireDefault(_nodeExtend);
 
-var log = _debug2['default']('orientose:schema');
+var log = (0, _debug2['default'])('orientose:schema');
 
 var RESERVED_FIELDS = ['model', 'isNew', 'isModified', 'get', 'set'];
 
 var Schema = (function (_SchemaBase) {
+  _inherits(Schema, _SchemaBase);
+
   function Schema(props, options) {
     _classCallCheck(this, Schema);
 
@@ -68,41 +70,21 @@ var Schema = (function (_SchemaBase) {
     this._paths = {};
     this._indexes = {};
     this._virtuals = {};
-    this._hooks = new _Kareem2['default']();
+    this._hooks = new _kareem2['default']();
 
     this._dataClass = null;
 
     this.add(props);
   }
 
-  _inherits(Schema, _SchemaBase);
-
   _createClass(Schema, [{
-    key: 'extendClassName',
-    get: function () {
-      return this._options.extend;
-    }
-  }, {
-    key: 'hooks',
-    get: function () {
-      return this._hooks;
-    }
-  }, {
-    key: 'DataClass',
-    get: function () {
-      if (!this._dataClass) {
-        this._dataClass = _Data2['default'].createClass(this);
-      }
-      return this._dataClass;
-    }
-  }, {
     key: 'add',
     value: function add() {
       var _this = this;
 
-      var props = arguments[0] === undefined ? {} : arguments[0];
+      var props = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-      if (!_import2['default'].isObject(props)) {
+      if (!_lodash2['default'].isObject(props)) {
         throw new Error('Props is not an object');
       }
 
@@ -128,7 +110,7 @@ var Schema = (function (_SchemaBase) {
   }, {
     key: 'index',
     value: function index(properties) {
-      var options = arguments[1] === undefined ? {} : arguments[1];
+      var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
       if (typeof properties === 'string') {
         properties = _defineProperty({}, properties, 1);
@@ -141,21 +123,21 @@ var Schema = (function (_SchemaBase) {
 
       var firstProp = properties[propNames[0]];
       var name = options.name || this._indexName(properties);
-      var type = options.type || _IndexType2['default'].BASIC;
+      var type = options.type || _constantsIndexType2['default'].BASIC;
 
       if (type === true) {
-        type = _IndexType2['default'].BASIC;
+        type = _constantsIndexType2['default'].BASIC;
       } else if (type === 'text' || type === 'fulltext' || options.text || firstProp === 'text') {
-        type = _IndexType2['default'].FULLTEXT;
+        type = _constantsIndexType2['default'].FULLTEXT;
       } else if (type === '2dsphere') {
-        type = _IndexType2['default'].SPATIAL;
+        type = _constantsIndexType2['default'].SPATIAL;
       }
 
       if (this._indexes[name]) {
         throw new Error('Index with name ${name} is already defined.');
       }
 
-      this._indexes[name] = _extend2['default']({}, options, {
+      this._indexes[name] = (0, _nodeExtend2['default'])({}, options, {
         properties: properties,
         type: type,
         nullValuesIgnored: !options.sparse
@@ -172,11 +154,6 @@ var Schema = (function (_SchemaBase) {
     key: 'getIndex',
     value: function getIndex(name) {
       return this._indexes[name];
-    }
-  }, {
-    key: 'indexNames',
-    get: function () {
-      return Object.keys(this._indexes);
     }
   }, {
     key: 'get',
@@ -222,7 +199,7 @@ var Schema = (function (_SchemaBase) {
   }, {
     key: 'setPath',
     value: function setPath(path) {
-      var options = arguments[1] === undefined ? {} : arguments[1];
+      var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
       // ignore {_id: false}
       if (options === false) {
@@ -294,7 +271,7 @@ var Schema = (function (_SchemaBase) {
     value: function method(name, fn) {
       var _this2 = this;
 
-      if (_import2['default'].isObject(name)) {
+      if (_lodash2['default'].isObject(name)) {
         Object.keys(name).forEach(function (index) {
           return _this2.methods[index] = name[index];
         });
@@ -309,7 +286,7 @@ var Schema = (function (_SchemaBase) {
     value: function _static(name, fn) {
       var _this3 = this;
 
-      if (_import2['default'].isObject(name)) {
+      if (_lodash2['default'].isObject(name)) {
         Object.keys(name).forEach(function (index) {
           return _this3.statics[index] = name[index];
         });
@@ -321,18 +298,8 @@ var Schema = (function (_SchemaBase) {
     }
   }, {
     key: 'virtual',
-    value: (function (_virtual) {
-      function virtual(_x) {
-        return _virtual.apply(this, arguments);
-      }
-
-      virtual.toString = function () {
-        return _virtual.toString();
-      };
-
-      return virtual;
-    })(function (path) {
-      var options = arguments[1] === undefined ? {} : arguments[1];
+    value: function virtual(path) {
+      var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
       var pos = path.indexOf('.');
       if (pos !== -1) {
@@ -358,7 +325,7 @@ var Schema = (function (_SchemaBase) {
       }
 
       var virtual = this._virtuals[path] = {
-        SchemaType: _VirtualType2['default'],
+        SchemaType: _typesVirtual2['default'],
         options: options,
         getset: {
           get: function get(fn) {
@@ -373,7 +340,7 @@ var Schema = (function (_SchemaBase) {
       };
 
       return virtual.getset;
-    })
+    }
   }, {
     key: 'alias',
     value: function alias(to, from) {
@@ -407,33 +374,23 @@ var Schema = (function (_SchemaBase) {
     }
   }, {
     key: 'path',
-    value: (function (_path) {
-      function path(_x2, _x3) {
-        return _path.apply(this, arguments);
-      }
-
-      path.toString = function () {
-        return _path.toString();
-      };
-
-      return path;
-    })(function (path) {
+    value: function path(_path) {
       for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
         args[_key - 1] = arguments[_key];
       }
 
       if (args.length === 0) {
-        var prop = this.getPath(path, true);
+        var prop = this.getPath(_path, true);
         if (!prop) {
           return prop;
         }
 
-        return Schema.toMongoose(prop, path);
+        return Schema.toMongoose(prop, _path);
       }
 
-      this.setPath(path, args[0]);
+      this.setPath(_path, args[0]);
       return this;
-    })
+    }
   }, {
     key: 'traverse',
     value: function traverse(fn, traverseChildren, parentPath) {
@@ -504,21 +461,21 @@ var Schema = (function (_SchemaBase) {
       }
 
       // if it is one of our types
-      if (_import2['default'].isFunction(options)) {
+      if (_lodash2['default'].isFunction(options)) {
         options = {
           type: options
         };
       }
 
       // 1. convert objects
-      if (_import2['default'].isPlainObject(options) && (!options.type || options.type.type)) {
+      if (_lodash2['default'].isPlainObject(options) && (!options.type || options.type.type)) {
         options = {
           type: options
         };
       }
 
       // 2. prepare array
-      if (_import2['default'].isArray(options)) {
+      if (_lodash2['default'].isArray(options)) {
         options = {
           type: options
         };
@@ -529,8 +486,8 @@ var Schema = (function (_SchemaBase) {
       var SubSchema = this.getSubdocumentSchemaConstructor();
 
       // create schema from plain object
-      if (_import2['default'].isPlainObject(type)) {
-        type = Object.keys(type).length ? new SubSchema(type) : _MixedType2['default'];
+      if (_lodash2['default'].isPlainObject(type)) {
+        type = Object.keys(type).length ? new SubSchema(type) : _typesMixed2['default'];
       }
 
       var normalised = {
@@ -540,12 +497,35 @@ var Schema = (function (_SchemaBase) {
         options: options
       };
 
-      if (_import2['default'].isArray(type)) {
-        var itemOptions = type.length ? type[0] : { type: _MixedType2['default'] };
+      if (_lodash2['default'].isArray(type)) {
+        var itemOptions = type.length ? type[0] : { type: _typesMixed2['default'] };
         normalised.item = this.normalizeOptions(itemOptions);
       }
 
       return normalised;
+    }
+  }, {
+    key: 'extendClassName',
+    get: function get() {
+      return this._options.extend;
+    }
+  }, {
+    key: 'hooks',
+    get: function get() {
+      return this._hooks;
+    }
+  }, {
+    key: 'DataClass',
+    get: function get() {
+      if (!this._dataClass) {
+        this._dataClass = _Data2['default'].createClass(this);
+      }
+      return this._dataClass;
+    }
+  }, {
+    key: 'indexNames',
+    get: function get() {
+      return Object.keys(this._indexes);
     }
   }], [{
     key: 'toMongoose',

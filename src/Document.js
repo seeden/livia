@@ -215,6 +215,11 @@ export default class Document extends EventEmitter {
       .remove(conditions, callback);
   }
 
+  static findOneAndRemove(conditions, options, callback) {
+    return this.currentModel
+      .findOneAndRemove(conditions, options, callback);
+  }
+
   static createClass(model) {
     class DocumentModel extends Document {
       constructor(properties) {

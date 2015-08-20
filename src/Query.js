@@ -268,8 +268,13 @@ export default class Query {
 
   scalar(useScalar, castFn) {
     this._scalar = !!useScalar;
-    this._scalarCast = castFn;
 
+    this.scalarCast(castFn);
+    return this;
+  }
+
+  scalarCast(castFn) {
+    this._scalarCast = castFn;
     return this;
   }
 
@@ -354,21 +359,14 @@ export default class Query {
       options.return = 'AFTER @this';
     }
 
-    if (typeof options.fetchPlan !== 'undefined') {
-      this.fetchPlan(options.fetchPlan);
-    }
+    Object.keys(options).forEach((key) => {
+      if(typeof this[key] !== 'function') {
+        return;
+      }
 
-    if (typeof options.return !== 'undefined') {
-      this.return(options.return);
-    }
-
-    if (typeof options.limit !== 'undefined') {
-      this.limit(options.limit);
-    }
-
-    if (typeof options.scalar !== 'undefined') {
-      this.scalar(options.scalar, options.scalarCast);
-    }
+      const value = options[key];
+      this[key](value);
+    });
 
     return this;
   }

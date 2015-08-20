@@ -1,38 +1,38 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
-
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
-var _import = require('lodash');
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _import2 = _interopRequireWildcard(_import);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _extend = require('node.extend');
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var _extend2 = _interopRequireWildcard(_extend);
+var _lodash = require('lodash');
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+var _nodeExtend = require('node.extend');
+
+var _nodeExtend2 = _interopRequireDefault(_nodeExtend);
 
 var _Document = require('./Document');
 
-var _Document2 = _interopRequireWildcard(_Document);
+var _Document2 = _interopRequireDefault(_Document);
 
-var _LogicOperators = require('./constants/LogicOperators');
+var _constantsLogicOperators = require('./constants/LogicOperators');
 
-var _LogicOperators2 = _interopRequireWildcard(_LogicOperators);
+var _constantsLogicOperators2 = _interopRequireDefault(_constantsLogicOperators);
 
-var _ComparisonOperators = require('./constants/ComparisonOperators');
+var _constantsComparisonOperators = require('./constants/ComparisonOperators');
 
-var _ComparisonOperators2 = _interopRequireWildcard(_ComparisonOperators);
+var _constantsComparisonOperators2 = _interopRequireDefault(_constantsComparisonOperators);
 
-var _ChildrenOperators = require('./constants/ChildrenOperators');
+var _constantsChildrenOperators = require('./constants/ChildrenOperators');
 
-var _ChildrenOperators2 = _interopRequireWildcard(_ChildrenOperators);
+var _constantsChildrenOperators2 = _interopRequireDefault(_constantsChildrenOperators);
 
 var Operation = {
   DELETE: 'DELETE',
@@ -84,21 +84,6 @@ var Query = (function () {
   }
 
   _createClass(Query, [{
-    key: 'model',
-    get: function () {
-      return this._model;
-    }
-  }, {
-    key: 'schema',
-    get: function () {
-      return this.model.schema;
-    }
-  }, {
-    key: 'native',
-    get: function () {
-      throw new Error('Please override native method');
-    }
-  }, {
     key: 'paramify',
     value: function paramify(key) {
       return key.replace(/([^A-Za-z0-9])/g, '');
@@ -116,9 +101,9 @@ var Query = (function () {
   }, {
     key: 'addParams',
     value: function addParams() {
-      var params = arguments[0] === undefined ? {} : arguments[0];
+      var params = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-      _extend2['default'](this._params, params);
+      (0, _nodeExtend2['default'])(this._params, params);
     }
   }, {
     key: 'createComparisonQuery',
@@ -145,7 +130,7 @@ var Query = (function () {
         return value;
       } else if (value instanceof _Document2['default']) {
         return value.toObject();
-      } else if (_import2['default'].isArray(value)) {
+      } else if (_lodash2['default'].isArray(value)) {
         return value.map(function (item) {
           return _this.prepareValue(item);
         });
@@ -166,7 +151,7 @@ var Query = (function () {
           return;
         }
 
-        if (_LogicOperators2['default'][propertyName]) {
+        if (_constantsLogicOperators2['default'][propertyName]) {
           var _ret = (function () {
             var subQueries = [];
 
@@ -190,7 +175,7 @@ var Query = (function () {
               };
             }
 
-            var query = '(' + subQueries.join(') ' + _LogicOperators2['default'][propertyName] + ' (') + ')';
+            var query = '(' + subQueries.join(') ' + _constantsLogicOperators2['default'][propertyName] + ' (') + ')';
             items.push(query);
             return {
               v: undefined
@@ -202,7 +187,7 @@ var Query = (function () {
 
         value = _this2.prepareValue(value);
 
-        if (!_import2['default'].isPlainObject(value)) {
+        if (!_lodash2['default'].isPlainObject(value)) {
           var query = _this2.createComparisonQuery(propertyName, '=', value);
           items.push(query);
           return;
@@ -212,17 +197,17 @@ var Query = (function () {
           var operationValue = _this2.prepareValue(value[operation]);
           var query = null;
 
-          if (_ChildrenOperators2['default'][operation]) {
+          if (_constantsChildrenOperators2['default'][operation]) {
             var currentPath = parentPath ? parentPath + '.' + propertyName : propertyName;
-            var subOperation = _ChildrenOperators2['default'][operation];
+            var subOperation = _constantsChildrenOperators2['default'][operation];
             var subQuery = _this2.queryLanguage(operationValue, currentPath);
             if (!subQuery) {
               return;
             }
 
-            query = '' + propertyName + ' ' + subOperation + ' (' + subQuery + ')';
-          } else if (_ComparisonOperators2['default'][operation]) {
-            query = _this2.createComparisonQuery(propertyName, _ComparisonOperators2['default'][operation], operationValue);
+            query = propertyName + ' ' + subOperation + ' (' + subQuery + ')';
+          } else if (_constantsComparisonOperators2['default'][operation]) {
+            query = _this2.createComparisonQuery(propertyName, _constantsComparisonOperators2['default'][operation], operationValue);
           }
 
           if (!query) {
@@ -241,17 +226,7 @@ var Query = (function () {
     }
   }, {
     key: 'operator',
-    value: (function (_operator) {
-      function operator(_x, _x2) {
-        return _operator.apply(this, arguments);
-      }
-
-      operator.toString = function () {
-        return _operator.toString();
-      };
-
-      return operator;
-    })(function (operator, conditions) {
+    value: function operator(_operator, conditions) {
       var query = this.queryLanguage(conditions);
 
       if (!query) {
@@ -259,12 +234,12 @@ var Query = (function () {
       }
 
       this._operators.push({
-        type: operator,
+        type: _operator,
         query: query
       });
 
       return this;
-    })
+    }
   }, {
     key: 'condExec',
     value: function condExec(conditions, callback) {
@@ -278,11 +253,11 @@ var Query = (function () {
         conditions = void 0;
       }
 
-      if (_import2['default'].isObject(conditions)) {
+      if (_lodash2['default'].isObject(conditions)) {
         if (conditions instanceof _Document2['default']) {
           this._target = conditions;
           conditions = void 0;
-        } else if (conditions && !_import2['default'].isPlainObject(conditions)) {
+        } else if (conditions && !_lodash2['default'].isPlainObject(conditions)) {
           this._target = conditions;
           conditions = void 0;
         } else {
@@ -321,23 +296,13 @@ var Query = (function () {
     }
   }, {
     key: 'operation',
-    value: (function (_operation) {
-      function operation(_x3) {
-        return _operation.apply(this, arguments);
-      }
-
-      operation.toString = function () {
-        return _operation.toString();
-      };
-
-      return operation;
-    })(function (operation) {
-      if (this._operation && this._operation !== operation) {
+    value: function operation(_operation) {
+      if (this._operation && this._operation !== _operation) {
         throw new Error('Operation is already set');
       }
-      this._operation = operation;
+      this._operation = _operation;
       return this;
-    })
+    }
   }, {
     key: 'set',
     value: function set(doc) {
@@ -354,8 +319,14 @@ var Query = (function () {
     key: 'scalar',
     value: function scalar(useScalar, castFn) {
       this._scalar = !!useScalar;
-      this._scalarCast = castFn;
 
+      this.scalarCast(castFn);
+      return this;
+    }
+  }, {
+    key: 'scalarCast',
+    value: function scalarCast(castFn) {
+      this._scalarCast = castFn;
       return this;
     }
   }, {
@@ -366,36 +337,16 @@ var Query = (function () {
     }
   }, {
     key: 'limit',
-    value: (function (_limit) {
-      function limit(_x4) {
-        return _limit.apply(this, arguments);
-      }
-
-      limit.toString = function () {
-        return _limit.toString();
-      };
-
-      return limit;
-    })(function (limit) {
-      this._limit = limit;
+    value: function limit(_limit) {
+      this._limit = _limit;
       return this;
-    })
+    }
   }, {
     key: 'skip',
-    value: (function (_skip) {
-      function skip(_x5) {
-        return _skip.apply(this, arguments);
-      }
-
-      skip.toString = function () {
-        return _skip.toString();
-      };
-
-      return skip;
-    })(function (skip) {
-      this._skip = skip;
+    value: function skip(_skip) {
+      this._skip = _skip;
       return this;
-    })
+    }
   }, {
     key: 'from',
     value: function from(value) {
@@ -422,22 +373,12 @@ var Query = (function () {
     }
   }, {
     key: 'sort',
-    value: (function (_sort) {
-      function sort(_x6) {
-        return _sort.apply(this, arguments);
-      }
-
-      sort.toString = function () {
-        return _sort.toString();
-      };
-
-      return sort;
-    })(function (sort) {
-      if (typeof sort === 'string') {
+    value: function sort(_sort) {
+      if (typeof _sort === 'string') {
         (function () {
           var order = {};
 
-          var parts = sort.split(' ');
+          var parts = _sort.split(' ');
           parts.forEach(function (part) {
             var direction = 1;
             if (part[0] === '-') {
@@ -448,19 +389,19 @@ var Query = (function () {
             order[part] = direction;
           });
 
-          sort = order;
+          _sort = order;
         })();
       }
 
-      this._sort = sort;
+      this._sort = _sort;
       return this;
-    })
-  }, {
-    key: 'create',
+    }
 
     /**
     update(doc, [callback])
     */
+  }, {
+    key: 'create',
     value: function create(doc, callback) {
       if (typeof doc === 'function') {
         callback = doc;
@@ -471,51 +412,36 @@ var Query = (function () {
     }
   }, {
     key: 'options',
-    value: (function (_options) {
-      function options() {
-        return _options.apply(this, arguments);
+    value: function options() {
+      var _this3 = this;
+
+      var _options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+      if (_options.multi) {
+        _options.limit = null;
       }
 
-      options.toString = function () {
-        return _options.toString();
-      };
-
-      return options;
-    })(function () {
-      var options = arguments[0] === undefined ? {} : arguments[0];
-
-      if (options.multi) {
-        options.limit = null;
+      if (_options['new']) {
+        _options['return'] = 'AFTER @this';
       }
 
-      if (options['new']) {
-        options['return'] = 'AFTER @this';
-      }
+      Object.keys(_options).forEach(function (key) {
+        if (typeof _this3[key] !== 'function') {
+          return;
+        }
 
-      if (typeof options.fetchPlan !== 'undefined') {
-        this.fetchPlan(options.fetchPlan);
-      }
-
-      if (typeof options['return'] !== 'undefined') {
-        this['return'](options['return']);
-      }
-
-      if (typeof options.limit !== 'undefined') {
-        this.limit(options.limit);
-      }
-
-      if (typeof options.scalar !== 'undefined') {
-        this.scalar(options.scalar, options.scalarCast);
-      }
+        var value = _options[key];
+        _this3[key](value);
+      });
 
       return this;
-    })
-  }, {
-    key: 'update',
+    }
 
     /**
     update(conditions, update, [options], [callback])
     */
+  }, {
+    key: 'update',
     value: function update(conditions, doc, options, callback) {
       if (typeof options === 'function') {
         callback = options;
@@ -528,31 +454,46 @@ var Query = (function () {
 
       return this.operation(Operation.UPDATE).set(doc).scalar(true).limit(1).options(options).condExec(conditions, callback);
     }
-  }, {
-    key: 'find',
 
     // find([conditions], [callback])
+  }, {
+    key: 'find',
     value: function find(conditions, callback) {
       return this.operation(Operation.SELECT).condExec(conditions, callback);
     }
-  }, {
-    key: 'findOne',
 
     // findOne([criteria], [callback])
+  }, {
+    key: 'findOne',
     value: function findOne(conditions, callback) {
       return this.operation(Operation.SELECT).limit(1).first(true).condExec(conditions, callback);
     }
-  }, {
-    key: 'remove',
 
     // remove([conditions], [callback])
+  }, {
+    key: 'remove',
     value: function remove(conditions, callback) {
       return this.operation(Operation.DELETE).scalar(true).condExec(conditions, callback);
     }
   }, {
     key: 'exec',
-    value: function exec() {
+    value: function exec() /*callback*/{
       throw new Error('Override exec method for query');
+    }
+  }, {
+    key: 'model',
+    get: function get() {
+      return this._model;
+    }
+  }, {
+    key: 'schema',
+    get: function get() {
+      return this.model.schema;
+    }
+  }, {
+    key: 'native',
+    get: function get() {
+      throw new Error('Please override native method');
     }
   }]);
 
@@ -563,4 +504,3 @@ exports['default'] = Query;
 
 Query.Operation = Operation;
 module.exports = exports['default'];
-/*callback*/
