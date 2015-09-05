@@ -298,9 +298,7 @@ export default class Schema extends SchemaBase {
     return this;
   }
 
-  plugin(pluginFn, options) {
-    options = options || {};
-
+  plugin(pluginFn, options = {}) {
     pluginFn(this, options);
     return this;
   }

@@ -6,8 +6,7 @@ import Mixed from './types/Mixed';
 const log = debug('orientose:data');
 
 export default class Data {
-  constructor(holder, schema, properties, className, mainData) {
-    properties = properties || {};
+  constructor(holder, schema, properties = {}, className, mainData) {
     mainData = mainData || this;
 
     this._holder = holder;
@@ -37,10 +36,8 @@ export default class Data {
     });
   }
 
-  toJSON(options) {
+  toJSON(options = {}) {
     const json = {};
-
-    options = options || {};
 
     Object.keys(this._data).forEach(propName => {
       const prop = this._data[propName];

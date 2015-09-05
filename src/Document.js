@@ -4,6 +4,10 @@ export default class Document extends EventEmitter {
   constructor(model, properties = {}, options = {}) {
     super();
 
+    if (!model) {
+      throw new Error('Model is undefined');
+    }
+
     this._model = model;
     this._data = new model.schema.DataClass(this, properties, model.name);
     this._options = options;
@@ -78,13 +82,11 @@ export default class Document extends EventEmitter {
     return this._data.forEach(returnType, fn);
   }
 
-  save(options, callback) {
+  save(options = {}, callback) {
     if (typeof options === 'function') {
       callback = options;
       options = {};
     }
-
-    options = options || {};
 
     const hooks = this._model.schema.hooks;
     hooks.execPre('validate', this, error => {
@@ -193,13 +195,11 @@ export default class Document extends EventEmitter {
       .findOneAndUpdate(conditions, doc, options, callback);
   }
 
-  static create(properties, options, callback) {
+  static create(properties, options = {}, callback) {
     if (typeof options === 'function') {
       callback = options;
       options = {};
     }
-
-    options = options || {};
 
     return new this(properties, options)
       .save(callback);

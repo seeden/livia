@@ -25,6 +25,10 @@ var Document = (function (_EventEmitter) {
 
     _get(Object.getPrototypeOf(Document.prototype), 'constructor', this).call(this);
 
+    if (!model) {
+      throw new Error('Model is undefined');
+    }
+
     this._model = model;
     this._data = new model.schema.DataClass(this, properties, model.name);
     this._options = options;
@@ -108,12 +112,12 @@ var Document = (function (_EventEmitter) {
     value: function save(options, callback) {
       var _this = this;
 
+      if (options === undefined) options = {};
+
       if (typeof options === 'function') {
         callback = options;
         options = {};
       }
-
-      options = options || {};
 
       var hooks = this._model.schema.hooks;
       hooks.execPre('validate', this, function (error) {
@@ -233,12 +237,12 @@ var Document = (function (_EventEmitter) {
   }, {
     key: 'create',
     value: function create(properties, options, callback) {
+      if (options === undefined) options = {};
+
       if (typeof options === 'function') {
         callback = options;
         options = {};
       }
-
-      options = options || {};
 
       return new this(properties, options).save(callback);
     }

@@ -7,7 +7,11 @@ import Document from './Document';
 const log = debug('orientose:model');
 
 export default class Model extends ModelBase {
-  constructor(name, schema, connection, options, callback) {
+  constructor(name, schema, connection, options = {}, callback = function() {}) {
+    if (!name) {
+      throw new Error('Name is undefined');
+    }
+
     if (!schema instanceof Schema) {
       throw new Error('This is not a schema');
     }
@@ -21,14 +25,7 @@ export default class Model extends ModelBase {
       options = {};
     }
 
-    options = options || {};
-
-    options.dropUnusedProperties = options.dropUnusedProperties || false;
-    options.dropUnusedIndexes = options.dropUnusedIndexes || false;
-
     super(name, options);
-
-    callback = callback || function() {};
 
     this._schema = schema;
     this._connection = connection;
@@ -97,13 +94,11 @@ export default class Model extends ModelBase {
     return this.query().create(doc, callback);
   }
 
-  update(conditions, doc, options, callback) {
+  update(conditions, doc, options = {}, callback) {
     if (typeof options === 'function') {
       callback = options;
       options = {};
     }
-
-    options = options || {};
 
     return this.query().update(conditions, doc, options, callback);
   }
@@ -116,13 +111,12 @@ export default class Model extends ModelBase {
     return this.query().findOne(conditions, callback);
   }
 
-  findOneAndUpdate(conditions, doc, options, callback) {
+  findOneAndUpdate(conditions, doc, options = {}, callback) {
     if (typeof options === 'function') {
       callback = options;
       options = {};
     }
 
-    options = options || {};
     options.scalar = false;
     options.new = true;
 
@@ -133,7 +127,7 @@ export default class Model extends ModelBase {
     return this.query().remove(conditions, callback);
   }
 
-  findOneAndRemove(conditions, options, callback) {
+  findOneAndRemove(conditions, options = {}, callback) {
     if (typeof options === 'function') {
       callback = options;
       options = {};
@@ -141,6 +135,6 @@ export default class Model extends ModelBase {
 
     options.limit = 1;
 
-    return this.query().remove(conditions).options(1).exec(callback);
+    return this.query().remove(conditions).options(options).exec(callback);
   }
 }

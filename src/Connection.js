@@ -27,14 +27,11 @@ export default class Connection extends EventEmitter {
     return this.adapter.query(model, options);
   }
 
-  model(name, schema, options, callback) {
+  model(name, schema, options = {}, callback = function() {}) {
     if (typeof options === 'function') {
       callback = options;
       options = {};
     }
-
-    options = options || {};
-    callback = callback || function() {};
 
     if (typeof schema === 'undefined') {
       if (!this._models.has(name)) {

@@ -50,6 +50,7 @@ export default class Query {
 
     this._operators = [];
     this._set = null;
+    this._upsert = false;
   }
 
   get model() {
@@ -290,6 +291,11 @@ export default class Query {
 
   skip(skip) {
     this._skip = skip;
+    return this;
+  }
+
+  upsert(value) {
+    this._upsert = value;
     return this;
   }
 

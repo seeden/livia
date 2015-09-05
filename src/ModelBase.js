@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 
 export default class ModelBase extends EventEmitter {
-  constructor(name, options) {
+  constructor(name, options = {}) {
     super();
 
     if (!name) {
@@ -9,7 +9,7 @@ export default class ModelBase extends EventEmitter {
     }
 
     this._name = name;
-    this._options = options || {};
+    this._options = options;
   }
 
   get name() {

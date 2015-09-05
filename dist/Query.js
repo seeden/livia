@@ -81,6 +81,7 @@ var Query = (function () {
 
     this._operators = [];
     this._set = null;
+    this._upsert = false;
   }
 
   _createClass(Query, [{
@@ -345,6 +346,12 @@ var Query = (function () {
     key: 'skip',
     value: function skip(_skip) {
       this._skip = _skip;
+      return this;
+    }
+  }, {
+    key: 'upsert',
+    value: function upsert(value) {
+      this._upsert = value;
       return this;
     }
   }, {

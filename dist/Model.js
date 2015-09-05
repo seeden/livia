@@ -6,7 +6,7 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x3, _x4, _x5) { var _again = true; _function: while (_again) { var object = _x3, property = _x4, receiver = _x5; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x3 = parent; _x4 = property; _x5 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -39,10 +39,17 @@ var log = (0, _debug2['default'])('orientose:model');
 var Model = (function (_ModelBase) {
   _inherits(Model, _ModelBase);
 
-  function Model(name, schema, connection, options, callback) {
+  function Model(name, schema, connection) {
     var _this = this;
 
+    var options = arguments.length <= 3 || arguments[3] === undefined ? {} : arguments[3];
+    var callback = arguments.length <= 4 || arguments[4] === undefined ? function () {} : arguments[4];
+
     _classCallCheck(this, Model);
+
+    if (!name) {
+      throw new Error('Name is undefined');
+    }
 
     if (!schema instanceof _schemasSchema2['default']) {
       throw new Error('This is not a schema');
@@ -57,14 +64,7 @@ var Model = (function (_ModelBase) {
       options = {};
     }
 
-    options = options || {};
-
-    options.dropUnusedProperties = options.dropUnusedProperties || false;
-    options.dropUnusedIndexes = options.dropUnusedIndexes || false;
-
     _get(Object.getPrototypeOf(Model.prototype), 'constructor', this).call(this, name, options);
-
-    callback = callback || function () {};
 
     this._schema = schema;
     this._connection = connection;
@@ -121,12 +121,12 @@ var Model = (function (_ModelBase) {
   }, {
     key: 'update',
     value: function update(conditions, doc, options, callback) {
+      if (options === undefined) options = {};
+
       if (typeof options === 'function') {
         callback = options;
         options = {};
       }
-
-      options = options || {};
 
       return this.query().update(conditions, doc, options, callback);
     }
@@ -143,12 +143,13 @@ var Model = (function (_ModelBase) {
   }, {
     key: 'findOneAndUpdate',
     value: function findOneAndUpdate(conditions, doc, options, callback) {
+      if (options === undefined) options = {};
+
       if (typeof options === 'function') {
         callback = options;
         options = {};
       }
 
-      options = options || {};
       options.scalar = false;
       options['new'] = true;
 
@@ -162,6 +163,8 @@ var Model = (function (_ModelBase) {
   }, {
     key: 'findOneAndRemove',
     value: function findOneAndRemove(conditions, options, callback) {
+      if (options === undefined) options = {};
+
       if (typeof options === 'function') {
         callback = options;
         options = {};
@@ -169,7 +172,7 @@ var Model = (function (_ModelBase) {
 
       options.limit = 1;
 
-      return this.query().remove(conditions).options(1).exec(callback);
+      return this.query().remove(conditions).options(options).exec(callback);
     }
   }, {
     key: 'DocumentClass',
