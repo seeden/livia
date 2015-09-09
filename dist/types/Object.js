@@ -18,69 +18,86 @@ var _Type2 = require('./Type');
 
 var _Type3 = _interopRequireDefault(_Type2);
 
+var _lodash = require('lodash');
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
 var ObjectType = (function (_Type) {
   _inherits(ObjectType, _Type);
 
-  function ObjectType() {
+  function ObjectType(data, prop, name, mainData) {
     _classCallCheck(this, ObjectType);
 
-    _get(Object.getPrototypeOf(ObjectType.prototype), 'constructor', this).apply(this, arguments);
+    _get(Object.getPrototypeOf(ObjectType.prototype), 'constructor', this).call(this, data, prop, name, mainData);
+
+    if (typeof this._default === 'undefined') {
+      this._default = {}; // MONGOOSE: default value
+    }
   }
 
   _createClass(ObjectType, [{
-    key: 'set',
-    value: function set(key, value) {
-      if (!this._value) {
-        var className = this.data._className;
-        var abstractClassName = _Type3['default'].computeAbstractClassName(className, this.name);
+    key: '_createData',
+    value: function _createData() {
+      var className = this.data._className;
+      var abstractClassName = _Type3['default'].computeAbstractClassName(className, this.name);
 
-        this._value = new this.schema.DataClass(this, {}, abstractClassName, this.mainData);
-      }
-
-      this._value[key] = value;
+      return new this.schema.DataClass(this, {}, abstractClassName, this.mainData);
     }
   }, {
     key: '_serialize',
     value: function _serialize(props) {
-      var _this = this;
+      if (!_lodash2['default'].isObject(props)) {
+        throw new Error('Property ' + this.name + ' value must be an object you gave: ' + props);
+      }
 
-      Object.keys(props).forEach(function (propName) {
-        return _this.set(propName, props[propName]);
+      var keys = Object.keys(props);
+      var value = this._createData();
+
+      keys.forEach(function (propName) {
+        value.set(propName, props[propName]);
       });
-      return this._value;
+
+      return value;
     }
   }, {
     key: '_deserialize',
-    value: function _deserialize() {
-      return this._value;
+    value: function _deserialize(value) {
+      return value;
     }
   }, {
-    key: 'toJSON',
-    value: function toJSON(options) {
-      var value = this.value;
-      return value ? value.toJSON(options) : value;
+    key: 'set',
+    value: function set(key, value) {
+      var before = this._value;
+      if (!this._value) {
+        this._value = this._createData();
+      }
+
+      try {
+        this._value.set(key, value);
+      } catch (e) {
+        this._value = before;
+        throw e;
+      }
     }
   }, {
-    key: 'toObject',
-    value: function toObject(options) {
-      var value = this.value;
-      return value ? value.toObject(options) : value;
+    key: 'get',
+    value: function get(path) {
+      var value = this.serializedValue;
+      if (!value) {
+        return void 0;
+      }
+
+      return value.get(path);
     }
   }, {
     key: 'schema',
-
-    /*
-    constructor(data, prop, name, mainData) {
-      super(data, prop, name, mainData);
-        //this._value = new this._schema.DataClass(this, {}, this._computeClassName(data, prop), mainData);
-    }*/
-
     get: function get() {
       return this.prop.type;
     }
   }, {
     key: 'isModified',
     get: function get() {
+      return true;
       if (!this._value) {
         return this.original !== this.value;
       }

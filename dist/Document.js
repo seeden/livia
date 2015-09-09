@@ -103,6 +103,11 @@ var Document = (function (_EventEmitter) {
       return this._data.toObject(options);
     }
   }, {
+    key: 'setAsOriginal',
+    value: function setAsOriginal() {
+      return this._data.setAsOriginal();
+    }
+  }, {
     key: 'forEach',
     value: function forEach(returnType, fn) {
       return this._data.forEach(returnType, fn);

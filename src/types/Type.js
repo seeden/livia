@@ -160,6 +160,14 @@ export default class Type {
     }, options.disableDefault);
   }
 
+  set(path, value) {
+    throw new Error('Set path is not supported by this type ');
+  }
+
+  get(path) {
+    throw new Error('Get path is not supported by this type ');
+  }
+
   static toString() {
     throw new Error('Method toString is not defined');
   }

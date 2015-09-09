@@ -4,6 +4,8 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -13,10 +15,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
-
-var _nodeExtend = require('node.extend');
-
-var _nodeExtend2 = _interopRequireDefault(_nodeExtend);
 
 var _Document = require('./Document');
 
@@ -104,7 +102,7 @@ var Query = (function () {
     value: function addParams() {
       var params = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-      (0, _nodeExtend2['default'])(this._params, params);
+      this._params = _extends({}, this._params, params);
     }
   }, {
     key: 'createComparisonQuery',

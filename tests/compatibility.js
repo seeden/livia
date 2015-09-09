@@ -402,10 +402,6 @@ describe('Mongoose compatibility', function() {
     schema.virtual('images.url').get(function() {
       return 123;
     });
-
-
-    //console.log(schema.path('images').schema);
-
   });
 
   it('should be able to create simple livia schema', function() {
@@ -473,5 +469,62 @@ describe('Query', function() {
     });
 
     q._operators[0].query.should.equal('providers CONTAINS (nameUID = :nameUID_op_1)');
+  });
+});
+
+describe('Linked model', function() {
+  let Profile = null
+
+  it('should be able to create a model', function() {
+    const schemaData = {
+      user: { type: UserLivia },
+      image: { type: String }
+    };
+
+    const ProfileModel = new Model('Profile', schemaData, {}, { ensure: false });
+    Profile = ProfileModel.DocumentClass;
+  });
+
+  it('should be able to create a simple linked doc', function() {
+    const profile = new Profile({
+      user: '1234',
+      image: 'path'
+    });
+
+    profile.user.should.equal('1234');
+  });
+
+  it('should be able to create a linked doc', function() {
+    const user = new UserLivia({});
+
+    const profile = new Profile({
+      user: user,
+      image: 'path'
+    });
+
+    should(profile.user instanceof UserLivia).equal(true);
+
+    const json = profile.toJSON();
+
+    json.user.name.should.equal('Zlatko');
+  });
+
+  it('should be able to create a linked doc from plain object', function() {
+    const user = new UserLivia({});
+
+    const profile = new Profile({
+      user: {
+        name: 'Adam'
+      },
+      image: 'path'
+    });
+
+    should(profile.user instanceof UserLivia).equal(true);
+
+    const json = profile.toJSON();
+    json.user.name.should.equal('Adam');
+
+    profile.set('user.name', 'Peter');
+    profile.get('user.name').should.equal('Peter');
   });
 });

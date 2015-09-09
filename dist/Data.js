@@ -71,6 +71,11 @@ var Data = (function () {
       });
     }
   }, {
+    key: 'toString',
+    value: function toString() {
+      return this.toJSON();
+    }
+  }, {
     key: 'toJSON',
     value: function toJSON() {
       var _this3 = this;
@@ -117,6 +122,11 @@ var Data = (function () {
           return;
         }
 
+        // MONGOOSE: empty object is undefined for parent
+        if (_lodash2['default'].isPlainObject(value) && !Object.keys(value).length) {
+          return;
+        }
+
         json[propName] = value;
       });
 
@@ -151,6 +161,11 @@ var Data = (function () {
           return;
         }
 
+        // MONGOOSE: empty object is undefined for parent
+        if (_lodash2['default'].isPlainObject(value) && !Object.keys(value).length) {
+          return;
+        }
+
         json[propName] = value;
       });
 
@@ -159,6 +174,17 @@ var Data = (function () {
   }, {
     key: 'isModified',
     value: function isModified(path) {
+      if (typeof path === 'undefined') {
+        var isModified = false;
+        this.forEach(true, function (prop) {
+          if (prop.isModified) {
+            isModified = true;
+          }
+        });
+
+        return isModified;
+      }
+
       var pos = path.indexOf('.');
       if (pos === -1) {
         if (!this._data[path]) {
@@ -177,7 +203,7 @@ var Data = (function () {
         return null;
       }
 
-      var data = this._data[currentKey].value;
+      var data = this._data[currentKey];
       if (!data || !data.get) {
         return null;
       }
@@ -205,12 +231,19 @@ var Data = (function () {
         return void 0;
       }
 
-      var data = this._data[currentKey].value;
+      var data = this._data[currentKey];
       if (!data || !data.get) {
         return void 0;
       }
 
       return data.get(newPath);
+    }
+  }, {
+    key: 'setAsOriginal',
+    value: function setAsOriginal() {
+      this.forEach(true, function (item) {
+        return item.setAsOriginal();
+      });
     }
   }, {
     key: 'set',
@@ -254,7 +287,7 @@ var Data = (function () {
         return this;
       }
 
-      var data = this._data[currentKey].value;
+      var data = this._data[currentKey];
       if (!data || !data.set) {
         return this;
       }

@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import extend from 'node.extend';
 import Document from './Document';
 import LogicOperators from './constants/LogicOperators';
 import ComparisonOperators from './constants/ComparisonOperators';
@@ -78,7 +77,10 @@ export default class Query {
   }
 
   addParams(params = {}) {
-    extend(this._params, params);
+    this._params = {
+      ...this._params,
+      ...params
+    };
   }
 
   createComparisonQuery(propertyName, operator, value) {

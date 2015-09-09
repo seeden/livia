@@ -38,48 +38,37 @@ var LinkedType = (function (_StringType) {
   _createClass(LinkedType, [{
     key: '_serialize',
     value: function _serialize(value) {
-      if (_lodash2['default'].isPlainObject(value)) {
-        var doc = this._value = this._value instanceof _Document2['default'] ? this._value : new this.options.type({});
-
-        doc.set(value);
-        return doc;
+      if (value instanceof _Document2['default']) {
+        return value;
+      } else if (_lodash2['default'].isPlainObject(value)) {
+        return new this.options.type(value);
       }
 
       return _get(Object.getPrototypeOf(LinkedType.prototype), '_serialize', this).call(this, value);
     }
   }, {
-    key: 'toJSON',
-    value: function toJSON(options) {
-      var value = this.value;
-      if (value instanceof _Document2['default']) {
-        return value.toJSON(options);
+    key: 'get',
+    value: function get(path) {
+      if (this._value instanceof _Document2['default']) {
+        return this._value.get(path);
       }
 
-      return _get(Object.getPrototypeOf(LinkedType.prototype), 'toJSON', this).call(this, options);
+      _get(Object.getPrototypeOf(LinkedType.prototype), 'get', this).call(this, path);
     }
   }, {
-    key: 'toObject',
-    value: function toObject(options) {
-      var value = this.value;
-      if (value instanceof _Document2['default']) {
-        return value.toObject(options);
+    key: 'set',
+    value: function set(path, value) {
+      if (this._value instanceof _Document2['default']) {
+        return this._value.set(path, value);
       }
 
-      return _get(Object.getPrototypeOf(LinkedType.prototype), 'toObject', this).call(this, options);
+      _get(Object.getPrototypeOf(LinkedType.prototype), 'set', this).call(this, path, value);
     }
   }, {
     key: 'isModified',
     get: function get() {
       if (this._value instanceof _Document2['default']) {
-        var isModified = false;
-
-        this._value.forEach(true, function (prop) {
-          if (prop.isModified) {
-            isModified = true;
-          }
-        });
-
-        return isModified;
+        return this._value.isModified();
       }
 
       return _get(Object.getPrototypeOf(LinkedType.prototype), 'isModified', this);

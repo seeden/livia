@@ -34,6 +34,10 @@ var _Document = require('./Document');
 
 var _Document2 = _interopRequireDefault(_Document);
 
+var _lodash = require('lodash');
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
 var log = (0, _debug2['default'])('orientose:model');
 
 var Model = (function (_ModelBase) {
@@ -49,6 +53,10 @@ var Model = (function (_ModelBase) {
 
     if (!name) {
       throw new Error('Name is undefined');
+    }
+
+    if (_lodash2['default'].isPlainObject(schema)) {
+      schema = new _schemasSchema2['default'](schema);
     }
 
     if (!schema instanceof _schemasSchema2['default']) {
@@ -109,6 +117,25 @@ var Model = (function (_ModelBase) {
       return new ModelClass({}).setupData(properties);
     }
   }, {
+    key: 'upsertFix',
+    value: function upsertFix(originalProps) {
+      var doc = this.createDocument(originalProps);
+
+      var updatedProps = doc.toObject({
+        metadata: true,
+        create: true
+      });
+
+      var props = {};
+
+      Object.keys(originalProps).forEach(function (key) {
+        var originalValue = originalProps[key];
+        var newValue = updatedProps[key];
+      });
+
+      return props;
+    }
+  }, {
     key: 'query',
     value: function query(options) {
       return this.connection.query(this, options);
@@ -126,6 +153,10 @@ var Model = (function (_ModelBase) {
       if (typeof options === 'function') {
         callback = options;
         options = {};
+      }
+
+      if (options.upsert) {
+        doc = upsertFix(doc);
       }
 
       return this.query().update(conditions, doc, options, callback);

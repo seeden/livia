@@ -4,6 +4,8 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(_x6, _x7, _x8) { var _again = true; _function: while (_again) { var object = _x6, property = _x7, receiver = _x8; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x6 = parent; _x7 = property; _x8 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
@@ -47,10 +49,6 @@ var _typesMixed2 = _interopRequireDefault(_typesMixed);
 var _constantsIndexType = require('../constants/IndexType');
 
 var _constantsIndexType2 = _interopRequireDefault(_constantsIndexType);
-
-var _nodeExtend = require('node.extend');
-
-var _nodeExtend2 = _interopRequireDefault(_nodeExtend);
 
 var log = (0, _debug2['default'])('orientose:schema');
 
@@ -137,7 +135,7 @@ var Schema = (function (_SchemaBase) {
         throw new Error('Index with name ${name} is already defined.');
       }
 
-      this._indexes[name] = (0, _nodeExtend2['default'])({}, options, {
+      this._indexes[name] = _extends({}, options, {
         properties: properties,
         type: type,
         nullValuesIgnored: !options.sparse

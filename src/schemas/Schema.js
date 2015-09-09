@@ -6,7 +6,6 @@ import VirtualType from '../types/Virtual';
 import Data from '../Data';
 import MixedType from '../types/Mixed';
 import IndexType from '../constants/IndexType';
-import extend from 'node.extend';
 
 const log = debug('orientose:schema');
 
@@ -91,11 +90,12 @@ export default class Schema extends SchemaBase {
       throw new Error('Index with name ${name} is already defined.');
     }
 
-    this._indexes[name] = extend({}, options, {
+    this._indexes[name] = {
+      ...options,
       properties: properties,
       type: type,
       nullValuesIgnored: !options.sparse
-    });
+    };
 
     return this;
   }

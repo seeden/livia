@@ -4,47 +4,34 @@ import Document from '../Document';
 
 export default class LinkedType extends StringType {
   _serialize(value) {
-    if (_.isPlainObject(value)) {
-      const doc = this._value = (this._value instanceof Document)
-        ? this._value
-        : new this.options.type({});
-
-      doc.set(value);
-      return doc;
+    if (value instanceof Document) {
+      return value;
+    } else if (_.isPlainObject(value)) {
+      return new this.options.type(value);
     }
 
     return super._serialize(value);
   }
 
-  toJSON(options) {
-    const value = this.value;
-    if (value instanceof Document) {
-      return value.toJSON(options);
+  get(path) {
+    if (this._value instanceof Document) {
+      return this._value.get(path);
     }
 
-    return super.toJSON(options);
+    super.get(path);
   }
 
-  toObject(options) {
-    const value = this.value;
-    if (value instanceof Document) {
-      return value.toObject(options);
+  set(path, value) {
+    if (this._value instanceof Document) {
+      return this._value.set(path, value);
     }
 
-    return super.toObject(options);
+    super.set(path, value);
   }
 
   get isModified() {
     if (this._value instanceof Document) {
-      let isModified = false;
-
-      this._value.forEach(true, function(prop) {
-        if (prop.isModified) {
-          isModified = true;
-        }
-      });
-
-      return isModified;
+      return this._value.isModified();
     }
 
     return super.isModified;

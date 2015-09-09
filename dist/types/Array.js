@@ -4,7 +4,11 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _set = function set(object, property, value, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent !== null) { set(parent, property, value, receiver); } } else if ('value' in desc && desc.writable) { desc.value = value; } else { var setter = desc.set; if (setter !== undefined) { setter.call(receiver, value); } } return value; };
 
 var _get = function get(_x3, _x4, _x5) { var _again = true; _function: while (_again) { var object = _x3, property = _x4, receiver = _x5; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x3 = parent; _x4 = property; _x5 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
@@ -18,31 +22,13 @@ var _Type2 = require('./Type');
 
 var _Type3 = _interopRequireDefault(_Type2);
 
-var _nodeExtend = require('node.extend');
+var _lodash = require('lodash');
 
-var _nodeExtend2 = _interopRequireDefault(_nodeExtend);
+var _lodash2 = _interopRequireDefault(_lodash);
 
-/*
-TODO decide about prons and cons
-class ArrayExt extends Array {
-  constructor(base) {
-    super();
+var _utilsExtendedArray = require('../utils/ExtendedArray');
 
-    this._base = base;
-  }
-
-  get base() {
-    return this._base;
-  }
-
-  push(value) {
-    super.push(this.base.createItem(value));
-  }
-
-  get isModified() {
-    return this.base.isModified;
-  }
-}*/
+var _utilsExtendedArray2 = _interopRequireDefault(_utilsExtendedArray);
 
 var ArrayType = (function (_Type) {
   _inherits(ArrayType, _Type);
@@ -56,99 +42,110 @@ var ArrayType = (function (_Type) {
       throw new Error('Type of the array item is not defined');
     }
 
-    this._original = [];
-    this._value = [];
+    if (typeof this._default === 'undefined') {
+      this._default = []; // mongoose default value
+    }
   }
 
   _createClass(ArrayType, [{
-    key: 'createItem',
-    value: function createItem(value) {
+    key: '_createItem',
+    value: function _createItem(value) {
       var item = new this.prop.item.SchemaType(this.data, this.prop.item, this.name, this.mainData);
       item.value = value;
 
       return item;
     }
   }, {
-    key: '_empty',
-    value: function _empty() {
-      this._value = [];
+    key: '_initArrayValue',
+    value: function _initArrayValue() {
+      if (this._value) {
+        return;
+      }
+
+      // use default value
+      this.value = this._default || [];
+    }
+  }, {
+    key: '_throwIfUndefined',
+    value: function _throwIfUndefined() {
+      if (!this.deserializedValue) {
+        throw new Error('Array is undefined');
+      }
     }
   }, {
     key: '_serialize',
     value: function _serialize(items) {
       var _this = this;
 
-      this._empty();
-
-      items.forEach(function (item) {
-        _this.push(item);
+      return items.map(function (item) {
+        return _this._createItem(item);
       });
-
-      return this._value;
     }
   }, {
     key: '_deserialize',
-    value: function _deserialize() {
-      return this;
-    }
-  }, {
-    key: 'set',
-    value: function set(index, value) {
-      this._value[index] = this.createItem(value);
-      return this;
+    value: function _deserialize(items) {
+      return items.map(function (item) {
+        return item.value;
+      });
     }
   }, {
     key: 'get',
-    value: function get(index) {
-      var item = this._value[index];
-      return item ? item.value : item;
-    }
-  }, {
-    key: 'push',
-    value: function push(value) {
-      return this._value.push(this.createItem(value));
-    }
-  }, {
-    key: 'pop',
-    value: function pop() {
-      var item = this._value.pop();
-      return item ? item.value : item;
-    }
-  }, {
-    key: 'splice',
-    value: function splice() {
-      var value = this._value;
-
-      for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-        args[_key] = arguments[_key];
+    value: function get(path) {
+      var value = this.serializedValue;
+      if (!value) {
+        return void 0;
       }
 
-      value.splice.apply(value, args).map(function (item) {
-        return item.value;
-      });
+      var pos = path.indexOf('.');
+      if (pos === -1) {
+        var _index = parseInt(path, 10);
+        return value[_index];
+      }
+
+      var index = parseInt(path.substr(0, pos), 10);
+      var newPath = path.substr(pos + 1);
+
+      var item = value[index];
+      if (!item || !item.get) {
+        return void 0;
+      }
+
+      return item.get(newPath);
     }
   }, {
-    key: 'forEach',
-    value: function forEach(fn) {
-      return this._value.forEach(function (item, index, array) {
-        fn(item.value, index, array);
-      });
-    }
-  }, {
-    key: 'map',
-    value: function map(fn) {
-      return this._value.map(function (item, index, array) {
-        return fn(item.value, index, array);
-      });
-    }
-  }, {
-    key: 'filter',
-    value: function filter(fn) {
-      return this._value.filter(function (item) {
-        return fn(item.value);
-      }).map(function (item) {
-        return item.value;
-      });
+    key: 'set',
+    value: function set(path, value) {
+      var before = this._value;
+
+      try {
+        var pos = path.indexOf('.');
+        if (pos === -1) {
+          var directItems = this.value;
+          var _index2 = parseInt(path, 10);
+
+          directItems[_index2] = value;
+          return;
+        }
+
+        var items = this.serializedValue;
+        if (!items) {
+          throw new Error('You need to initialize array first');
+        }
+
+        var index = parseInt(path.substr(0, pos), 10);
+        var newPath = path.substr(pos + 1);
+
+        var item = items[index];
+        if (!item || !item.set) {
+          throw new Error('You need to initialize array item first');
+        }
+
+        item.set(newPath, value);
+        this._value = items;
+      } catch (e) {
+        this._value = before;
+        throw e;
+      }
     }
   }, {
     key: 'toJSON',
@@ -157,12 +154,16 @@ var ArrayType = (function (_Type) {
 
       var opt = options;
       if (options.update && options.modified) {
-        opt = (0, _nodeExtend2['default'])({}, options, { modified: false });
+        opt = _extends({}, options, {
+          modified: false
+        });
       }
 
-      return this._value.map(function (item) {
-        return item.toJSON(opt);
-      });
+      return this._preDeserialize(function (items) {
+        return items.map(function (item) {
+          return item.toJSON(opt);
+        });
+      }, options.disableDefault);
     }
   }, {
     key: 'toObject',
@@ -171,33 +172,74 @@ var ArrayType = (function (_Type) {
 
       var opt = options;
       if (options.update && options.modified) {
-        opt = (0, _nodeExtend2['default'])({}, options, { modified: false });
+        opt = _extends({}, options, {
+          modified: false
+        });
       }
 
-      return this._value.map(function (item) {
-        return item.toObject(opt);
-      });
+      return this._preDeserialize(function (items) {
+        return items.map(function (item) {
+          return item.toObject(opt);
+        });
+      }, options.disableDefault);
     }
   }, {
-    key: 'length',
+    key: 'value',
+    set: function set(val) {
+      _set(Object.getPrototypeOf(ArrayType.prototype), 'value', val, this);
+
+      if (this._customArray) {
+        delete this._customArray;
+      }
+    },
     get: function get() {
-      return this._value.length;
+      var _this2 = this;
+
+      var value = this.deserializedValue;
+      if (!value) {
+        return value;
+      }
+
+      if (!this._customArray) {
+        (function () {
+          var arr = _this2._customArray = new _utilsExtendedArray2['default'](_this2);
+          value.forEach(function (val, index) {
+            arr[index] = val;
+          });
+        })();
+      }
+
+      return this._customArray;
     }
   }, {
     key: 'isModified',
     get: function get() {
-      if (this._original.length !== this._value.length) {
+      var value = this.deserializedValue;
+      var original = this._original;
+
+      if (!original || !value) {
+        return original !== value;
+      }
+
+      if (original.length !== value.length) {
         return true;
       }
 
-      var isModified = false;
-      this._value.forEach(function (prop) {
-        if (prop.isModified) {
-          isModified = true;
-        }
-      });
+      for (var i = 0; i < value.length; i++) {
+        var val = value[i];
+        var org = original[i];
+        var isObject = _lodash2['default'].isObject(val);
 
-      return isModified;
+        if (isObject && JSON.stringify(val) === JSON.stringify(org)) {
+          continue;
+        }
+
+        if (value[i] !== original[i]) {
+          return true;
+        }
+      }
+
+      return false;
     }
   }], [{
     key: 'toString',

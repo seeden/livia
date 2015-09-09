@@ -31,6 +31,7 @@ var Type = (function () {
     this._name = name;
 
     this._default = options['default'];
+
     this._value = void 0;
     this._original = void 0;
 
@@ -50,17 +51,6 @@ var Type = (function () {
       return this._serialize(value);
     }
   }, {
-    key: '_preDeserialize',
-    value: function _preDeserialize(value) {
-      if (value === null && this._handleNull) {
-        return value;
-      } else if (typeof value === 'undefined' && this._handleUndefined) {
-        return value;
-      }
-
-      return this._deserialize(value);
-    }
-  }, {
     key: '_serialize',
     value: function _serialize() /*value*/{
       throw new Error('You need to override _serialize');
@@ -71,9 +61,26 @@ var Type = (function () {
       throw new Error('You need to override _deserialize');
     }
   }, {
+    key: '_preDeserialize',
+    value: function _preDeserialize(fn, disableDefault) {
+      var value = this._value;
+
+      if (typeof value === 'undefined' && !disableDefault) {
+        value = this.serializedDefaultValue;
+      }
+
+      if (value === null && this._handleNull) {
+        return value;
+      } else if (typeof value === 'undefined' && this._handleUndefined) {
+        return value;
+      }
+
+      return fn ? fn(value) : this._deserialize(value);
+    }
+  }, {
     key: 'setAsOriginal',
     value: function setAsOriginal() {
-      this._original = this.value;
+      this._original = this._preDeserialize();
       return this;
     }
   }, {
@@ -89,22 +96,38 @@ var Type = (function () {
   }, {
     key: 'setupData',
     value: function setupData(data) {
-      this._value = this._serialize(data);
-      this._original = this.value;
+      this.value = data;
+      this._original = data;
 
       // parent.childChanged(this);
     }
   }, {
     key: 'toJSON',
-    value: function toJSON(options) {
-      var value = this.toObject(options);
+    value: function toJSON() {
+      var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-      return value && value.toJSON ? value.toJSON(options) : value;
+      return this._preDeserialize(function (value) {
+        return value && value.toJSON ? value.toJSON(options) : value;
+      }, options.disableDefault);
     }
   }, {
     key: 'toObject',
-    value: function toObject() /*options*/{
-      return this.value;
+    value: function toObject() {
+      var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+      return this._preDeserialize(function (value) {
+        return value && value.toObject ? value.toObject(options) : value;
+      }, options.disableDefault);
+    }
+  }, {
+    key: 'set',
+    value: function set(path, value) {
+      throw new Error('Set path is not supported by this type ');
+    }
+  }, {
+    key: 'get',
+    value: function get(path) {
+      throw new Error('Get path is not supported by this type ');
     }
   }, {
     key: 'data',
@@ -157,17 +180,32 @@ var Type = (function () {
       this._value = this._preSerialize(value);
     },
     get: function get() {
-      var value = this._preDeserialize(this._value);
-      if (typeof value !== 'undefined') {
-        return value;
+      return this.deserializedValue;
+    }
+  }, {
+    key: 'serializedValue',
+    get: function get() {
+      var value = this._value;
+      if (typeof value === 'undefined') {
+        value = this.serializedDefaultValue;
       }
 
-      var defaultValue = this._default;
-      if (typeof defaultValue === 'function') {
-        defaultValue = defaultValue.apply(this.data);
+      return value;
+    }
+  }, {
+    key: 'deserializedValue',
+    get: function get() {
+      return this._preDeserialize();
+    }
+  }, {
+    key: 'serializedDefaultValue',
+    get: function get() {
+      var value = this._default;
+      if (typeof value === 'function') {
+        value = value.apply(this.data);
       }
 
-      return this._preDeserialize(this._preSerialize(defaultValue));
+      return this._preSerialize(value);
     }
   }, {
     key: 'isModified',
