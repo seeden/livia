@@ -14,16 +14,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var _Type2 = require('./Type');
+var _SubType2 = require('./SubType');
 
-var _Type3 = _interopRequireDefault(_Type2);
+var _SubType3 = _interopRequireDefault(_SubType2);
 
 var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var ObjectType = (function (_Type) {
-  _inherits(ObjectType, _Type);
+var ObjectType = (function (_SubType) {
+  _inherits(ObjectType, _SubType);
 
   function ObjectType(data, prop, name, mainData) {
     _classCallCheck(this, ObjectType);
@@ -39,7 +39,7 @@ var ObjectType = (function (_Type) {
     key: '_createData',
     value: function _createData() {
       var className = this.data._className;
-      var abstractClassName = _Type3['default'].computeAbstractClassName(className, this.name);
+      var abstractClassName = _SubType3['default'].computeAbstractClassName(className, this.name);
 
       return new this.schema.DataClass(this, {}, abstractClassName, this.mainData);
     }
@@ -95,6 +95,15 @@ var ObjectType = (function (_Type) {
       return this.prop.type;
     }
   }, {
+    key: 'deserializedValue',
+    get: function get() {
+      if (!this._value) {
+        this._value = this._preDeserialize();
+      }
+
+      return this._value;
+    }
+  }, {
     key: 'isModified',
     get: function get() {
       return true;
@@ -142,7 +151,7 @@ var ObjectType = (function (_Type) {
   }]);
 
   return ObjectType;
-})(_Type3['default']);
+})(_SubType3['default']);
 
 exports['default'] = ObjectType;
 module.exports = exports['default'];

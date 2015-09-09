@@ -177,6 +177,7 @@ var Type = (function () {
   }, {
     key: 'value',
     set: function set(value) {
+      this._deserializedValue = null;
       this._value = this._preSerialize(value);
     },
     get: function get() {

@@ -1,7 +1,7 @@
-import Type from './Type';
+import SubType from './SubType';
 import _ from 'lodash';
 
-export default class ObjectType extends Type {
+export default class ObjectType extends SubType {
   constructor(data, prop, name, mainData) {
     super(data, prop, name, mainData);
 
@@ -14,9 +14,18 @@ export default class ObjectType extends Type {
     return this.prop.type;
   }
 
+  get deserializedValue() {
+    if (!this._value) {
+      this._value = this._preDeserialize();
+    }
+
+    return this._value;
+  }
+
+
   _createData() {
     const className = this.data._className;
-    const abstractClassName = Type.computeAbstractClassName(className, this.name);
+    const abstractClassName = SubType.computeAbstractClassName(className, this.name);
 
     return new this.schema.DataClass(this, {}, abstractClassName, this.mainData);
   }

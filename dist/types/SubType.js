@@ -18,71 +18,28 @@ var _Type2 = require('./Type');
 
 var _Type3 = _interopRequireDefault(_Type2);
 
-var StringType = (function (_Type) {
-  _inherits(StringType, _Type);
+var SubType = (function (_Type) {
+  _inherits(SubType, _Type);
 
-  function StringType() {
-    _classCallCheck(this, StringType);
+  function SubType() {
+    _classCallCheck(this, SubType);
 
-    _get(Object.getPrototypeOf(StringType.prototype), 'constructor', this).apply(this, arguments);
+    _get(Object.getPrototypeOf(SubType.prototype), 'constructor', this).apply(this, arguments);
   }
 
-  _createClass(StringType, [{
-    key: '_serialize',
-    value: function _serialize(value) {
-
-      /*
-          console.log(22222, value);
-      
-          if(value === 'Kosice') {
-            const e = new Error('omg');
-            console.log(e.stack);
-          }*/
-
-      var options = this.options;
-      var val = String(value);
-
-      if (options['enum'] && options['enum'].indexOf(val) === -1) {
-        throw new Error('Value is not from enum values');
+  _createClass(SubType, [{
+    key: 'deserializedValue',
+    get: function get() {
+      if (!this._deserializedValue) {
+        this._deserializedValue = this._preDeserialize();
       }
 
-      if (options.minlength && val.length < options.minlength) {
-        throw new Error('The value "' + val + '" is shorter than the minimum length ' + options.minlength);
-      }
-
-      if (val && options.maxlength && val.length > options.maxlength) {
-        throw new Error('The value "' + val + '" is longer than the maxlength length ' + options.maxlength);
-      }
-
-      if (val && options.trim) {
-        val = val.trim();
-      }
-
-      if (val && options.uppercase) {
-        val = val.toUpperCase();
-      }
-
-      return val;
-    }
-  }, {
-    key: '_deserialize',
-    value: function _deserialize(value) {
-      return value;
-    }
-  }], [{
-    key: 'toString',
-    value: function toString() {
-      return 'String';
-    }
-  }, {
-    key: 'getDbType',
-    value: function getDbType() {
-      return 'STRING';
+      return this._deserializedValue;
     }
   }]);
 
-  return StringType;
+  return SubType;
 })(_Type3['default']);
 
-exports['default'] = StringType;
+exports['default'] = SubType;
 module.exports = exports['default'];

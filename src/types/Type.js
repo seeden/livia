@@ -60,6 +60,7 @@ export default class Type {
   }
 
   set value(value) {
+    this._deserializedValue = null;
     this._value = this._preSerialize(value);
   }
 

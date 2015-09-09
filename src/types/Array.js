@@ -1,9 +1,8 @@
-import Type from './Type';
+import SubType from './SubType';
 import _ from 'lodash';
 import ExtendArray from '../utils/ExtendedArray';
 
-
-export default class ArrayType extends Type {
+export default class ArrayType extends SubType {
   constructor(data, prop, name, mainData) {
     super(data, prop, name, mainData);
 
@@ -47,11 +46,8 @@ export default class ArrayType extends Type {
   }
 
   set value(val) {
+    this._customArray = null;
     super.value = val;
-
-    if (this._customArray) {
-      delete this._customArray;
-    }
   }
 
   get value() {

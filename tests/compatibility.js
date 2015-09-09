@@ -111,6 +111,96 @@ function objectCompatibility(User, name) {
       const obj = doc.toObject();
       should(obj.emptyMixed).equal(void 0);
     });
+
+    it('should be able to set whole subdocument by direct', function() {
+      const address = doc.address;
+      doc.address.city = 'Nitra';
+      doc.address.city.should.equal('Nitra');
+
+      doc.address.street1 = 'Presovska';
+
+      should(doc.address.toJSON()).eql({
+        city: 'Nitra',
+        street1: 'Presovska'
+      });
+
+      should(doc.address.toObject()).eql({
+        city: 'Nitra',
+        street1: 'Presovska'
+      });
+    });
+
+    it('should be able to set whole subdocument by set', function() {
+      doc.set('address', {
+        city: 'Bardejov',
+        street1: 'Hviezdoslavova'
+      });
+
+      should(doc.address.toJSON()).eql({
+        city: 'Bardejov',
+        street1: 'Hviezdoslavova'
+      });
+
+      should(doc.address.toObject()).eql({
+        city: 'Bardejov',
+        street1: 'Hviezdoslavova'
+      });
+    });
+
+    it('should be able to set whole subdocument by set', function() {
+      doc.set('address', {
+        city: 'Bardejov',
+        street1: 'Hviezdoslavova'
+      });
+
+      should(doc.address.toJSON()).eql({
+        city: 'Bardejov',
+        street1: 'Hviezdoslavova'
+      });
+
+      should(doc.address.toObject()).eql({
+        city: 'Bardejov',
+        street1: 'Hviezdoslavova'
+      });
+    });
+
+    it('should be able to set whole subdocument', function() {
+      doc.address = {
+        city: 'Presov',
+        street1: 'Svabska'
+      };
+
+      should(doc.address.toJSON()).eql({
+        city: 'Presov',
+        street1: 'Svabska'
+      });
+
+      should(doc.address.toObject()).eql({
+        city: 'Presov',
+        street1: 'Svabska'
+      });
+    });
+
+    it('should be able to set whole subdocument with one property', function() {
+      doc.address = {
+        city: 'Presov1'
+      };
+
+      should(doc.address.toJSON()).eql({
+        city: 'Presov1'
+      });
+
+      should(doc.address.toObject()).eql({
+        city: 'Presov1'
+      });
+
+      doc.set('address.street1', 'Hlavna');
+
+      should(doc.address.toJSON()).eql({
+        city: 'Presov1',
+        street1: 'Hlavna'
+      });
+    });
   });
 }
 

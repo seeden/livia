@@ -18,9 +18,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var _Type2 = require('./Type');
+var _SubType2 = require('./SubType');
 
-var _Type3 = _interopRequireDefault(_Type2);
+var _SubType3 = _interopRequireDefault(_SubType2);
 
 var _lodash = require('lodash');
 
@@ -30,8 +30,8 @@ var _utilsExtendedArray = require('../utils/ExtendedArray');
 
 var _utilsExtendedArray2 = _interopRequireDefault(_utilsExtendedArray);
 
-var ArrayType = (function (_Type) {
-  _inherits(ArrayType, _Type);
+var ArrayType = (function (_SubType) {
+  _inherits(ArrayType, _SubType);
 
   function ArrayType(data, prop, name, mainData) {
     _classCallCheck(this, ArrayType);
@@ -186,11 +186,8 @@ var ArrayType = (function (_Type) {
   }, {
     key: 'value',
     set: function set(val) {
+      this._customArray = null;
       _set(Object.getPrototypeOf(ArrayType.prototype), 'value', val, this);
-
-      if (this._customArray) {
-        delete this._customArray;
-      }
     },
     get: function get() {
       var _this2 = this;
@@ -303,7 +300,7 @@ var ArrayType = (function (_Type) {
   }]);
 
   return ArrayType;
-})(_Type3['default']);
+})(_SubType3['default']);
 
 exports['default'] = ArrayType;
 module.exports = exports['default'];
