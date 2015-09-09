@@ -1,48 +1,47 @@
 import Type from './Type';
+import _ from 'lodash';
 
 export default class ObjectType extends Type {
-  /*
   constructor(data, prop, name, mainData) {
     super(data, prop, name, mainData);
 
-    //this._value = new this._schema.DataClass(this, {}, this._computeClassName(data, prop), mainData);
-  }*/
+    if (typeof this._default === 'undefined') {
+      this._default = {}; // MONGOOSE: default value
+    }
+  }
 
   get schema() {
     return this.prop.type;
   }
 
-  set(key, value) {
-    if (!this._value) {
-      const className = this.data._className;
-      const abstractClassName = Type.computeAbstractClassName(className, this.name);
+  _createData() {
+    const className = this.data._className;
+    const abstractClassName = Type.computeAbstractClassName(className, this.name);
 
-      this._value = new this.schema.DataClass(this, {}, abstractClassName, this.mainData);
-    }
-
-    this._value[key] = value;
+    return new this.schema.DataClass(this, {}, abstractClassName, this.mainData);
   }
 
   _serialize(props) {
-    Object.keys(props).forEach((propName) => this.set(propName, props[propName]));
-    return this._value;
+    if (!_.isObject(props)) {
+      throw new Error(`Property ${this.name} value must be an object you gave: ${props}`);
+    }
+
+    const keys = Object.keys(props);
+    const value = this._createData();
+
+    keys.forEach(function(propName) {
+      value.set(propName, props[propName]);
+    });
+
+    return value;
   }
 
-  _deserialize() {
-    return this._value;
-  }
-
-  toJSON(options) {
-    const value = this.value;
-    return value ? value.toJSON(options) : value;
-  }
-
-  toObject(options) {
-    const value = this.value;
-    return value ? value.toObject(options) : value;
+  _deserialize(value) {
+    return value;
   }
 
   get isModified() {
+    return true;
     if (!this._value) {
       return this.original !== this.value;
     }
@@ -53,6 +52,29 @@ export default class ObjectType extends Type {
     });
 
     return isModified;
+  }
+
+  set(key, value) {
+    const before = this._value;
+    if (!this._value) {
+      this._value = this._createData();
+    }
+
+    try {
+      this._value.set(key, value);
+    } catch(e) {
+      this._value = before;
+      throw e;
+    }
+  }
+
+  get(path) {
+    const value = this.serializedValue;
+    if (!value) {
+      return void 0;
+    }
+
+    return value.get(path);
   }
 
   static getDbType() {

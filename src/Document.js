@@ -78,6 +78,10 @@ export default class Document extends EventEmitter {
     return this._data.toObject(options);
   }
 
+  setAsOriginal() {
+    return this._data.setAsOriginal();
+  }
+
   forEach(returnType, fn) {
     return this._data.forEach(returnType, fn);
   }

@@ -19,7 +19,7 @@ export default class DateType extends Type {
 
   toObject() {
     const value = this.value;
-    return (value && value.getTime)
+    return value && value.getTime
       ? value.getTime()
       : value;
   }

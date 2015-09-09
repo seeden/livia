@@ -1,27 +1,7 @@
 import Type from './Type';
-import extend from 'node.extend';
+import _ from 'lodash';
+import ExtendArray from '../utils/ExtendedArray';
 
-/*
-TODO decide about prons and cons
-class ArrayExt extends Array {
-  constructor(base) {
-    super();
-
-    this._base = base;
-  }
-
-  get base() {
-    return this._base;
-  }
-
-  push(value) {
-    super.push(this.base.createItem(value));
-  }
-
-  get isModified() {
-    return this.base.isModified;
-  }
-}*/
 
 export default class ArrayType extends Type {
   constructor(data, prop, name, mainData) {
@@ -31,120 +11,178 @@ export default class ArrayType extends Type {
       throw new Error('Type of the array item is not defined');
     }
 
-    this._original = [];
-    this._value = [];
+    if (typeof this._default === 'undefined') {
+      this._default = []; // mongoose default value
+    }
   }
 
-  createItem(value) {
+  _createItem(value) {
     const item = new this.prop.item.SchemaType(this.data, this.prop.item, this.name, this.mainData);
     item.value = value;
 
     return item;
   }
 
-  _empty() {
-    this._value = [];
+  _initArrayValue() {
+    if (this._value) {
+      return;
+    }
+
+    // use default value
+    this.value = this._default || [];
+  }
+
+  _throwIfUndefined() {
+    if (!this.deserializedValue) {
+      throw new Error('Array is undefined');
+    }
   }
 
   _serialize(items) {
-    this._empty();
-
-    items.forEach(item => {
-      this.push(item);
-    });
-
-    return this._value;
+    return items.map((item) => this._createItem(item));
   }
 
-  _deserialize() {
-    return this;
+  _deserialize(items) {
+    return items.map(item => item.value);
   }
 
-  get length() {
-    return this._value.length;
+  set value(val) {
+    super.value = val;
+
+    if (this._customArray) {
+      delete this._customArray;
+    }
   }
 
-  set(index, value) {
-    this._value[index] = this.createItem(value);
-    return this;
+  get value() {
+    const value = this.deserializedValue;
+    if (!value) {
+      return value;
+    }
+
+    if (!this._customArray) {
+      const arr = this._customArray = new ExtendArray(this);
+      value.forEach(function(val, index) {
+        arr[index] = val;
+      });
+    }
+
+    return this._customArray;
   }
 
-  get(index) {
-    const item = this._value[index];
-    return item ? item.value : item;
+  get(path) {
+    const value = this.serializedValue;
+    if (!value) {
+      return void 0;
+    }
+
+    const pos = path.indexOf('.');
+    if (pos === -1) {
+      const index = parseInt(path, 10);
+      return value[index];
+    }
+
+    const index = parseInt(path.substr(0, pos), 10);
+    const newPath = path.substr(pos + 1);
+
+    const item = value[index];
+    if (!item || !item.get) {
+      return void 0;
+    }
+
+    return item.get(newPath);
   }
 
-  push(value) {
-    return this._value.push(this.createItem(value));
-  }
+  set(path, value) {
+    const before = this._value;
 
-  pop() {
-    const item = this._value.pop();
-    return item ? item.value : item;
-  }
+    try {
+      const pos = path.indexOf('.');
+      if (pos === -1) {
+        const directItems = this.value;
+        const index = parseInt(path, 10);
 
-  splice(...args) {
-    const value = this._value;
-    value.splice.apply(value, args).map(function(item) {
-      return item.value;
-    });
-  }
+        directItems[index] = value;
+        return;
+      }
 
-  forEach(fn) {
-    return this._value.forEach(function(item, index, array) {
-      fn(item.value, index, array);
-    });
-  }
 
-  map(fn) {
-    return this._value.map(function(item, index, array) {
-      return fn(item.value, index, array);
-    });
-  }
+      const items = this.serializedValue;
+      if (!items) {
+        throw new Error('You need to initialize array first');
+      }
 
-  filter(fn) {
-    return this._value.filter(function(item) {
-      return fn(item.value);
-    }).map(function(item) {
-      return item.value;
-    });
+      const index = parseInt(path.substr(0, pos), 10);
+      const newPath = path.substr(pos + 1);
+
+      const item = items[index];
+      if (!item || !item.set) {
+        throw new Error('You need to initialize array item first');
+      }
+
+      item.set(newPath, value);
+      this._value = items;
+    } catch(e) {
+      this._value = before;
+      throw e;
+    }
   }
 
   toJSON(options = {}) {
     let opt = options;
     if (options.update && options.modified) {
-      opt = extend({}, options, { modified: false });
+      opt = {
+        ...options,
+        modified: false
+      };
     }
 
-    return this._value.map(function(item) {
-      return item.toJSON(opt);
-    });
+    return this._preDeserialize(function(items) {
+      return items.map((item) => item.toJSON(opt));
+    }, options.disableDefault);
   }
 
   toObject(options = {}) {
     let opt = options;
     if (options.update && options.modified) {
-      opt = extend({}, options, { modified: false });
+      opt = {
+        ...options,
+        modified: false
+      };
     }
 
-    return this._value.map(function(item) {
-      return item.toObject(opt);
-    });
+    return this._preDeserialize(function(items) {
+      return items.map((item) => item.toObject(opt));
+    }, options.disableDefault);
   }
 
   get isModified() {
-    if (this._original.length !== this._value.length) {
+    const value = this.deserializedValue;
+    const original = this._original;
+
+    if (!original || !value) {
+      return original !== value;
+    }
+
+    if (original.length !== value.length) {
       return true;
     }
 
-    let isModified = false;
-    this._value.forEach(function(prop) {
-      if (prop.isModified) {
-        isModified = true;
-      }
-    });
+    for (let i = 0; i < value.length; i++) {
+      const val = value[i];
+      const org = original[i];
+      const isObject = _.isObject(val);
 
-    return isModified;
+      if (isObject && JSON.stringify(val) === JSON.stringify(org)) {
+        continue;
+      }
+
+      if (value[i] !== original[i]) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   static toString() {

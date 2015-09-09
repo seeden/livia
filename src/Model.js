@@ -3,6 +3,7 @@ import ModelBase from './ModelBase';
 import Schema from './schemas/Schema';
 import Edge from './schemas/Edge';
 import Document from './Document';
+import _ from 'lodash';
 
 const log = debug('orientose:model');
 
@@ -10,6 +11,10 @@ export default class Model extends ModelBase {
   constructor(name, schema, connection, options = {}, callback = function() {}) {
     if (!name) {
       throw new Error('Name is undefined');
+    }
+
+    if (_.isPlainObject(schema)) {
+      schema = new Schema(schema);
     }
 
     if (!schema instanceof Schema) {
@@ -86,6 +91,25 @@ export default class Model extends ModelBase {
     return new ModelClass({}).setupData(properties);
   }
 
+  upsertFix(originalProps) {
+    const doc = this.createDocument(originalProps);
+
+    const updatedProps = doc.toObject({
+      metadata: true,
+      create: true
+    });
+
+    const props = {};
+
+    Object.keys(originalProps).forEach(function(key) {
+      const originalValue = originalProps[key];
+      const newValue = updatedProps[key];
+
+    });
+
+    return props;
+  }
+
   query(options) {
     return this.connection.query(this, options);
   }
@@ -98,6 +122,10 @@ export default class Model extends ModelBase {
     if (typeof options === 'function') {
       callback = options;
       options = {};
+    }
+
+    if (options.upsert) {
+      doc = upsertFix(doc);
     }
 
     return this.query().update(conditions, doc, options, callback);

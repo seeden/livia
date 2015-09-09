@@ -428,10 +428,6 @@ var Query = (function () {
         _options.limit = null;
       }
 
-      if (_options['new']) {
-        _options['return'] = 'AFTER @this';
-      }
-
       Object.keys(_options).forEach(function (key) {
         if (typeof _this3[key] !== 'function') {
           return;

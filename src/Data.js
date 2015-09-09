@@ -36,6 +36,10 @@ export default class Data {
     });
   }
 
+  toString() {
+    return this.toJSON();
+  }
+
   toJSON(options = {}) {
     const json = {};
 
@@ -77,6 +81,11 @@ export default class Data {
         return;
       }
 
+      // MONGOOSE: empty object is undefined for parent
+      if (_.isPlainObject(value) && !Object.keys(value).length) {
+        return;
+      }
+
       json[propName] = value;
     });
 
@@ -106,6 +115,11 @@ export default class Data {
         return;
       }
 
+      // MONGOOSE: empty object is undefined for parent
+      if (_.isPlainObject(value) && !Object.keys(value).length) {
+        return;
+      }
+
       json[propName] = value;
     });
 
@@ -113,6 +127,17 @@ export default class Data {
   }
 
   isModified(path) {
+    if (typeof path === 'undefined') {
+      let isModified = false;
+      this.forEach(true, function(prop) {
+        if (prop.isModified) {
+          isModified = true;
+        }
+      });
+
+      return isModified;
+    }
+
     const pos = path.indexOf('.');
     if (pos === -1) {
       if (!this._data[path]) {
@@ -131,7 +156,7 @@ export default class Data {
       return null;
     }
 
-    const data = this._data[currentKey].value;
+    const data = this._data[currentKey];
     if (!data || !data.get) {
       return null;
     }
@@ -158,12 +183,16 @@ export default class Data {
       return void 0;
     }
 
-    const data = this._data[currentKey].value;
+    const data = this._data[currentKey];
     if (!data || !data.get) {
       return void 0;
     }
 
     return data.get(newPath);
+  }
+
+  setAsOriginal() {
+    this.forEach(true, (item) => item.setAsOriginal());
   }
 
   set(path, value, setAsOriginal) {
@@ -204,7 +233,7 @@ export default class Data {
       return this;
     }
 
-    const data = this._data[currentKey].value;
+    const data = this._data[currentKey];
     if (!data || !data.set) {
       return this;
     }

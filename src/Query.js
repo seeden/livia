@@ -361,10 +361,6 @@ export default class Query {
       options.limit = null;
     }
 
-    if (options.new) {
-      options.return = 'AFTER @this';
-    }
-
     Object.keys(options).forEach((key) => {
       if(typeof this[key] !== 'function') {
         return;

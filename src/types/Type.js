@@ -15,6 +15,7 @@ export default class Type {
     this._name = name;
 
     this._default = options.default;
+
     this._value = void 0;
     this._original = void 0;
 
@@ -72,30 +73,6 @@ export default class Type {
     return this._serialize(value);
   }
 
-  _preDeserialize(value) {
-    if (value === null && this._handleNull) {
-      return value;
-    } else if (typeof value === 'undefined' && this._handleUndefined) {
-      return value;
-    }
-
-    return this._deserialize(value);
-  }
-
-  get value() {
-    const value = this._preDeserialize(this._value);
-    if (typeof value !== 'undefined') {
-      return value;
-    }
-
-    let defaultValue = this._default;
-    if (typeof defaultValue === 'function') {
-      defaultValue = defaultValue.apply(this.data);
-    }
-
-    return this._preDeserialize(this._preSerialize(defaultValue));
-  }
-
   _serialize(/*value*/) {
     throw new Error('You need to override _serialize');
   }
@@ -104,8 +81,50 @@ export default class Type {
     throw new Error('You need to override _deserialize');
   }
 
+  get serializedValue() {
+    let value = this._value;
+    if (typeof value === 'undefined') {
+      value = this.serializedDefaultValue;
+    }
+
+    return value;
+  }
+
+  get deserializedValue() {
+    return this._preDeserialize();
+  }
+
+  get value() {
+    return this.deserializedValue;
+  }
+
+  _preDeserialize(fn, disableDefault) {
+    let value = this._value;
+
+    if (typeof value === 'undefined' && !disableDefault) {
+      value = this.serializedDefaultValue;
+    }
+
+    if (value === null && this._handleNull) {
+      return value;
+    } else if (typeof value === 'undefined' && this._handleUndefined) {
+      return value;
+    }
+
+    return fn ? fn(value) : this._deserialize(value);
+  }
+
+  get serializedDefaultValue() {
+    let value = this._default;
+    if (typeof value === 'function') {
+      value = value.apply(this.data);
+    }
+
+    return this._preSerialize(value);
+  }
+
   setAsOriginal() {
-    this._original = this.value;
+    this._original = this._preDeserialize();
     return this;
   }
 
@@ -123,22 +142,22 @@ export default class Type {
   }
 
   setupData(data) {
-    this._value = this._serialize(data);
-    this._original = this.value;
+    this.value = data;
+    this._original = data;
 
     // parent.childChanged(this);
   }
 
-  toJSON(options) {
-    const value = this.toObject(options);
-
-    return value && value.toJSON
-      ? value.toJSON(options)
-      : value;
+  toJSON(options = {}) {
+    return this._preDeserialize(function(value) {
+      return value && value.toJSON ? value.toJSON(options) : value;
+    }, options.disableDefault);
   }
 
-  toObject(/*options*/) {
-    return this.value;
+  toObject(options = {}) {
+    return this._preDeserialize(function(value) {
+      return value && value.toObject ? value.toObject(options) : value;
+    }, options.disableDefault);
   }
 
   static toString() {
