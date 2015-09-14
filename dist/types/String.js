@@ -30,15 +30,6 @@ var StringType = (function (_Type) {
   _createClass(StringType, [{
     key: '_serialize',
     value: function _serialize(value) {
-
-      /*
-          console.log(22222, value);
-      
-          if(value === 'Kosice') {
-            const e = new Error('omg');
-            console.log(e.stack);
-          }*/
-
       var options = this.options;
       var val = String(value);
 

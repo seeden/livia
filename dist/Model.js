@@ -121,19 +121,11 @@ var Model = (function (_ModelBase) {
     value: function upsertFix(originalProps) {
       var doc = this.createDocument(originalProps);
 
-      var updatedProps = doc.toObject({
+      return doc.toObject({
         metadata: true,
-        create: true
+        create: true,
+        disableDefault: true
       });
-
-      var props = {};
-
-      Object.keys(originalProps).forEach(function (key) {
-        var originalValue = originalProps[key];
-        var newValue = updatedProps[key];
-      });
-
-      return props;
     }
   }, {
     key: 'query',
@@ -156,7 +148,7 @@ var Model = (function (_ModelBase) {
       }
 
       if (options.upsert) {
-        doc = upsertFix(doc);
+        doc = this.upsertFix(doc);
       }
 
       return this.query().update(conditions, doc, options, callback);

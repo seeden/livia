@@ -31,6 +31,7 @@ var Type = (function () {
     this._name = name;
 
     this._default = options['default'];
+    this._constant = options.constant;
 
     this._value = void 0;
     this._original = void 0;
@@ -67,6 +68,10 @@ var Type = (function () {
 
       if (typeof value === 'undefined' && !disableDefault) {
         value = this.serializedDefaultValue;
+      }
+
+      if (this._constant) {
+        value = this.serializedConstant;
       }
 
       if (value === null && this._handleNull) {
@@ -202,6 +207,16 @@ var Type = (function () {
     key: 'serializedDefaultValue',
     get: function get() {
       var value = this._default;
+      if (typeof value === 'function') {
+        value = value.apply(this.data);
+      }
+
+      return this._preSerialize(value);
+    }
+  }, {
+    key: 'serializedConstant',
+    get: function get() {
+      var value = this._constant;
       if (typeof value === 'function') {
         value = value.apply(this.data);
       }

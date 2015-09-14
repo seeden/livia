@@ -82,6 +82,20 @@ function objectCompatibility(User, name) {
       });
     });
 
+    if (DBType.LIVIA === name) {
+      it('should be able to get props for upsert without default', function() {
+        const json = doc.toObject({
+          metadata: true,
+          create: true,
+          disableDefault: true
+        });
+
+        json.should.eql({
+          name: 'Zlatko'
+        });
+      });
+    }
+
     it('should be able to get empty object as undefined', function() {
       const json = doc.toJSON();
       should(json.empty).equal(void 0);

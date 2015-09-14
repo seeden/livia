@@ -15,6 +15,7 @@ export default class Type {
     this._name = name;
 
     this._default = options.default;
+    this._constant = options.constant;
 
     this._value = void 0;
     this._original = void 0;
@@ -106,6 +107,10 @@ export default class Type {
       value = this.serializedDefaultValue;
     }
 
+    if (this._constant) {
+      value = this.serializedConstant;
+    }
+
     if (value === null && this._handleNull) {
       return value;
     } else if (typeof value === 'undefined' && this._handleUndefined) {
@@ -117,6 +122,15 @@ export default class Type {
 
   get serializedDefaultValue() {
     let value = this._default;
+    if (typeof value === 'function') {
+      value = value.apply(this.data);
+    }
+
+    return this._preSerialize(value);
+  }
+
+  get serializedConstant() {
+    let value = this._constant;
     if (typeof value === 'function') {
       value = value.apply(this.data);
     }

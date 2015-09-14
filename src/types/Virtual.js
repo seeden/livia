@@ -17,10 +17,6 @@ export default class Virtual extends Type {
     return this.applyGet(this.mainData);
   }
 
-  static toString() {
-    return 'Virtual';
-  }
-
   applyGet(scope) {
     if (!this.options.get) {
       throw new Error('Getter is not defined');
@@ -40,5 +36,9 @@ export default class Virtual extends Type {
 
   get isModified() {
     return false;
+  }
+
+  static toString() {
+    return 'Virtual';
   }
 }

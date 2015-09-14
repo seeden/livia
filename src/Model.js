@@ -94,20 +94,11 @@ export default class Model extends ModelBase {
   upsertFix(originalProps) {
     const doc = this.createDocument(originalProps);
 
-    const updatedProps = doc.toObject({
+    return doc.toObject({
       metadata: true,
-      create: true
+      create: true,
+      disableDefault: true
     });
-
-    const props = {};
-
-    Object.keys(originalProps).forEach(function(key) {
-      const originalValue = originalProps[key];
-      const newValue = updatedProps[key];
-
-    });
-
-    return props;
   }
 
   query(options) {
@@ -125,7 +116,7 @@ export default class Model extends ModelBase {
     }
 
     if (options.upsert) {
-      doc = upsertFix(doc);
+      doc = this.upsertFix(doc);
     }
 
     return this.query().update(conditions, doc, options, callback);

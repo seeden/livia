@@ -22,7 +22,6 @@ export default class ObjectType extends SubType {
     return this._value;
   }
 
-
   _createData() {
     const className = this.data._className;
     const abstractClassName = SubType.computeAbstractClassName(className, this.name);
