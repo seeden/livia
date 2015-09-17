@@ -261,6 +261,12 @@ var ArrayType = (function (_SubType) {
         };
       }
 
+      if (item.options && item.options.ref) {
+        return {
+          linkedClass: item.options.ref
+        };
+      }
+
       return {
         linkedType: item.SchemaType.getDbType(item.options)
       };

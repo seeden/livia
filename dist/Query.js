@@ -69,6 +69,7 @@ var Query = (function () {
     this._sort = null;
     this._fetchPlan = null;
     this._return = null;
+    this._populate = [];
 
     this._from = null;
     this._to = null;
@@ -362,6 +363,12 @@ var Query = (function () {
     key: 'to',
     value: function to(value) {
       this._to = value;
+      return this;
+    }
+  }, {
+    key: 'populate',
+    value: function populate(value) {
+      this._populate.push(value);
       return this;
     }
   }, {

@@ -7,6 +7,7 @@ import ObjectType from './Object';
 import MixedType from './Mixed';
 import DateType from './Date';
 import LinkedType from './Linked';
+import ObjectIdType from './ObjectId';
 
 export default {
   'Type': Type,
@@ -17,5 +18,6 @@ export default {
   'Array': ArrayType,
   'Mixed': MixedType,
   'Object': ObjectType,
-  'Linked': LinkedType
+  'Linked': LinkedType,
+  'ObjectId': ObjectIdType
 };

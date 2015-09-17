@@ -42,6 +42,10 @@ var _Linked = require('./Linked');
 
 var _Linked2 = _interopRequireDefault(_Linked);
 
+var _ObjectId = require('./ObjectId');
+
+var _ObjectId2 = _interopRequireDefault(_ObjectId);
+
 exports['default'] = {
   'Type': _Type2['default'],
   'Boolean': _Boolean2['default'],
@@ -51,6 +55,7 @@ exports['default'] = {
   'Array': _Array2['default'],
   'Mixed': _Mixed2['default'],
   'Object': _Object2['default'],
-  'Linked': _Linked2['default']
+  'Linked': _Linked2['default'],
+  'ObjectId': _ObjectId2['default']
 };
 module.exports = exports['default'];

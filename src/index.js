@@ -7,16 +7,17 @@ import Graph from './schemas/Graph';
 import Model from './Model';
 import Query from './Query';
 import Document from './Document';
-import Type from './types/index';
+import Types from './types/index';
 import Index from './constants/IndexType';
 
 Schema.Vertex = Vertex;
 Schema.Edge = Edge;
 Schema.Graph = Graph;
+Schema.Types = Types;
 
 Connection.Schema = Schema;
 Connection.Model = Model;
-Connection.Type = Type;
+Connection.Types = Types;
 Connection.Adapter = Adapter;
 Connection.Query = Query;
 Connection.Document = Document;

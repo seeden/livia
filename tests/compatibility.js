@@ -1,7 +1,6 @@
 import should from "should";
 import Query from '../src/Query';
-import Model from '../src/Model';
-import Schema from '../src/schemas/Schema';
+import { Schema, Model } from '../src';
 import mongoose, { Schema as SchemaMongoose } from 'mongoose';
 import { waterfall } from "async";
 import extend from "node.extend";
@@ -630,5 +629,33 @@ describe('Linked model', function() {
 
     profile.set('user.name', 'Peter');
     profile.get('user.name').should.equal('Peter');
+  });
+});
+
+describe('Linked Schema.Types.ObjectId with ref', function() {
+  const schemaData = {
+    user: { type: Schema.Types.ObjectId, ref: 'User' }
+  };
+
+  let CommentLivia = null;
+
+  it('should be able to create a model', function() {
+    const CommentModel = new Model('Comment', schemaData, {}, { ensure: false });
+    CommentLivia = CommentModel.DocumentClass;
+  });
+
+
+  it('should be able to create a instance of the document', function() {
+    const doc = new UserLivia({
+      name: 'Zlatko'
+    });
+
+    const comm = new CommentLivia({
+      user: doc
+    });
+
+    comm.toJSON().user.should.containEql({
+      name: 'Zlatko'
+    });
   });
 });

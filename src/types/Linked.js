@@ -37,8 +37,18 @@ export default class LinkedType extends StringType {
     return super.isModified;
   }
 
+  /*
   get linkedClass() {
-    const type = this.options.type;
-    return type.modelName ? type.modelName : null;
-  }
+    const { type, ref }  = this.options;
+
+    if (type.modelName) {
+      return type.modelName;
+    }
+
+    if (ref) {
+      return ref;
+    }
+
+    return null;
+  }*/
 }

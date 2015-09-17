@@ -73,12 +73,18 @@ var LinkedType = (function (_StringType) {
 
       return _get(Object.getPrototypeOf(LinkedType.prototype), 'isModified', this);
     }
-  }, {
-    key: 'linkedClass',
-    get: function get() {
-      var type = this.options.type;
-      return type.modelName ? type.modelName : null;
-    }
+
+    /*
+    get linkedClass() {
+      const { type, ref }  = this.options;
+        if (type.modelName) {
+        return type.modelName;
+      }
+        if (ref) {
+        return ref;
+      }
+        return null;
+    }*/
   }]);
 
   return LinkedType;

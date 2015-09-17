@@ -39,6 +39,7 @@ export default class Query {
     this._sort = null;
     this._fetchPlan = null;
     this._return = null;
+    this._populate = [];
 
     this._from = null;
     this._to = null;
@@ -308,6 +309,11 @@ export default class Query {
 
   to(value) {
     this._to = value;
+    return this;
+  }
+
+  populate(value) {
+    this._populate.push(value);
     return this;
   }
 

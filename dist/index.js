@@ -53,10 +53,11 @@ var _constantsIndexType2 = _interopRequireDefault(_constantsIndexType);
 _schemasSchema2['default'].Vertex = _schemasVertex2['default'];
 _schemasSchema2['default'].Edge = _schemasEdge2['default'];
 _schemasSchema2['default'].Graph = _schemasGraph2['default'];
+_schemasSchema2['default'].Types = _typesIndex2['default'];
 
 _Connection2['default'].Schema = _schemasSchema2['default'];
 _Connection2['default'].Model = _Model2['default'];
-_Connection2['default'].Type = _typesIndex2['default'];
+_Connection2['default'].Types = _typesIndex2['default'];
 _Connection2['default'].Adapter = _Adapter2['default'];
 _Connection2['default'].Query = _Query2['default'];
 _Connection2['default'].Document = _Document2['default'];
