@@ -247,8 +247,14 @@ var ArrayType = (function (_SubType) {
     key: 'getDbType',
     value: function getDbType(prop) {
       var item = prop.item;
+      var isLink = item.type.isDocumentClass || item.options && item.options.ref;
+      var isSet = item.options && item.options.set;
 
-      return item.type.isDocumentClass ? 'LINKLIST' : 'EMBEDDEDLIST';
+      if (isLink) {
+        return isSet ? 'LINKSET' : 'LINKLIST';
+      }
+
+      return isSet ? 'EMBEDDEDSET' : 'EMBEDDEDLIST';
     }
   }, {
     key: 'getPropertyConfig',
@@ -275,7 +281,7 @@ var ArrayType = (function (_SubType) {
     key: 'isEmbedded',
     value: function isEmbedded(prop) {
       var dbType = ArrayType.getDbType(prop);
-      return dbType === 'EMBEDDEDLIST';
+      return _lodash2['default'].startsWith(dbType, 'EMBEDDED');
     }
   }, {
     key: 'isAbstract',

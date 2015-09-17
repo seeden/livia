@@ -187,8 +187,14 @@ export default class ArrayType extends SubType {
 
   static getDbType(prop) {
     const item = prop.item;
+    const isLink = item.type.isDocumentClass || (item.options && item.options.ref);
+    const isSet = item.options && item.options.set;
 
-    return item.type.isDocumentClass ? 'LINKLIST' : 'EMBEDDEDLIST';
+    if (isLink) {
+      return isSet ? 'LINKSET' : 'LINKLIST';
+    }
+
+    return isSet ? 'EMBEDDEDSET' : 'EMBEDDEDLIST';
   }
 
   static getPropertyConfig(prop) {
@@ -217,7 +223,7 @@ export default class ArrayType extends SubType {
 
   static isEmbedded(prop) {
     const dbType = ArrayType.getDbType(prop);
-    return dbType === 'EMBEDDEDLIST';
+    return _.startsWith(dbType, 'EMBEDDED');
   }
 
   static isAbstract(prop) {
