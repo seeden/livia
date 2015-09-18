@@ -126,13 +126,30 @@ var Type = (function () {
     }
   }, {
     key: 'set',
-    value: function set(path, value) {
+    value: function set(path, value, setAsOriginal) {
       throw new Error('Set path is not supported by this type ');
     }
   }, {
     key: 'get',
     value: function get(path) {
       throw new Error('Get path is not supported by this type ');
+    }
+  }, {
+    key: 'getDocumentClass',
+    value: function getDocumentClass() {
+      var _options = this.options;
+      var type = _options.type;
+      var ref = _options.ref;
+
+      if (type && type.isDocumentClass) {
+        return type;
+      }
+
+      if (ref) {
+        return this.mainData._holder.model(ref);
+      }
+
+      return null;
     }
   }, {
     key: 'data',

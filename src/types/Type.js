@@ -175,12 +175,26 @@ export default class Type {
     }, options.disableDefault);
   }
 
-  set(path, value) {
+  set(path, value, setAsOriginal) {
     throw new Error('Set path is not supported by this type ');
   }
 
   get(path) {
     throw new Error('Get path is not supported by this type ');
+  }
+
+  getDocumentClass() {
+    const { type, ref } = this.options;
+
+    if (type && type.isDocumentClass) {
+      return type;
+    }
+
+    if (ref) {
+      return this.mainData._holder.model(ref);
+    }
+
+    return null;
   }
 
   static toString() {

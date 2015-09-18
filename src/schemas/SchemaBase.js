@@ -1,4 +1,4 @@
-import {EventEmitter} from 'events';
+import { EventEmitter } from 'events';
 import _ from 'lodash';
 
 import Types from '../types/index';

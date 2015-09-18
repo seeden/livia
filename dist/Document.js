@@ -61,8 +61,13 @@ var Document = (function (_EventEmitter) {
     key: 'setupData',
     value: function setupData(properties) {
       this._data.setupData(properties);
-      this._isNew = false;
+      this.setAsCreated();
       return this;
+    }
+  }, {
+    key: 'setAsCreated',
+    value: function setAsCreated() {
+      this._isNew = false;
     }
   }, {
     key: 'toJSON',

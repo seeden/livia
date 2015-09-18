@@ -7,7 +7,12 @@ export default class LinkedType extends StringType {
     if (value instanceof Document) {
       return value;
     } else if (_.isPlainObject(value)) {
-      return new this.options.type(value);
+      const Doc = this.getDocumentClass();
+      if (!Doc) {
+        throw new Error(`Document is not defined for property ${this.name}`);
+      }
+
+      return new Doc(value);
     }
 
     return super._serialize(value);
@@ -18,7 +23,7 @@ export default class LinkedType extends StringType {
       return this._value.get(path);
     }
 
-    super.get(path);
+    return super.get(path);
   }
 
   set(path, value) {
@@ -26,7 +31,7 @@ export default class LinkedType extends StringType {
       return this._value.set(path, value);
     }
 
-    super.set(path, value);
+    return super.set(path, value);
   }
 
   get isModified() {
@@ -37,18 +42,13 @@ export default class LinkedType extends StringType {
     return super.isModified;
   }
 
-  /*
-  get linkedClass() {
-    const { type, ref }  = this.options;
+  setAsOriginal() {
+    super.setAsOriginal();
 
-    if (type.modelName) {
-      return type.modelName;
+    if (this._value instanceof Document) {
+      return this._value.setAsCreated();
     }
 
-    if (ref) {
-      return ref;
-    }
-
-    return null;
-  }*/
+    return this;
+  }
 }

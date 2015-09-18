@@ -41,7 +41,12 @@ var LinkedType = (function (_StringType) {
       if (value instanceof _Document2['default']) {
         return value;
       } else if (_lodash2['default'].isPlainObject(value)) {
-        return new this.options.type(value);
+        var Doc = this.getDocumentClass();
+        if (!Doc) {
+          throw new Error('Document is not defined for property ' + this.name);
+        }
+
+        return new Doc(value);
       }
 
       return _get(Object.getPrototypeOf(LinkedType.prototype), '_serialize', this).call(this, value);
@@ -53,7 +58,7 @@ var LinkedType = (function (_StringType) {
         return this._value.get(path);
       }
 
-      _get(Object.getPrototypeOf(LinkedType.prototype), 'get', this).call(this, path);
+      return _get(Object.getPrototypeOf(LinkedType.prototype), 'get', this).call(this, path);
     }
   }, {
     key: 'set',
@@ -62,7 +67,18 @@ var LinkedType = (function (_StringType) {
         return this._value.set(path, value);
       }
 
-      _get(Object.getPrototypeOf(LinkedType.prototype), 'set', this).call(this, path, value);
+      return _get(Object.getPrototypeOf(LinkedType.prototype), 'set', this).call(this, path, value);
+    }
+  }, {
+    key: 'setAsOriginal',
+    value: function setAsOriginal() {
+      _get(Object.getPrototypeOf(LinkedType.prototype), 'setAsOriginal', this).call(this);
+
+      if (this._value instanceof _Document2['default']) {
+        return this._value.setAsCreated();
+      }
+
+      return this;
     }
   }, {
     key: 'isModified',
@@ -73,18 +89,6 @@ var LinkedType = (function (_StringType) {
 
       return _get(Object.getPrototypeOf(LinkedType.prototype), 'isModified', this);
     }
-
-    /*
-    get linkedClass() {
-      const { type, ref }  = this.options;
-        if (type.modelName) {
-        return type.modelName;
-      }
-        if (ref) {
-        return ref;
-      }
-        return null;
-    }*/
   }]);
 
   return LinkedType;

@@ -42,8 +42,12 @@ export default class Document extends EventEmitter {
 
   setupData(properties) {
     this._data.setupData(properties);
-    this._isNew = false;
+    this.setAsCreated();
     return this;
+  }
+
+  setAsCreated() {
+    this._isNew = false;
   }
 
   toJSON(options = {}) {

@@ -89,7 +89,7 @@ export default class ArrayType extends SubType {
     return item.get(newPath);
   }
 
-  set(path, value) {
+  set(path, value, setAsOriginal) {
     const before = this._value;
 
     try {
@@ -116,7 +116,7 @@ export default class ArrayType extends SubType {
         throw new Error('You need to initialize array item first');
       }
 
-      item.set(newPath, value);
+      item.set(newPath, value, setAsOriginal);
       this._value = items;
     } catch(e) {
       this._value = before;

@@ -580,7 +580,7 @@ describe('Linked model', function() {
 
   it('should be able to create a model', function() {
     const schemaData = {
-      user: { type: UserLivia },
+      user: { type: UserLivia, required: true, default: {} },
       image: { type: String }
     };
 
@@ -595,6 +595,16 @@ describe('Linked model', function() {
     });
 
     profile.user.should.equal('1234');
+  });
+
+  it('should be able to create a linked doc', function() {
+    const user = new UserLivia({});
+
+    const profile = new Profile({
+      image: 'path'
+    });
+
+    const obj = profile.toObject();
   });
 
   it('should be able to create a linked doc', function() {

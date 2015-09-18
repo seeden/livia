@@ -66,14 +66,14 @@ var ObjectType = (function (_SubType) {
     }
   }, {
     key: 'set',
-    value: function set(key, value) {
+    value: function set(key, value, setAsOriginal) {
       var before = this._value;
       if (!this._value) {
         this._value = this._createData();
       }
 
       try {
-        this._value.set(key, value);
+        this._value.set(key, value, setAsOriginal);
       } catch (e) {
         this._value = before;
         throw e;

@@ -114,7 +114,7 @@ var ArrayType = (function (_SubType) {
     }
   }, {
     key: 'set',
-    value: function set(path, value) {
+    value: function set(path, value, setAsOriginal) {
       var before = this._value;
 
       try {
@@ -140,7 +140,7 @@ var ArrayType = (function (_SubType) {
           throw new Error('You need to initialize array item first');
         }
 
-        item.set(newPath, value);
+        item.set(newPath, value, setAsOriginal);
         this._value = items;
       } catch (e) {
         this._value = before;
