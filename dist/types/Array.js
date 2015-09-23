@@ -36,15 +36,16 @@ var ArrayType = (function (_SubType) {
   function ArrayType(data, prop, name, mainData) {
     _classCallCheck(this, ArrayType);
 
-    _get(Object.getPrototypeOf(ArrayType.prototype), 'constructor', this).call(this, data, prop, name, mainData);
-
     if (!prop.item) {
       throw new Error('Type of the array item is not defined');
     }
 
-    if (typeof this._default === 'undefined') {
-      this._default = []; // mongoose default value
+    prop.options = prop.options || {};
+    if (typeof prop.options['default'] === 'undefined') {
+      prop.options['default'] = []; // mongoose default value
     }
+
+    _get(Object.getPrototypeOf(ArrayType.prototype), 'constructor', this).call(this, data, prop, name, mainData);
   }
 
   _createClass(ArrayType, [{

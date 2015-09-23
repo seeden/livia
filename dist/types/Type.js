@@ -33,11 +33,11 @@ var Type = (function () {
     this._default = options['default'];
     this._constant = options.constant;
 
-    this._value = void 0;
-    this._original = void 0;
-
     this._handleNull = true;
     this._handleUndefined = true;
+
+    this._value = void 0;
+    this._original = this.deserializedValue; // must be last because default value
   }
 
   _createClass(Type, [{

@@ -28,11 +28,12 @@ var ObjectType = (function (_SubType) {
   function ObjectType(data, prop, name, mainData) {
     _classCallCheck(this, ObjectType);
 
-    _get(Object.getPrototypeOf(ObjectType.prototype), 'constructor', this).call(this, data, prop, name, mainData);
-
-    if (typeof this._default === 'undefined') {
-      this._default = {}; // MONGOOSE: default value
+    prop.options = prop.options || {};
+    if (typeof prop.options['default'] === 'undefined') {
+      prop.options['default'] = {}; // mongoose default value
     }
+
+    _get(Object.getPrototypeOf(ObjectType.prototype), 'constructor', this).call(this, data, prop, name, mainData);
   }
 
   _createClass(ObjectType, [{
@@ -106,9 +107,8 @@ var ObjectType = (function (_SubType) {
   }, {
     key: 'isModified',
     get: function get() {
-      return true;
       if (!this._value) {
-        return this.original !== this.value;
+        return this.original !== this._value;
       }
 
       var isModified = false;

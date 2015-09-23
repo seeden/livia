@@ -53,6 +53,10 @@ describe('Model Livia', function() {
   after(function() {
     arrayCompatibility(UserLivia, DBType.LIVIA);
   });
+
+  after(function() {
+    isModifiedCompatibility(UserLivia, DBType.LIVIA);
+  });
 });
 
 describe('Model Mongoose', function() {
@@ -69,7 +73,106 @@ describe('Model Mongoose', function() {
   after(function() {
     arrayCompatibility(UserMongoose, DBType.MONGOOSE);
   });
+
+  after(function() {
+    isModifiedCompatibility(UserMongoose, DBType.MONGOOSE);
+  });
 });
+
+/*
+const basicSchema = {
+  name: { type: String, default: 'Zlatko' },
+  images: [{
+    _id: false,
+    title: { type: String, default: 'MyImage' }
+  }],
+  tags: [String],
+  address: {
+    city: { type: String, default: 'Kosice' },
+    street1: { type: String }
+  },
+  empty: {
+    prop: { type: String }
+  },
+  emptyMixed: {
+    type: {}
+  },
+  imagesEmpty: [{}],
+  defaultArray: {
+    type: [String],
+    default: ['Orange', 'Red']
+  }
+};*/
+
+function isModifiedCompatibility(User, name) {
+  describe(`Object compatibility ${name}`, function() {
+    let doc = null;
+
+    it('should be able to use isModified for unmodified doc', function() {
+      const doc = new User({});
+
+      should(doc.isModified('name')).equal(false);
+      should(doc.isModified('images')).equal(false);
+      should(doc.isModified('tags')).equal(false);
+      should(doc.isModified('address')).equal(false);
+      should(doc.isModified('empty')).equal(false);
+      should(doc.isModified('emptyMixed')).equal(false);
+      should(doc.isModified('imagesEmpty')).equal(false);
+      should(doc.isModified('defaultArray')).equal(false);
+
+      should(doc.isModified()).equal(false);
+    });
+
+    it('should be able to use isModified for modified doc', function() {
+      const doc = new User({
+        name: 'Zlatko non default',
+        images: [{
+          title: 123
+        }],
+        tags: ['c', 'javascript'],
+        address: {
+          city: 'Kosice',
+          street: 'Huskova'
+        },
+        empty: {
+          prop: ''
+        },
+        emptyMixed: '8888',
+        imagesEmpty: [123],
+        defaultArray: ['Orange']
+      });
+
+      should(doc.isModified('name')).equal(true);
+      should(doc.isModified('images')).equal(true);
+      should(doc.isModified('tags')).equal(true);
+      should(doc.isModified('address')).equal(true);
+      should(doc.isModified('empty')).equal(true);
+      should(doc.isModified('emptyMixed')).equal(true);
+      should(doc.isModified('imagesEmpty')).equal(true);
+      should(doc.isModified('defaultArray')).equal(true);
+
+      should(doc.isModified()).equal(true);
+    });
+
+    if (DBType.LIVIA === name) {
+      it('should be able to get just changed doc', function() {
+        const doc = new User({
+          name: 'Zlatko',
+          address: {
+            city: 'Kosice'
+          },
+          defaultArray: ['Orange', 'Red']
+        });
+
+        const justModified = doc.toObject({
+          modified: true
+        });
+
+        (justModified).should.be.empty();
+      });
+    }
+  });
+}
 
 function objectCompatibility(User, name) {
   describe(`Object compatibility ${name}`, function() {

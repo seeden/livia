@@ -29,9 +29,7 @@ export default class Data {
     }
 
     Object.keys(this._data).forEach(key => {
-      const value = returnType
-        ? this._data[key]
-        : this.get(key);
+      const value = returnType ? this._data[key] : this.get(key);
       fn(value, key);
     });
   }
@@ -68,7 +66,7 @@ export default class Data {
         return;
       }
 
-      if (options.modified && !prop.isModified && !prop.hasDefault) {
+      if (options.modified && !prop.isModified) {
         return;
       }
 
@@ -106,7 +104,7 @@ export default class Data {
         return;
       }
 
-      if (options.modified && !prop.isModified && !prop.hasDefault) {
+      if (options.modified && !prop.isModified) {
         return;
       }
 

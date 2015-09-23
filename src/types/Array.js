@@ -4,15 +4,16 @@ import ExtendArray from '../utils/ExtendedArray';
 
 export default class ArrayType extends SubType {
   constructor(data, prop, name, mainData) {
-    super(data, prop, name, mainData);
-
     if (!prop.item) {
       throw new Error('Type of the array item is not defined');
     }
 
-    if (typeof this._default === 'undefined') {
-      this._default = []; // mongoose default value
+    prop.options = prop.options || {};
+    if (typeof prop.options.default === 'undefined') {
+      prop.options.default = []; // mongoose default value
     }
+
+    super(data, prop, name, mainData);
   }
 
   _createItem(value) {

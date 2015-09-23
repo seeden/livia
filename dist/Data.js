@@ -109,7 +109,7 @@ var Data = (function () {
           return;
         }
 
-        if (options.modified && !prop.isModified && !prop.hasDefault) {
+        if (options.modified && !prop.isModified) {
           return;
         }
 
@@ -152,7 +152,7 @@ var Data = (function () {
           return;
         }
 
-        if (options.modified && !prop.isModified && !prop.hasDefault) {
+        if (options.modified && !prop.isModified) {
           return;
         }
 

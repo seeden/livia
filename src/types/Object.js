@@ -3,11 +3,12 @@ import _ from 'lodash';
 
 export default class ObjectType extends SubType {
   constructor(data, prop, name, mainData) {
-    super(data, prop, name, mainData);
-
-    if (typeof this._default === 'undefined') {
-      this._default = {}; // MONGOOSE: default value
+    prop.options = prop.options || {};
+    if (typeof prop.options.default === 'undefined') {
+      prop.options.default = {}; // mongoose default value
     }
+
+    super(data, prop, name, mainData);
   }
 
   get schema() {
@@ -49,9 +50,8 @@ export default class ObjectType extends SubType {
   }
 
   get isModified() {
-    return true;
     if (!this._value) {
-      return this.original !== this.value;
+      return this.original !== this._value;
     }
 
     let isModified = false;
