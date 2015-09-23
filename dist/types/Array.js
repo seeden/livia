@@ -92,6 +92,10 @@ var ArrayType = (function (_SubType) {
   }, {
     key: 'get',
     value: function get(path) {
+      if (!path) {
+        return this.value;
+      }
+
       var value = this.serializedValue;
       if (!value) {
         return void 0;
@@ -185,33 +189,8 @@ var ArrayType = (function (_SubType) {
       }, options.disableDefault);
     }
   }, {
-    key: 'value',
-    set: function set(val) {
-      this._customArray = null;
-      _set(Object.getPrototypeOf(ArrayType.prototype), 'value', val, this);
-    },
-    get: function get() {
-      var _this2 = this;
-
-      var value = this.deserializedValue;
-      if (!value) {
-        return value;
-      }
-
-      if (!this._customArray) {
-        (function () {
-          var arr = _this2._customArray = new _utilsExtendedArray2['default'](_this2);
-          value.forEach(function (val, index) {
-            arr[index] = val;
-          });
-        })();
-      }
-
-      return this._customArray;
-    }
-  }, {
     key: 'isModified',
-    get: function get() {
+    value: function isModified(path) {
       var value = this.deserializedValue;
       var original = this._original;
 
@@ -238,6 +217,31 @@ var ArrayType = (function (_SubType) {
       }
 
       return false;
+    }
+  }, {
+    key: 'value',
+    set: function set(val) {
+      this._customArray = null;
+      _set(Object.getPrototypeOf(ArrayType.prototype), 'value', val, this);
+    },
+    get: function get() {
+      var _this2 = this;
+
+      var value = this.deserializedValue;
+      if (!value) {
+        return value;
+      }
+
+      if (!this._customArray) {
+        (function () {
+          var arr = _this2._customArray = new _utilsExtendedArray2['default'](_this2);
+          value.forEach(function (val, index) {
+            arr[index] = val;
+          });
+        })();
+      }
+
+      return this._customArray;
     }
   }], [{
     key: 'toString',

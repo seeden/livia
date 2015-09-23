@@ -1,9 +1,5 @@
-import { EventEmitter } from 'events';
-
-export default class Document extends EventEmitter {
+export default class Document {
   constructor(model, properties = {}, options = {}) {
-    super();
-
     if (!model) {
       throw new Error('Model is undefined');
     }
@@ -24,11 +20,15 @@ export default class Document extends EventEmitter {
   }
 
   get(path) {
+    if (!path) {
+      return this;
+    }
+
     return this._data.get(path);
   }
 
-  set(path, value) {
-    this._data.set(path, value);
+  set(path, value, setAsOriginal) {
+    this._data.set(path, value, setAsOriginal);
     return this;
   }
 
@@ -41,13 +41,9 @@ export default class Document extends EventEmitter {
   }
 
   setupData(properties) {
+    this._isNew = true;
     this._data.setupData(properties);
-    this.setAsCreated();
     return this;
-  }
-
-  setAsCreated() {
-    this._isNew = false;
   }
 
   toJSON(options = {}) {
@@ -82,7 +78,11 @@ export default class Document extends EventEmitter {
     return this._data.toObject(options);
   }
 
-  setAsOriginal() {
+  setAsOriginal(setAsExists) {
+    if (setAsExists) {
+      this._isNew = false;
+    }
+
     return this._data.setAsOriginal();
   }
 

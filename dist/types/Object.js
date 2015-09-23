@@ -66,6 +66,15 @@ var ObjectType = (function (_SubType) {
       return value;
     }
   }, {
+    key: 'isModified',
+    value: function isModified(path) {
+      if (!this._value) {
+        return this.original !== this._value;
+      }
+
+      return this._value.isModified(path);
+    }
+  }, {
     key: 'set',
     value: function set(key, value, setAsOriginal) {
       var before = this._value;
@@ -83,6 +92,10 @@ var ObjectType = (function (_SubType) {
   }, {
     key: 'get',
     value: function get(path) {
+      if (!path) {
+        return this.value;
+      }
+
       var value = this.serializedValue;
       if (!value) {
         return void 0;
@@ -93,9 +106,7 @@ var ObjectType = (function (_SubType) {
   }, {
     key: 'setAsOriginal',
     value: function setAsOriginal() {
-      this._value.forEach(true, function (prop) {
-        return prop.setAsOriginal();
-      });
+      this._value.setAsOriginal();
       return _get(Object.getPrototypeOf(ObjectType.prototype), 'setAsOriginal', this).call(this);
     }
   }, {
@@ -111,20 +122,6 @@ var ObjectType = (function (_SubType) {
       }
 
       return this._value;
-    }
-  }, {
-    key: 'isModified',
-    get: function get() {
-      if (!this._value) {
-        return this.original !== this._value;
-      }
-
-      var isModified = false;
-      this._value.forEach(true, function (prop) {
-        isModified = prop.isModified || isModified;
-      });
-
-      return isModified;
     }
   }], [{
     key: 'getDbType',

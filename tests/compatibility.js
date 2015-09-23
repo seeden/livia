@@ -32,7 +32,8 @@ const basicSchema = {
   defaultArray: {
     type: [String],
     default: ['Orange', 'Red']
-  }
+  },
+  user: { type: Schema.Types.ObjectId, ref: 'User' }
 };
 
 let UserLivia = null;
@@ -42,7 +43,13 @@ describe('Model Livia', function() {
   const schemaData = { ...basicSchema };
 
   it('should be able to create a model', function() {
-    const UserModel = new Model('User', schemaData, {}, { ensure: false });
+    const conn = {
+      model: function() {
+        return UserLivia;
+      }
+    };
+
+    const UserModel = new Model('User', schemaData, conn, { ensure: false });
     UserLivia = UserModel.DocumentClass;
   });
 
@@ -79,31 +86,6 @@ describe('Model Mongoose', function() {
   });
 });
 
-/*
-const basicSchema = {
-  name: { type: String, default: 'Zlatko' },
-  images: [{
-    _id: false,
-    title: { type: String, default: 'MyImage' }
-  }],
-  tags: [String],
-  address: {
-    city: { type: String, default: 'Kosice' },
-    street1: { type: String }
-  },
-  empty: {
-    prop: { type: String }
-  },
-  emptyMixed: {
-    type: {}
-  },
-  imagesEmpty: [{}],
-  defaultArray: {
-    type: [String],
-    default: ['Orange', 'Red']
-  }
-};*/
-
 function isModifiedCompatibility(User, name) {
   describe(`Object compatibility ${name}`, function() {
     let doc = null;
@@ -119,6 +101,7 @@ function isModifiedCompatibility(User, name) {
       should(doc.isModified('emptyMixed')).equal(false);
       should(doc.isModified('imagesEmpty')).equal(false);
       should(doc.isModified('defaultArray')).equal(false);
+      should(doc.isModified('user')).equal(false);
 
       should(doc.isModified()).equal(false);
     });
@@ -139,7 +122,10 @@ function isModifiedCompatibility(User, name) {
         },
         emptyMixed: '8888',
         imagesEmpty: [123],
-        defaultArray: ['Orange']
+        defaultArray: ['Orange'],
+        user: {
+          name: 'Zlatik'
+        }
       });
 
       should(doc.isModified('name')).equal(true);
@@ -150,6 +136,12 @@ function isModifiedCompatibility(User, name) {
       should(doc.isModified('emptyMixed')).equal(true);
       should(doc.isModified('imagesEmpty')).equal(true);
       should(doc.isModified('defaultArray')).equal(true);
+
+      if (DBType.LIVIA === name) {
+        should(doc.isModified('user')).equal(true);
+        should(doc.isModified('user.name')).equal(true);
+      }
+
       should(doc.isModified()).equal(true);
 
     });
@@ -172,38 +164,41 @@ function isModifiedCompatibility(User, name) {
       });
 
       it('should be able to use setAsOriginal', function() {
-      const doc = new User({
-        name: 'Zlatko non default',
-        images: [{
-          title: 123
-        }],
-        tags: ['c', 'javascript'],
-        address: {
-          city: 'Kosice',
-          street: 'Huskova'
-        },
-        empty: {
-          prop: ''
-        },
-        emptyMixed: '8888',
-        imagesEmpty: [123],
-        defaultArray: ['Orange']
+        const doc = new User({
+          name: 'Zlatko non default',
+          images: [{
+            title: 123
+          }],
+          tags: ['c', 'javascript'],
+          address: {
+            city: 'Kosice',
+            street: 'Huskova'
+          },
+          empty: {
+            prop: ''
+          },
+          emptyMixed: '8888',
+          imagesEmpty: [123],
+          defaultArray: ['Orange'],
+          user: {
+            name: 'Adam'
+          }
+        });
+
+        doc.setAsOriginal();
+
+        should(doc.isModified('name')).equal(false);
+        should(doc.isModified('images')).equal(false);
+        should(doc.isModified('tags')).equal(false);
+        should(doc.isModified('address')).equal(false);
+        should(doc.isModified('empty')).equal(false);
+        should(doc.isModified('emptyMixed')).equal(false);
+        should(doc.isModified('imagesEmpty')).equal(false);
+        should(doc.isModified('defaultArray')).equal(false);
+        should(doc.isModified('user')).equal(false);
+
+        should(doc.isModified()).equal(false);
       });
-
-
-      doc.setAsOriginal();
-
-      should(doc.isModified('name')).equal(false);
-      should(doc.isModified('images')).equal(false);
-      should(doc.isModified('tags')).equal(false);
-      should(doc.isModified('address')).equal(false);
-      should(doc.isModified('empty')).equal(false);
-      should(doc.isModified('emptyMixed')).equal(false);
-      should(doc.isModified('imagesEmpty')).equal(false);
-      should(doc.isModified('defaultArray')).equal(false);
-
-      should(doc.isModified()).equal(false);
-    });
     }
   });
 }
@@ -732,16 +727,6 @@ describe('Linked model', function() {
     });
 
     profile.user.should.equal('1234');
-  });
-
-  it('should be able to create a linked doc', function() {
-    const user = new UserLivia({});
-
-    const profile = new Profile({
-      image: 'path'
-    });
-
-    const obj = profile.toObject();
   });
 
   it('should be able to create a linked doc', function() {

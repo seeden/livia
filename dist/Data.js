@@ -30,6 +30,8 @@ var _typesMixed = require('./types/Mixed');
 
 var _typesMixed2 = _interopRequireDefault(_typesMixed);
 
+var _utilsProps = require('./utils/props');
+
 var log = (0, _debug2['default'])('orientose:data');
 
 var Data = (function () {
@@ -56,21 +58,6 @@ var Data = (function () {
   }
 
   _createClass(Data, [{
-    key: 'forEach',
-    value: function forEach(returnType, fn) {
-      var _this2 = this;
-
-      if (typeof returnType === 'function') {
-        fn = returnType;
-        returnType = false;
-      }
-
-      Object.keys(this._data).forEach(function (key) {
-        var value = returnType ? _this2._data[key] : _this2.get(key);
-        fn(value, key);
-      });
-    }
-  }, {
     key: 'toString',
     value: function toString() {
       return this.toJSON();
@@ -78,14 +65,14 @@ var Data = (function () {
   }, {
     key: 'toJSON',
     value: function toJSON() {
-      var _this3 = this;
+      var _this2 = this;
 
       var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
       var json = {};
 
       Object.keys(this._data).forEach(function (propName) {
-        var prop = _this3._data[propName];
+        var prop = _this2._data[propName];
 
         if (prop.isRecordID && options.recordID) {
           var _value = prop.toJSON(options);
@@ -109,7 +96,7 @@ var Data = (function () {
           return;
         }
 
-        if (options.modified && !prop.isModified) {
+        if (options.modified && !prop.isModified()) {
           return;
         }
 
@@ -135,14 +122,14 @@ var Data = (function () {
   }, {
     key: 'toObject',
     value: function toObject() {
-      var _this4 = this;
+      var _this3 = this;
 
       var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
       var json = {};
 
       Object.keys(this._data).forEach(function (propName) {
-        var prop = _this4._data[propName];
+        var prop = _this3._data[propName];
 
         if (prop instanceof _typesVirtual2['default'] && !options.virtuals) {
           return;
@@ -152,7 +139,7 @@ var Data = (function () {
           return;
         }
 
-        if (options.modified && !prop.isModified) {
+        if (options.modified && !prop.isModified()) {
           return;
         }
 
@@ -174,89 +161,38 @@ var Data = (function () {
   }, {
     key: 'isModified',
     value: function isModified(path) {
-      if (typeof path === 'undefined') {
+      return (0, _utilsProps.process)(this._data, path, 'isModified', false, function (data) {
         var isModified = false;
-        this.forEach(true, function (prop) {
-          if (prop.isModified) {
-            isModified = true;
-          }
+
+        Object.keys(data).forEach(function (propName) {
+          var prop = data[propName];
+          isModified = prop.isModified() || isModified;
         });
 
         return isModified;
-      }
-
-      var pos = path.indexOf('.');
-      if (pos === -1) {
-        if (!this._data[path]) {
-          log('isModified Path not exists:' + path);
-          return null;
-        }
-
-        return this._data[path].isModified;
-      }
-
-      var currentKey = path.substr(0, pos);
-      var newPath = path.substr(pos + 1);
-
-      if (!this._data[currentKey]) {
-        log('isModified deep Path not exists:' + currentKey);
-        return null;
-      }
-
-      var data = this._data[currentKey];
-      if (!data || !data.get) {
-        return null;
-      }
-
-      return data.get(newPath);
+      });
     }
   }, {
     key: 'get',
     value: function get(path) {
-      var pos = path.indexOf('.');
-      if (pos === -1) {
-        if (!this._data[path]) {
-          log('get Path not exists:' + path);
-          return void 0;
-        }
-
-        return this._data[path].value;
-      }
-
-      var currentKey = path.substr(0, pos);
-      var newPath = path.substr(pos + 1);
-
-      if (!this._data[currentKey]) {
-        log('get deep Path not exists:' + currentKey, path, newPath);
-        return void 0;
-      }
-
-      var data = this._data[currentKey];
-      if (!data || !data.get) {
-        return void 0;
-      }
-
-      return data.get(newPath);
-    }
-  }, {
-    key: 'setAsOriginal',
-    value: function setAsOriginal() {
-      this.forEach(true, function (item) {
-        return item.setAsOriginal();
+      return (0, _utilsProps.process)(this._data, path, 'get', void 0, function (data) {
+        return data;
       });
     }
   }, {
     key: 'set',
     value: function set(path, value, setAsOriginal) {
-      var _this5 = this;
+      var _this4 = this;
 
       if (_lodash2['default'].isPlainObject(path)) {
         Object.keys(path).forEach(function (key) {
-          _this5.set(key, path[key], setAsOriginal);
+          _this4.set(key, path[key], setAsOriginal);
         });
+
         return this;
       }
 
+      // TODO replace with props.process
       var pos = path.indexOf('.');
       if (pos === -1) {
         var property = this._data[path];
@@ -299,6 +235,15 @@ var Data = (function () {
     key: 'setupData',
     value: function setupData(properties) {
       this.set(properties, null, true);
+    }
+  }, {
+    key: 'setAsOriginal',
+    value: function setAsOriginal() {
+      var _this5 = this;
+
+      Object.keys(this._data).forEach(function (propName) {
+        return _this5._data[propName].setAsOriginal();
+      });
     }
   }, {
     key: 'defineMixedProperty',

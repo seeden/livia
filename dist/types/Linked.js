@@ -62,12 +62,21 @@ var LinkedType = (function (_StringType) {
     }
   }, {
     key: 'set',
-    value: function set(path, value) {
+    value: function set(path, value, setAsOriginal) {
       if (this._value instanceof _Document2['default']) {
-        return this._value.set(path, value);
+        return this._value.set(path, value, setAsOriginal);
       }
 
-      return _get(Object.getPrototypeOf(LinkedType.prototype), 'set', this).call(this, path, value);
+      return _get(Object.getPrototypeOf(LinkedType.prototype), 'set', this).call(this, path, value, setAsOriginal);
+    }
+  }, {
+    key: 'isModified',
+    value: function isModified(path) {
+      if (this._value instanceof _Document2['default']) {
+        return this._value.isModified(path);
+      }
+
+      return _get(Object.getPrototypeOf(LinkedType.prototype), 'isModified', this).call(this, path);
     }
   }, {
     key: 'setAsOriginal',
@@ -75,19 +84,10 @@ var LinkedType = (function (_StringType) {
       _get(Object.getPrototypeOf(LinkedType.prototype), 'setAsOriginal', this).call(this);
 
       if (this._value instanceof _Document2['default']) {
-        return this._value.setAsCreated();
+        return this._value.setAsOriginal(true);
       }
 
       return this;
-    }
-  }, {
-    key: 'isModified',
-    get: function get() {
-      if (this._value instanceof _Document2['default']) {
-        return this._value.isModified();
-      }
-
-      return _get(Object.getPrototypeOf(LinkedType.prototype), 'isModified', this);
     }
   }]);
 

@@ -49,17 +49,12 @@ export default class ObjectType extends SubType {
     return value;
   }
 
-  get isModified() {
+  isModified(path) {
     if (!this._value) {
       return this.original !== this._value;
     }
 
-    let isModified = false;
-    this._value.forEach(true, function(prop) {
-      isModified = prop.isModified || isModified;
-    });
-
-    return isModified;
+    return this._value.isModified(path);
   }
 
   set(key, value, setAsOriginal) {
@@ -77,6 +72,10 @@ export default class ObjectType extends SubType {
   }
 
   get(path) {
+    if (!path) {
+      return this.value;
+    }
+
     const value = this.serializedValue;
     if (!value) {
       return void 0;
@@ -86,7 +85,7 @@ export default class ObjectType extends SubType {
   }
 
   setAsOriginal() {
-    this._value.forEach(true, (prop) => prop.setAsOriginal());
+    this._value.setAsOriginal();
     return super.setAsOriginal();
   }
 

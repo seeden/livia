@@ -68,6 +68,10 @@ export default class ArrayType extends SubType {
   }
 
   get(path) {
+    if (!path) {
+      return this.value;
+    }
+
     const value = this.serializedValue;
     if (!value) {
       return void 0;
@@ -153,7 +157,7 @@ export default class ArrayType extends SubType {
     }, options.disableDefault);
   }
 
-  get isModified() {
+  isModified(path) {
     const value = this.deserializedValue;
     const original = this._original;
 

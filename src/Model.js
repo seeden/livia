@@ -91,16 +91,6 @@ export default class Model extends ModelBase {
     return new ModelClass({}).setupData(properties);
   }
 
-  upsertFix(originalProps) {
-    const doc = this.createDocument(originalProps);
-
-    return doc.toObject({
-      metadata: true,
-      create: true,
-      disableDefault: true
-    });
-  }
-
   query(options) {
     return this.connection.query(this, options);
   }
@@ -113,10 +103,6 @@ export default class Model extends ModelBase {
     if (typeof options === 'function') {
       callback = options;
       options = {};
-    }
-
-    if (options.upsert) {
-      doc = this.upsertFix(doc);
     }
 
     return this.query().update(conditions, doc, options, callback);

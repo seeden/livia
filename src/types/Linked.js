@@ -26,27 +26,27 @@ export default class LinkedType extends StringType {
     return super.get(path);
   }
 
-  set(path, value) {
+  set(path, value, setAsOriginal) {
     if (this._value instanceof Document) {
-      return this._value.set(path, value);
+      return this._value.set(path, value, setAsOriginal);
     }
 
-    return super.set(path, value);
+    return super.set(path, value, setAsOriginal);
   }
 
-  get isModified() {
+  isModified(path) {
     if (this._value instanceof Document) {
-      return this._value.isModified();
+      return this._value.isModified(path);
     }
 
-    return super.isModified;
+    return super.isModified(path);
   }
 
   setAsOriginal() {
     super.setAsOriginal();
 
     if (this._value instanceof Document) {
-      return this._value.setAsCreated();
+      return this._value.setAsOriginal(true);
     }
 
     return this;

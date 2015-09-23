@@ -2,6 +2,7 @@ import _ from 'lodash';
 import debug from 'debug';
 import VirtualType from './types/Virtual';
 import Mixed from './types/Mixed';
+import { process } from './utils/props';
 
 const log = debug('orientose:data');
 
@@ -20,18 +21,6 @@ export default class Data {
     });
 
     this.set(properties);
-  }
-
-  forEach(returnType, fn) {
-    if (typeof returnType === 'function') {
-      fn = returnType;
-      returnType = false;
-    }
-
-    Object.keys(this._data).forEach(key => {
-      const value = returnType ? this._data[key] : this.get(key);
-      fn(value, key);
-    });
   }
 
   toString() {
@@ -66,7 +55,7 @@ export default class Data {
         return;
       }
 
-      if (options.modified && !prop.isModified) {
+      if (options.modified && !prop.isModified()) {
         return;
       }
 
@@ -104,7 +93,7 @@ export default class Data {
         return;
       }
 
-      if (options.modified && !prop.isModified) {
+      if (options.modified && !prop.isModified()) {
         return;
       }
 
@@ -125,72 +114,22 @@ export default class Data {
   }
 
   isModified(path) {
-    if (typeof path === 'undefined') {
+    return process(this._data, path, 'isModified', false, function(data) {
       let isModified = false;
-      this.forEach(true, function(prop) {
-        if (prop.isModified) {
-          isModified = true;
-        }
+
+      Object.keys(data).forEach(function(propName) {
+        const prop = data[propName];
+        isModified = prop.isModified() || isModified;
       });
 
       return isModified;
-    }
-
-    const pos = path.indexOf('.');
-    if (pos === -1) {
-      if (!this._data[path]) {
-        log('isModified Path not exists:' + path);
-        return null;
-      }
-
-      return this._data[path].isModified;
-    }
-
-    const currentKey = path.substr(0, pos);
-    const newPath = path.substr(pos + 1);
-
-    if (!this._data[currentKey]) {
-      log('isModified deep Path not exists:' + currentKey);
-      return null;
-    }
-
-    const data = this._data[currentKey];
-    if (!data || !data.get) {
-      return null;
-    }
-
-    return data.get(newPath);
+    });
   }
 
   get(path) {
-    const pos = path.indexOf('.');
-    if (pos === -1) {
-      if (!this._data[path]) {
-        log('get Path not exists:' + path);
-        return void 0;
-      }
-
-      return this._data[path].value;
-    }
-
-    const currentKey = path.substr(0, pos);
-    const newPath = path.substr(pos + 1);
-
-    if (!this._data[currentKey]) {
-      log('get deep Path not exists:' + currentKey, path, newPath);
-      return void 0;
-    }
-
-    const data = this._data[currentKey];
-    if (!data || !data.get) {
-      return void 0;
-    }
-
-    return data.get(newPath);
-  }
-
-  setAsOriginal() {
-    this.forEach(true, (item) => item.setAsOriginal());
+    return process(this._data, path, 'get', void 0, function(data) {
+      return data;
+    });
   }
 
   set(path, value, setAsOriginal) {
@@ -198,9 +137,11 @@ export default class Data {
       Object.keys(path).forEach(key => {
         this.set(key, path[key], setAsOriginal);
       });
+
       return this;
     }
 
+    // TODO replace with props.process
     const pos = path.indexOf('.');
     if (pos === -1) {
       let property = this._data[path];
@@ -242,6 +183,10 @@ export default class Data {
 
   setupData(properties) {
     this.set(properties, null, true);
+  }
+
+  setAsOriginal() {
+    Object.keys(this._data).forEach((propName) => this._data[propName].setAsOriginal());
   }
 
   defineMixedProperty(fieldName) {

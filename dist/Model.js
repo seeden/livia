@@ -117,17 +117,6 @@ var Model = (function (_ModelBase) {
       return new ModelClass({}).setupData(properties);
     }
   }, {
-    key: 'upsertFix',
-    value: function upsertFix(originalProps) {
-      var doc = this.createDocument(originalProps);
-
-      return doc.toObject({
-        metadata: true,
-        create: true,
-        disableDefault: true
-      });
-    }
-  }, {
     key: 'query',
     value: function query(options) {
       return this.connection.query(this, options);
@@ -145,10 +134,6 @@ var Model = (function (_ModelBase) {
       if (typeof options === 'function') {
         callback = options;
         options = {};
-      }
-
-      if (options.upsert) {
-        doc = this.upsertFix(doc);
       }
 
       return this.query().update(conditions, doc, options, callback);

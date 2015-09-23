@@ -99,6 +99,11 @@ var Type = (function () {
       return this;
     }
   }, {
+    key: 'isModified',
+    value: function isModified() {
+      return this.original !== this.value;
+    }
+  }, {
     key: 'setupData',
     value: function setupData(data) {
       this.value = data;
@@ -127,12 +132,18 @@ var Type = (function () {
   }, {
     key: 'set',
     value: function set(path, value, setAsOriginal) {
-      throw new Error('Set path is not supported by this type ');
+      this.value = value;
+
+      if (setAsOriginal) {
+        this.setAsOriginal();
+      }
+
+      return this;
     }
   }, {
     key: 'get',
     value: function get(path) {
-      throw new Error('Get path is not supported by this type ');
+      return this.value;
     }
   }, {
     key: 'getDocumentClass',
@@ -239,11 +250,6 @@ var Type = (function () {
       }
 
       return this._preSerialize(value);
-    }
-  }, {
-    key: 'isModified',
-    get: function get() {
-      return this.original !== this.value;
     }
   }], [{
     key: 'toString',

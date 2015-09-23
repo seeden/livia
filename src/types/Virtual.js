@@ -34,7 +34,7 @@ export default class Virtual extends Type {
     return this;
   }
 
-  get isModified() {
+  isModified() {
     return false;
   }
 

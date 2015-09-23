@@ -68,7 +68,7 @@ var Virtual = (function (_Type) {
     }
   }, {
     key: 'isModified',
-    get: function get() {
+    value: function isModified() {
       return false;
     }
   }], [{

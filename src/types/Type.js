@@ -152,7 +152,7 @@ export default class Type {
     return this;
   }
 
-  get isModified() {
+  isModified() {
     return this.original !== this.value;
   }
 
@@ -176,11 +176,17 @@ export default class Type {
   }
 
   set(path, value, setAsOriginal) {
-    throw new Error('Set path is not supported by this type ');
+    this.value = value;
+
+    if (setAsOriginal) {
+      this.setAsOriginal();
+    }
+
+    return this;
   }
 
   get(path) {
-    throw new Error('Get path is not supported by this type ');
+    return this.value;
   }
 
   getDocumentClass() {
