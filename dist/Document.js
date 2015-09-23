@@ -58,7 +58,7 @@ var Document = (function () {
   }, {
     key: 'setupData',
     value: function setupData(properties) {
-      this._isNew = true;
+      this._isNew = false;
       this._data.setupData(properties);
       return this;
     }
@@ -200,7 +200,7 @@ var Document = (function () {
       var hooks = model.schema.hooks;
 
       if (this.isNew) {
-        return callback(null, this);
+        return callback(null, 0);
       }
 
       hooks.execPre('remove', this, function (error) {

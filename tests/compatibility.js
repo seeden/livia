@@ -185,7 +185,55 @@ function isModifiedCompatibility(User, name) {
           }
         });
 
+        doc.isNew.should.equal(true);
+
         doc.setAsOriginal();
+
+        doc.isNew.should.equal(true);
+
+        should(doc.isModified('name')).equal(false);
+        should(doc.isModified('images')).equal(false);
+        should(doc.isModified('tags')).equal(false);
+        should(doc.isModified('address')).equal(false);
+        should(doc.isModified('empty')).equal(false);
+        should(doc.isModified('emptyMixed')).equal(false);
+        should(doc.isModified('imagesEmpty')).equal(false);
+        should(doc.isModified('defaultArray')).equal(false);
+        should(doc.isModified('user')).equal(false);
+
+        should(doc.isModified()).equal(false);
+
+        doc.setAsOriginal(true);
+        doc.isNew.should.equal(false);
+      });
+
+      it('should be able to use setupData', function() {
+        const doc = new User({});
+
+        doc.isNew.should.equal(true);
+
+        doc.setupData({
+          name: 'Zlatko non default',
+          images: [{
+            title: 123
+          }],
+          tags: ['c', 'javascript'],
+          address: {
+            city: 'Kosice',
+            street: 'Huskova'
+          },
+          empty: {
+            prop: ''
+          },
+          emptyMixed: '8888',
+          imagesEmpty: [123],
+          defaultArray: ['Orange'],
+          user: {
+            name: 'Adam'
+          }
+        });
+
+        doc.isNew.should.equal(false);
 
         should(doc.isModified('name')).equal(false);
         should(doc.isModified('images')).equal(false);

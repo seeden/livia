@@ -41,7 +41,7 @@ export default class Document {
   }
 
   setupData(properties) {
-    this._isNew = true;
+    this._isNew = false;
     this._data.setupData(properties);
     return this;
   }
@@ -168,7 +168,7 @@ export default class Document {
     const hooks = model.schema.hooks;
 
     if (this.isNew) {
-      return callback(null, this);
+      return callback(null, 0);
     }
 
     hooks.execPre('remove', this, (error) => {
