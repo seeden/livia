@@ -91,6 +91,14 @@ var ObjectType = (function (_SubType) {
       return value.get(path);
     }
   }, {
+    key: 'setAsOriginal',
+    value: function setAsOriginal() {
+      this._value.forEach(true, function (prop) {
+        return prop.setAsOriginal();
+      });
+      return _get(Object.getPrototypeOf(ObjectType.prototype), 'setAsOriginal', this).call(this);
+    }
+  }, {
     key: 'schema',
     get: function get() {
       return this.prop.type;

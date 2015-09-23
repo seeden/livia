@@ -150,8 +150,8 @@ function isModifiedCompatibility(User, name) {
       should(doc.isModified('emptyMixed')).equal(true);
       should(doc.isModified('imagesEmpty')).equal(true);
       should(doc.isModified('defaultArray')).equal(true);
-
       should(doc.isModified()).equal(true);
+
     });
 
     if (DBType.LIVIA === name) {
@@ -170,6 +170,40 @@ function isModifiedCompatibility(User, name) {
 
         (justModified).should.be.empty();
       });
+
+      it('should be able to use setAsOriginal', function() {
+      const doc = new User({
+        name: 'Zlatko non default',
+        images: [{
+          title: 123
+        }],
+        tags: ['c', 'javascript'],
+        address: {
+          city: 'Kosice',
+          street: 'Huskova'
+        },
+        empty: {
+          prop: ''
+        },
+        emptyMixed: '8888',
+        imagesEmpty: [123],
+        defaultArray: ['Orange']
+      });
+
+
+      doc.setAsOriginal();
+
+      should(doc.isModified('name')).equal(false);
+      should(doc.isModified('images')).equal(false);
+      should(doc.isModified('tags')).equal(false);
+      should(doc.isModified('address')).equal(false);
+      should(doc.isModified('empty')).equal(false);
+      should(doc.isModified('emptyMixed')).equal(false);
+      should(doc.isModified('imagesEmpty')).equal(false);
+      should(doc.isModified('defaultArray')).equal(false);
+
+      should(doc.isModified()).equal(false);
+    });
     }
   });
 }

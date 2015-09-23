@@ -85,6 +85,11 @@ export default class ObjectType extends SubType {
     return value.get(path);
   }
 
+  setAsOriginal() {
+    this._value.forEach(true, (prop) => prop.setAsOriginal());
+    return super.setAsOriginal();
+  }
+
   static getDbType() {
     return 'EMBEDDED';
   }
