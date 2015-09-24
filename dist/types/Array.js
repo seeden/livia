@@ -251,15 +251,24 @@ var ArrayType = (function (_SubType) {
   }, {
     key: 'getDbType',
     value: function getDbType(prop) {
+      var options = prop.options || {};
       var item = prop.item;
-      var isLink = item.type.isDocumentClass || item.options && item.options.ref;
-      var isSet = item.options && item.options.set;
 
-      if (isLink) {
-        return isSet ? 'LINKSET' : 'LINKLIST';
+      var isLink = item.type.isDocumentClass || item.options && item.options.ref;
+
+      // no from child, it is a setting for the  array
+      var isSet = options.isSet;
+      var isMap = options.isMap;
+
+      var base = isLink ? 'LINK' : 'EMBEDDED';
+
+      if (isSet) {
+        return base + 'SET';
+      } else if (isMap) {
+        return base + 'MAP';
       }
 
-      return isSet ? 'EMBEDDEDSET' : 'EMBEDDEDLIST';
+      return base + 'LIST';
     }
   }, {
     key: 'getPropertyConfig',

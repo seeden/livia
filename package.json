@@ -1,6 +1,6 @@
 {
   "name": "livia",
-  "version": "0.6.14",
+  "version": "0.6.15",
   "description": "Universal database driver with support of schema",
   "author": {
     "name": "Zlatko Fedor",

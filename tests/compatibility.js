@@ -33,7 +33,15 @@ const basicSchema = {
     type: [String],
     default: ['Orange', 'Red']
   },
-  user: { type: Schema.Types.ObjectId, ref: 'User' }
+  user: { type: Schema.Types.ObjectId, ref: 'User' },
+  imagesSet: {
+    type: [String],
+    isSet: true
+  },
+  imagesMap: {
+    type: [String],
+    isMap: true
+  }
 };
 
 let UserLivia = null;
@@ -147,6 +155,21 @@ function isModifiedCompatibility(User, name) {
     });
 
     if (DBType.LIVIA === name) {
+      it('should be able to check subtype', function() {
+        const doc = new User({});
+
+        const imageSetPath = doc.currentModel.schema.getPath('imagesSet');
+        imageSetPath.SchemaType.should.equal(Schema.Types.Array);
+        imageSetPath.SchemaType.isEmbedded(imageSetPath).should.equal(true);
+        imageSetPath.SchemaType.getDbType(imageSetPath).should.equal('EMBEDDEDSET');
+
+        const imageMapPath = doc.currentModel.schema.getPath('imagesMap');
+        imageMapPath.SchemaType.should.equal(Schema.Types.Array);
+        imageMapPath.SchemaType.isEmbedded(imageMapPath).should.equal(true);
+        imageMapPath.SchemaType.getDbType(imageMapPath).should.equal('EMBEDDEDMAP');
+      });
+
+
       it('should be able to get just changed doc', function() {
         const doc = new User({
           name: 'Zlatko',

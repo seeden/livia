@@ -191,15 +191,24 @@ export default class ArrayType extends SubType {
   }
 
   static getDbType(prop) {
+    const options = prop.options || {};
     const item = prop.item;
-    const isLink = item.type.isDocumentClass || (item.options && item.options.ref);
-    const isSet = item.options && item.options.set;
 
-    if (isLink) {
-      return isSet ? 'LINKSET' : 'LINKLIST';
+    const isLink = item.type.isDocumentClass || (item.options && item.options.ref);
+
+    // no from child, it is a setting for the  array
+    const isSet = options.isSet;
+    const isMap = options.isMap;
+
+    const base = isLink ? 'LINK' : 'EMBEDDED';
+
+    if (isSet) {
+      return `${base}SET`;
+    } else if (isMap) {
+      return `${base}MAP`;
     }
 
-    return isSet ? 'EMBEDDEDSET' : 'EMBEDDEDLIST';
+    return `${base}LIST`;
   }
 
   static getPropertyConfig(prop) {
