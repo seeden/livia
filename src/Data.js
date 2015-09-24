@@ -55,7 +55,7 @@ export default class Data {
         return;
       }
 
-      if (options.modified && !prop.isModified()) {
+      if (options.modified && !prop.isModified() && !prop.isMetadata) {
         return;
       }
 
@@ -93,7 +93,7 @@ export default class Data {
         return;
       }
 
-      if (options.modified && !prop.isModified()) {
+      if (options.modified && !prop.isModified() && !prop.isMetadata) {
         return;
       }
 

@@ -70,7 +70,7 @@ export default class Query {
   }
 
   nextParamName(propertyName) {
-    return this.paramify(propertyName) + '_op_' + this._paramIndex++;
+    return this.paramify(propertyName) + '__' + this._paramIndex++;
   }
 
   addParam(paramName, value) {

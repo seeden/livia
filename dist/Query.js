@@ -91,7 +91,7 @@ var Query = (function () {
   }, {
     key: 'nextParamName',
     value: function nextParamName(propertyName) {
-      return this.paramify(propertyName) + '_op_' + this._paramIndex++;
+      return this.paramify(propertyName) + '__' + this._paramIndex++;
     }
   }, {
     key: 'addParam',

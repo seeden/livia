@@ -96,7 +96,7 @@ var Data = (function () {
           return;
         }
 
-        if (options.modified && !prop.isModified()) {
+        if (options.modified && !prop.isModified() && !prop.isMetadata) {
           return;
         }
 
@@ -139,7 +139,7 @@ var Data = (function () {
           return;
         }
 
-        if (options.modified && !prop.isModified()) {
+        if (options.modified && !prop.isModified() && !prop.isMetadata) {
           return;
         }
 

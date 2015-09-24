@@ -774,7 +774,7 @@ describe('Query', function() {
       }
     });
 
-    q._operators[0].query.should.equal('providers CONTAINS (nameUID = :nameUID_op_1)');
+    q._operators[0].query.should.equal('providers CONTAINS (nameUID = :nameUID__1)');
   });
 });
 
