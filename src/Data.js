@@ -37,7 +37,7 @@ export default class Data {
     if (prop.isMetadata && !options.metadata) {
       if (!options.sub && (options.create && prop.create) || (options.update && prop.update)) {
         return false;
-      } else if (option.sub && (options.create && prop.subCreate) || (options.update && prop.subUpdate)) {
+      } else if (options.sub && (options.create && prop.subCreate) || (options.update && prop.subUpdate)) {
         return false;
       }
 
