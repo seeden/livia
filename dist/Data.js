@@ -70,6 +70,8 @@ var Data = (function () {
       var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
       var excludeAvailable = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
 
+      var propOptions = prop.options;
+
       // virtual can be skiped always
       if (prop instanceof _typesVirtual2['default'] && !options.virtuals) {
         return true;
@@ -77,9 +79,9 @@ var Data = (function () {
 
       // metadata can be skiped except explicit
       if (prop.isMetadata && !options.metadata) {
-        if (!options.sub && (options.create && prop.create) || options.update && prop.update) {
+        if (!options.sub && (options.create && propOptions.create) || options.update && propOptions.update) {
           return false;
-        } else if (options.sub && (options.create && prop.subCreate) || options.update && prop.subUpdate) {
+        } else if (options.sub && (options.create && propOptions.subCreate) || options.update && propOptions.subUpdate) {
           return false;
         }
 
@@ -96,7 +98,7 @@ var Data = (function () {
         return true;
       }
 
-      if (excludeAvailable && typeof options.exclude === 'function' && options.exclude(prop.name, prop.options)) {
+      if (excludeAvailable && typeof options.exclude === 'function' && options.exclude(prop.name, propOptions)) {
         return true;
       }
 

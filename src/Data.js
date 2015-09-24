@@ -28,6 +28,8 @@ export default class Data {
   }
 
   canSkipProp(prop, options = {}, excludeAvailable = false) {
+    const propOptions = prop.options;
+
     // virtual can be skiped always
     if (prop instanceof VirtualType && !options.virtuals) {
       return true;
@@ -35,9 +37,9 @@ export default class Data {
 
     // metadata can be skiped except explicit
     if (prop.isMetadata && !options.metadata) {
-      if (!options.sub && (options.create && prop.create) || (options.update && prop.update)) {
+      if (!options.sub && (options.create && propOptions.create) || (options.update && propOptions.update)) {
         return false;
-      } else if (options.sub && (options.create && prop.subCreate) || (options.update && prop.subUpdate)) {
+      } else if (options.sub && (options.create && propOptions.subCreate) || (options.update && propOptions.subUpdate)) {
         return false;
       }
 
@@ -54,7 +56,7 @@ export default class Data {
       return true;
     }
 
-    if (excludeAvailable && typeof options.exclude === 'function' && options.exclude(prop.name, prop.options)) {
+    if (excludeAvailable && typeof options.exclude === 'function' && options.exclude(prop.name, propOptions)) {
       return true;
     }
 
