@@ -130,6 +130,7 @@ export default class ArrayType extends SubType {
   }
 
   toJSON(options = {}) {
+    /*
     let opt = options;
     if (options.update && options.modified) {
       opt = {
@@ -137,23 +138,25 @@ export default class ArrayType extends SubType {
         modified: false
       };
     }
+    */
 
     return this._preDeserialize(function(items) {
-      return items.map((item) => item.toJSON(opt));
+      return items.map((item) => item.toJSON(options));
     }, options.disableDefault);
   }
 
   toObject(options = {}) {
+    /*
     let opt = options;
     if (options.update && options.modified) {
       opt = {
         ...options,
         modified: false
       };
-    }
+    }*/
 
     return this._preDeserialize(function(items) {
-      return items.map((item) => item.toObject(opt));
+      return items.map((item) => item.toObject(options));
     }, options.disableDefault);
   }
 
@@ -190,6 +193,11 @@ export default class ArrayType extends SubType {
     return 'Array';
   }
 
+  static get isArray() {
+    return true;
+  }
+
+  // TODO: next move to livia-orientdb
   static getDbType(prop) {
     const options = prop.options || {};
     const item = prop.item;
@@ -199,7 +207,6 @@ export default class ArrayType extends SubType {
     // no from child, it is a setting for the  array
     const isSet = options.isSet;
     const isMap = options.isMap;
-
     const base = isLink ? 'LINK' : 'EMBEDDED';
 
     if (isSet) {
@@ -229,10 +236,6 @@ export default class ArrayType extends SubType {
     return {
       linkedType: item.SchemaType.getDbType(item.options)
     };
-  }
-
-  static get isArray() {
-    return true;
   }
 
   static isEmbedded(prop) {

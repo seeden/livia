@@ -1,5 +1,6 @@
 import SubType from './SubType';
 import _ from 'lodash';
+import Data from '../Data';
 
 export default class ObjectType extends SubType {
   constructor(data, prop, name, mainData) {
@@ -35,12 +36,15 @@ export default class ObjectType extends SubType {
       throw new Error(`Property ${this.name} value must be an object you gave: ${props}`);
     }
 
-    const keys = Object.keys(props);
     const value = this._createData();
 
-    keys.forEach(function(propName) {
-      value.set(propName, props[propName]);
-    });
+    if (props instanceof Data) {
+      return props;
+    } else {
+      Object.keys(props).forEach(function(propName) {
+        value.set(propName, props[propName]);
+      });
+    }
 
     return value;
   }

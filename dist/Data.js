@@ -4,7 +4,9 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
-var _get = function get(_x3, _x4, _x5) { var _again = true; _function: while (_again) { var object = _x3, property = _x4, receiver = _x5; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x3 = parent; _x4 = property; _x5 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x5, _x6, _x7) { var _again = true; _function: while (_again) { var object = _x5, property = _x6, receiver = _x7; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x5 = parent; _x6 = property; _x7 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -63,19 +65,62 @@ var Data = (function () {
       return this.toJSON();
     }
   }, {
+    key: 'canSkipProp',
+    value: function canSkipProp(prop) {
+      var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+      var excludeAvailable = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+
+      // virtual can be skiped always
+      if (prop instanceof _typesVirtual2['default'] && !options.virtuals) {
+        return true;
+      }
+
+      // metadata can be skiped except explicit
+      if (prop.isMetadata && !options.metadata) {
+        if (!options.sub && (options.create && prop.create) || options.update && prop.update) {
+          return false;
+        } else if (option.sub && (options.create && prop.subCreate) || options.update && prop.subUpdate) {
+          return false;
+        }
+
+        return true;
+      }
+
+      // child is always required (Object, Array)
+      if (options.sub) {
+        return false;
+      }
+
+      // modified can be skiped explicitli
+      if (options.modified && !prop.isModified()) {
+        return true;
+      }
+
+      if (excludeAvailable && typeof options.exclude === 'function' && options.exclude(prop.name, prop.options)) {
+        return true;
+      }
+
+      return false;
+    }
+  }, {
     key: 'toJSON',
     value: function toJSON() {
       var _this2 = this;
 
       var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-      var json = {};
+      var obj = {};
+
+      var opt = _extends({}, options, {
+        sub: true
+      });
 
       Object.keys(this._data).forEach(function (propName) {
         var prop = _this2._data[propName];
 
+        // move record id to different variable
         if (prop.isRecordID && options.recordID) {
-          var _value = prop.toJSON(options);
+          var _value = prop.toJSON(opt);
           if (typeof _value === 'undefined') {
             return;
           }
@@ -84,27 +129,15 @@ var Data = (function () {
             propName = options.recordID;
           }
 
-          json[propName] = _value;
+          obj[propName] = _value;
           return;
         }
 
-        if (prop instanceof _typesVirtual2['default'] && !options.virtuals) {
+        if (_this2.canSkipProp(prop, options, true)) {
           return;
         }
 
-        if (prop.isMetadata && !options.metadata) {
-          return;
-        }
-
-        if (options.modified && !prop.isModified() && !prop.isMetadata) {
-          return;
-        }
-
-        if (typeof options.exclude === 'function' && options.exclude(prop.name, prop.options)) {
-          return;
-        }
-
-        var value = prop.toJSON(options);
+        var value = prop.toJSON(opt);
         if (typeof value === 'undefined') {
           return;
         }
@@ -114,10 +147,10 @@ var Data = (function () {
           return;
         }
 
-        json[propName] = value;
+        obj[propName] = value;
       });
 
-      return json;
+      return obj;
     }
   }, {
     key: 'toObject',
@@ -126,24 +159,20 @@ var Data = (function () {
 
       var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-      var json = {};
+      var obj = {};
+
+      var opt = _extends({}, options, {
+        sub: true
+      });
 
       Object.keys(this._data).forEach(function (propName) {
         var prop = _this3._data[propName];
 
-        if (prop instanceof _typesVirtual2['default'] && !options.virtuals) {
+        if (_this3.canSkipProp(prop, options)) {
           return;
         }
 
-        if (prop.isMetadata && !options.metadata) {
-          return;
-        }
-
-        if (options.modified && !prop.isModified() && !prop.isMetadata) {
-          return;
-        }
-
-        var value = prop.toObject(options);
+        var value = prop.toObject(opt);
         if (typeof value === 'undefined') {
           return;
         }
@@ -153,10 +182,10 @@ var Data = (function () {
           return;
         }
 
-        json[propName] = value;
+        obj[propName] = value;
       });
 
-      return json;
+      return obj;
     }
   }, {
     key: 'isModified',

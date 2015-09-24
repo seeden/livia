@@ -8,4 +8,30 @@ export default class SubType extends Type {
 
     return this._deserializedValue;
   }
+/*
+  toObject(options = {}) {
+    let opt = options;
+    if (options.update && options.modified) {
+      opt = {
+        ...options,
+        modified: false
+      };
+    }
+
+    return super.toObject(opt);
+  }
+
+  toJSON(options = {}) {
+    let opt = options;
+    if (options.update && options.modified) {
+      opt = {
+        ...options,
+        modified: false
+      };
+    }
+
+    return super.toJSON(opt);
+  }
+
+  */
 }

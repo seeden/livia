@@ -14,13 +14,24 @@ function injectMethods(Collection, collection) {
 
 function applyToArrayAndSave(method) {
   return function () {
+    var _this = this;
+
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
     }
 
     var ret = Array.prototype[method].apply(this, args);
-
     this._type.value = this;
+
+    // update current items, object changed to DataClass etc...
+    var value = this._type.deserializedValue;
+    if (!value) {
+      return ret;
+    }
+
+    value.forEach(function (val, index) {
+      _this[index] = val;
+    });
 
     return ret;
   };

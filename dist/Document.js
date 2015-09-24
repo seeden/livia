@@ -139,7 +139,6 @@ var Document = (function () {
 
           if (_this.isNew) {
             var _properties = _this.toObject({
-              metadata: true,
               create: true
             });
 
@@ -174,8 +173,11 @@ var Document = (function () {
             return null;
           }
 
+          if (!_this.isModified()) {
+            return callback(null, _this);
+          }
+
           var properties = _this.toObject({
-            metadata: true,
             modified: true,
             update: true
           });

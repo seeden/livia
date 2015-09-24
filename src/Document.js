@@ -109,7 +109,6 @@ export default class Document {
 
         if (this.isNew) {
           const properties = this.toObject({
-            metadata: true,
             create: true
           });
 
@@ -145,8 +144,11 @@ export default class Document {
           return null;
         }
 
+        if (!this.isModified()) {
+          return callback(null, this);
+        }
+
         const properties = this.toObject({
-          metadata: true,
           modified: true,
           update: true
         });

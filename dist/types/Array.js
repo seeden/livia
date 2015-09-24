@@ -4,8 +4,6 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _set = function set(object, property, value, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent !== null) { set(parent, property, value, receiver); } } else if ('value' in desc && desc.writable) { desc.value = value; } else { var setter = desc.set; if (setter !== undefined) { setter.call(receiver, value); } } return value; };
@@ -157,16 +155,19 @@ var ArrayType = (function (_SubType) {
     value: function toJSON() {
       var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-      var opt = options;
+      /*
+      let opt = options;
       if (options.update && options.modified) {
-        opt = _extends({}, options, {
+        opt = {
+          ...options,
           modified: false
-        });
+        };
       }
+      */
 
       return this._preDeserialize(function (items) {
         return items.map(function (item) {
-          return item.toJSON(opt);
+          return item.toJSON(options);
         });
       }, options.disableDefault);
     }
@@ -175,16 +176,18 @@ var ArrayType = (function (_SubType) {
     value: function toObject() {
       var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-      var opt = options;
+      /*
+      let opt = options;
       if (options.update && options.modified) {
-        opt = _extends({}, options, {
+        opt = {
+          ...options,
           modified: false
-        });
-      }
+        };
+      }*/
 
       return this._preDeserialize(function (items) {
         return items.map(function (item) {
-          return item.toObject(opt);
+          return item.toObject(options);
         });
       }, options.disableDefault);
     }
@@ -250,6 +253,8 @@ var ArrayType = (function (_SubType) {
     }
   }, {
     key: 'getDbType',
+
+    // TODO: next move to livia-orientdb
     value: function getDbType(prop) {
       var options = prop.options || {};
       var item = prop.item;
@@ -259,7 +264,6 @@ var ArrayType = (function (_SubType) {
       // no from child, it is a setting for the  array
       var isSet = options.isSet;
       var isMap = options.isMap;
-
       var base = isLink ? 'LINK' : 'EMBEDDED';
 
       if (isSet) {

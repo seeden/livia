@@ -94,6 +94,7 @@ describe('Model Mongoose', function() {
   });
 });
 
+
 function isModifiedCompatibility(User, name) {
   describe(`Object compatibility ${name}`, function() {
     let doc = null;
@@ -154,6 +155,7 @@ function isModifiedCompatibility(User, name) {
 
     });
 
+
     if (DBType.LIVIA === name) {
       it('should be able to check subtype', function() {
         const doc = new User({});
@@ -168,7 +170,6 @@ function isModifiedCompatibility(User, name) {
         imageMapPath.SchemaType.isEmbedded(imageMapPath).should.equal(true);
         imageMapPath.SchemaType.getDbType(imageMapPath).should.equal('EMBEDDEDMAP');
       });
-
 
       it('should be able to get just changed doc', function() {
         const doc = new User({
@@ -228,6 +229,57 @@ function isModifiedCompatibility(User, name) {
 
         doc.setAsOriginal(true);
         doc.isNew.should.equal(false);
+      });
+
+      it('should be able to get whole object for update', function() {
+        const doc = new User({
+          name: 'Zlatko non default',
+          images: [{
+            title: 123
+          }, {
+            title: 234
+          }],
+          tags: ['c', 'javascript'],
+          address: {
+            city: 'Kosice',
+            street: 'Huskova'
+          },
+          empty: {
+            prop: ''
+          },
+          emptyMixed: '8888',
+          imagesEmpty: [123],
+          defaultArray: ['Orange'],
+          user: {
+            name: 'Adam'
+          }
+        });
+
+        doc.setAsOriginal(true);
+
+        doc.images.set(1, {
+          title: 333
+        });
+
+        doc.images.push({
+          title: 444
+        });
+
+        doc.address.city = 'Presov';
+
+        const json = doc.toJSON({
+          metadata: true,
+          modified: true,
+          update: true
+        });
+
+        json.should.containEql({
+          images: [{ title: '123' }, {title: '333'}, {title: '444'}],
+          address: {
+            city: 'Presov',
+            street: 'Huskova'
+          }
+        });
       });
 
       it('should be able to use setupData', function() {
@@ -600,6 +652,7 @@ function arrayCompatibility(User, name) {
     }
   });
 }
+
 
 describe('Mongoose compatibility', function() {
   var schema = null;

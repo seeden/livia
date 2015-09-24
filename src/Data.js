@@ -27,14 +27,54 @@ export default class Data {
     return this.toJSON();
   }
 
+  canSkipProp(prop, options = {}, excludeAvailable = false) {
+    // virtual can be skiped always
+    if (prop instanceof VirtualType && !options.virtuals) {
+      return true;
+    }
+
+    // metadata can be skiped except explicit
+    if (prop.isMetadata && !options.metadata) {
+      if (!options.sub && (options.create && prop.create) || (options.update && prop.update)) {
+        return false;
+      } else if (option.sub && (options.create && prop.subCreate) || (options.update && prop.subUpdate)) {
+        return false;
+      }
+
+      return true;
+    }
+
+    // child is always required (Object, Array)
+    if (options.sub) {
+      return false;
+    }
+
+    // modified can be skiped explicitli
+    if (options.modified && !prop.isModified()) {
+      return true;
+    }
+
+    if (excludeAvailable && typeof options.exclude === 'function' && options.exclude(prop.name, prop.options)) {
+      return true;
+    }
+
+    return false;
+  }
+
   toJSON(options = {}) {
-    const json = {};
+    const obj = {};
+
+    const opt = {
+      ...options,
+      sub: true
+    };
 
     Object.keys(this._data).forEach(propName => {
       const prop = this._data[propName];
 
+      // move record id to different variable
       if (prop.isRecordID && options.recordID) {
-        const value = prop.toJSON(options);
+        const value = prop.toJSON(opt);
         if (typeof value === 'undefined') {
           return;
         }
@@ -43,27 +83,15 @@ export default class Data {
           propName = options.recordID;
         }
 
-        json[propName] = value;
+        obj[propName] = value;
         return;
       }
 
-      if (prop instanceof VirtualType && !options.virtuals) {
+      if (this.canSkipProp(prop, options, true)) {
         return;
       }
 
-      if (prop.isMetadata && !options.metadata) {
-        return;
-      }
-
-      if (options.modified && !prop.isModified() && !prop.isMetadata) {
-        return;
-      }
-
-      if (typeof options.exclude === 'function' && options.exclude(prop.name, prop.options)) {
-        return;
-      }
-
-      const value = prop.toJSON(options);
+      const value = prop.toJSON(opt);
       if (typeof value === 'undefined') {
         return;
       }
@@ -73,31 +101,28 @@ export default class Data {
         return;
       }
 
-      json[propName] = value;
+      obj[propName] = value;
     });
 
-    return json;
+    return obj;
   }
 
   toObject(options = {}) {
-    const json = {};
+    const obj = {};
+
+    const opt = {
+      ...options,
+      sub: true
+    };
 
     Object.keys(this._data).forEach(propName => {
       const prop = this._data[propName];
 
-      if (prop instanceof VirtualType && !options.virtuals) {
+      if (this.canSkipProp(prop, options)) {
         return;
       }
 
-      if (prop.isMetadata && !options.metadata) {
-        return;
-      }
-
-      if (options.modified && !prop.isModified() && !prop.isMetadata) {
-        return;
-      }
-
-      const value = prop.toObject(options);
+      const value = prop.toObject(opt);
       if (typeof value === 'undefined') {
         return;
       }
@@ -107,10 +132,10 @@ export default class Data {
         return;
       }
 
-      json[propName] = value;
+      obj[propName] = value;
     });
 
-    return json;
+    return obj;
   }
 
   isModified(path) {

@@ -22,6 +22,10 @@ var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
+var _Data = require('../Data');
+
+var _Data2 = _interopRequireDefault(_Data);
+
 var ObjectType = (function (_SubType) {
   _inherits(ObjectType, _SubType);
 
@@ -51,12 +55,15 @@ var ObjectType = (function (_SubType) {
         throw new Error('Property ' + this.name + ' value must be an object you gave: ' + props);
       }
 
-      var keys = Object.keys(props);
       var value = this._createData();
 
-      keys.forEach(function (propName) {
-        value.set(propName, props[propName]);
-      });
+      if (props instanceof _Data2['default']) {
+        return props;
+      } else {
+        Object.keys(props).forEach(function (propName) {
+          value.set(propName, props[propName]);
+        });
+      }
 
       return value;
     }

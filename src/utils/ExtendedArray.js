@@ -9,8 +9,17 @@ function injectMethods(Collection, collection) {
 function applyToArrayAndSave(method) {
   return function(...args) {
     const ret = Array.prototype[method].apply(this, args);
-
     this._type.value = this;
+
+    // update current items, object changed to DataClass etc...
+    const value = this._type.deserializedValue;
+    if (!value) {
+      return ret;
+    }
+
+    value.forEach((val, index) => {
+      this[index] = val;
+    });
 
     return ret;
   };
