@@ -37,9 +37,9 @@ export default class Data {
 
     // metadata can be skiped except explicit
     if (prop.isMetadata && !options.metadata) {
-      if (!options.sub && (options.create && propOptions.create) || (options.update && propOptions.update)) {
+      if (!options.sub && ((options.create && propOptions.create) || (options.update && propOptions.update))) {
         return false;
-      } else if (options.sub && (options.create && propOptions.subCreate) || (options.update && propOptions.subUpdate)) {
+      } else if (options.sub && ((options.create && propOptions.subCreate) || (options.update && propOptions.subUpdate))) {
         return false;
       }
 
