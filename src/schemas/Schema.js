@@ -419,7 +419,7 @@ export default class Schema extends SchemaBase {
     const normalised = {
       schema: this,
       type: type,
-      SchemaType: this.convertType(type),
+      SchemaType: this.convertType(type, options),
       options: options
     };
 

@@ -286,7 +286,7 @@ var Data = (function () {
       var prop = {
         schema: schema,
         type: _typesMixed2['default'],
-        SchemaType: schema.convertType(_typesMixed2['default']),
+        SchemaType: schema.convertType(_typesMixed2['default'], {}),
         options: {}
       };
 

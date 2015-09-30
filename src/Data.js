@@ -222,7 +222,7 @@ export default class Data {
     const prop = {
       schema: schema,
       type: Mixed,
-      SchemaType: schema.convertType(Mixed),
+      SchemaType: schema.convertType(Mixed, {}),
       options: {}
     };
 

@@ -15,7 +15,7 @@ export default class SchemaBase extends EventEmitter {
     return this._options;
   }
 
-  convertType(type) {
+  convertType(type, options = {}) {
     if (!type) {
       throw new Error('Type is not defined');
     } else if (type.isSchemaType) {

@@ -491,7 +491,7 @@ var Schema = (function (_SchemaBase) {
       var normalised = {
         schema: this,
         type: type,
-        SchemaType: this.convertType(type),
+        SchemaType: this.convertType(type, options),
         options: options
       };
 
