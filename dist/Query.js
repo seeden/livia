@@ -139,9 +139,37 @@ var Query = (function () {
       return value;
     }
   }, {
+    key: 'createLogicQuery',
+    value: function createLogicQuery(value, parentPath, operator) {
+      var _this2 = this;
+
+      var subQueries = [];
+
+      value.forEach(function (conditions2) {
+        if (parentPath) {
+          var _query = _this2.createComparisonQuery(parentPath, '=', conditions2);
+          subQueries.push(_query);
+          return;
+        }
+
+        var query = _this2.queryLanguage(conditions2, parentPath);
+        if (query) {
+          subQueries.push(query);
+        }
+      });
+
+      if (!subQueries.length) {
+        return;
+      } else if (subQueries.length === 1) {
+        return subQueries[0];
+      }
+
+      return '(' + subQueries.join(' ' + operator + ' ') + ')';
+    }
+  }, {
     key: 'queryLanguage',
     value: function queryLanguage(conditions, parentPath) {
-      var _this2 = this;
+      var _this3 = this;
 
       var items = [];
 
@@ -152,62 +180,47 @@ var Query = (function () {
         }
 
         if (_constantsLogicOperators2['default'][propertyName]) {
-          var _ret = (function () {
-            var subQueries = [];
-
-            value.forEach(function (conditions2) {
-              var query = _this2.queryLanguage(conditions2, parentPath);
-              if (!query) {
-                return;
-              }
-
-              subQueries.push(query);
-            });
-
-            if (!subQueries.length) {
-              return {
-                v: undefined
-              };
-            } else if (subQueries.length === 1) {
-              items.push(subQueries[0]);
-              return {
-                v: undefined
-              };
-            }
-
-            var query = '(' + subQueries.join(') ' + _constantsLogicOperators2['default'][propertyName] + ' (') + ')';
+          var query = _this3.createLogicQuery(value, parentPath, _constantsLogicOperators2['default'][propertyName]);
+          if (query) {
             items.push(query);
-            return {
-              v: undefined
-            };
-          })();
-
-          if (typeof _ret === 'object') return _ret.v;
+          }
+          return;
         }
 
-        value = _this2.prepareValue(value);
+        value = _this3.prepareValue(value);
 
         if (!_lodash2['default'].isPlainObject(value)) {
-          var query = _this2.createComparisonQuery(propertyName, '=', value);
+          var query = _this3.createComparisonQuery(propertyName, '=', value);
           items.push(query);
           return;
         }
 
+        var hasOperator = false;
+
         Object.keys(value).forEach(function (operation) {
-          var operationValue = _this2.prepareValue(value[operation]);
+          var operationValue = _this3.prepareValue(value[operation]);
           var query = null;
 
+          var currentPath = parentPath ? parentPath + '.' + propertyName : propertyName;
+
           if (_constantsChildrenOperators2['default'][operation]) {
-            var currentPath = parentPath ? parentPath + '.' + propertyName : propertyName;
+            hasOperator = true;
+
             var subOperation = _constantsChildrenOperators2['default'][operation];
-            var subQuery = _this2.queryLanguage(operationValue, currentPath);
+            var subQuery = _this3.queryLanguage(operationValue, currentPath);
             if (!subQuery) {
               return;
             }
 
             query = propertyName + ' ' + subOperation + ' (' + subQuery + ')';
           } else if (_constantsComparisonOperators2['default'][operation]) {
-            query = _this2.createComparisonQuery(propertyName, _constantsComparisonOperators2['default'][operation], operationValue);
+            hasOperator = true;
+
+            query = _this3.createComparisonQuery(propertyName, _constantsComparisonOperators2['default'][operation], operationValue);
+          } else if (_constantsLogicOperators2['default'][operation]) {
+            hasOperator = true;
+
+            query = _this3.createLogicQuery(operationValue, currentPath, _constantsLogicOperators2['default'][operation]);
           }
 
           if (!query) {
@@ -216,6 +229,13 @@ var Query = (function () {
 
           items.push(query);
         });
+
+        // Exact Match on the Embedded Document
+        if (!hasOperator) {
+          var query = _this3.createComparisonQuery(propertyName, '=', value);
+          items.push(query);
+          return;
+        }
       });
 
       if (!items.length) {
@@ -425,7 +445,7 @@ var Query = (function () {
   }, {
     key: 'options',
     value: function options() {
-      var _this3 = this;
+      var _this4 = this;
 
       var _options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
@@ -434,12 +454,12 @@ var Query = (function () {
       }
 
       Object.keys(_options).forEach(function (key) {
-        if (typeof _this3[key] !== 'function') {
+        if (typeof _this4[key] !== 'function') {
           return;
         }
 
         var value = _options[key];
-        _this3[key](value);
+        _this4[key](value);
       });
 
       return this;

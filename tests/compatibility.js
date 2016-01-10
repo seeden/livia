@@ -829,6 +829,50 @@ describe('Query', function() {
 
     q._operators[0].query.should.equal('providers CONTAINS (nameUID = :nameUID__1)');
   });
+
+  it('should be able to use $or correctly inside property', function() {
+    const q = new Query(model);
+    q.findOne({
+      $or: [{ locale: {
+        $in: [123, 444]
+      } }, { locale: 234 }]
+    });
+
+    q._operators[0].query.should.equal('(locale IN :locale__1 OR locale = :locale__2)');
+  });
+
+  it('should be able to use $or correctly inside property', function() {
+    const q = new Query(model);
+    q.findOne({
+      'user.locale': {
+        $or: ['123', 456],
+      }
+    });
+
+    q._operators[0].query.should.equal('(user.locale = :userlocale__1 OR user.locale = :userlocale__2)');
+  });
+
+  it('should be able to use exact match document ', function() {
+    const q = new Query(model);
+    q.findOne({
+      user: {
+        locale: 444,
+        test: 555,
+      },
+    });
+
+    q._operators[0].query.should.equal('user = :user__1');
+  });
+
+  it('should be able to use and with or ', function() {
+    const q = new Query(model);
+    q.findOne({
+      type: 'food',
+      $or: [ { qty: { $gt: 100 } }, { price: { $lt: 9.95 } } ]
+    });
+
+    q._operators[0].query.should.equal('type = :type__1 AND (qty > :qty__2 OR price < :price__3)');
+  });
 });
 
 describe('Linked model', function() {

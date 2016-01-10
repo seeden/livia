@@ -111,6 +111,32 @@ export default class Query {
     return value;
   }
 
+  createLogicQuery(value, parentPath, operator) {
+    const subQueries = [];
+
+    value.forEach(conditions2 => {
+      if (parentPath) {
+        const query = this.createComparisonQuery(parentPath, '=', conditions2);
+        subQueries.push(query);
+        return;
+      }
+
+      const query = this.queryLanguage(conditions2, parentPath);
+      if (query) {
+        subQueries.push(query);
+      }
+    });
+
+    if (!subQueries.length) {
+      return;
+    } else if (subQueries.length === 1) {
+      return subQueries[0];
+    }
+
+    return '(' + subQueries.join(` ${operator} `) + ')';
+  }
+
+
   queryLanguage(conditions, parentPath) {
     const items = [];
 
@@ -121,26 +147,10 @@ export default class Query {
       }
 
       if (LogicOperators[propertyName]) {
-        const subQueries = [];
-
-        value.forEach(conditions2 => {
-          const query = this.queryLanguage(conditions2, parentPath);
-          if (!query) {
-            return;
-          }
-
-          subQueries.push(query);
-        });
-
-        if (!subQueries.length) {
-          return;
-        } else if (subQueries.length === 1) {
-          items.push(subQueries[0]);
-          return;
+        const query = this.createLogicQuery(value, parentPath, LogicOperators[propertyName]);
+        if (query) {
+          items.push(query);
         }
-
-        const query = '(' + subQueries.join(') ' + LogicOperators[propertyName] + ' (') + ')';
-        items.push(query);
         return;
       }
 
@@ -152,14 +162,19 @@ export default class Query {
         return;
       }
 
+      let hasOperator = false;
+
       Object.keys(value).forEach(operation => {
         const operationValue = this.prepareValue(value[operation]);
         let query = null;
 
+        const currentPath = parentPath
+          ? parentPath + '.' + propertyName
+          : propertyName;
+
         if (ChildrenOperators[operation]) {
-          const currentPath = parentPath
-            ? parentPath + '.' + propertyName
-            : propertyName;
+          hasOperator = true;
+
           const subOperation = ChildrenOperators[operation];
           const subQuery = this.queryLanguage(operationValue, currentPath);
           if (!subQuery) {
@@ -168,8 +183,14 @@ export default class Query {
 
           query = `${propertyName} ${subOperation} (${subQuery})`;
         } else if (ComparisonOperators[operation]) {
+          hasOperator = true;
+
           query = this.createComparisonQuery(propertyName,
             ComparisonOperators[operation], operationValue);
+        } else if (LogicOperators[operation]) {
+          hasOperator = true;
+
+          query = this.createLogicQuery(operationValue, currentPath, LogicOperators[operation]);
         }
 
         if (!query) {
@@ -178,6 +199,13 @@ export default class Query {
 
         items.push(query);
       });
+
+      // Exact Match on the Embedded Document
+      if (!hasOperator) {
+        const query = this.createComparisonQuery(propertyName, '=', value);
+        items.push(query);
+        return;
+      }
     });
 
     if (!items.length) {
