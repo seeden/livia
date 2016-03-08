@@ -82,7 +82,7 @@ export default class Query {
   addParams(params = {}) {
     this._params = {
       ...this._params,
-      ...params
+      ...params,
     };
   }
 
@@ -229,7 +229,7 @@ export default class Query {
 
     this._operators.push({
       type: operator,
-      query: query
+      query,
     });
 
     return this;

@@ -21,9 +21,8 @@ Connection.Types = Types;
 Connection.Adapter = Adapter;
 Connection.Query = Query;
 Connection.Document = Document;
-
 Connection.Index = Index;
 
-export { Schema, Model, Types, Adapter, Query, Document };
+export { Schema, Model, Types, Adapter, Query, Document, Index };
 
 export default Connection;
