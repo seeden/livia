@@ -10,13 +10,13 @@ const Operation = {
   DELETE: 'DELETE',
   UPDATE: 'UPDATE',
   SELECT: 'SELECT',
-  INSERT: 'INSERT'
+  INSERT: 'INSERT',
 };
 
 const Operator = {
   OR: 'or',
   AND: 'and',
-  WHERE: 'where'
+  WHERE: 'where',
 };
 
 export default class Query {
@@ -293,8 +293,21 @@ export default class Query {
     return this;
   }
 
+  escapeObject(obj) {
+    if (!isPlainObject(obj)) {
+      return obj;
+    }
+
+    const newObj = {};
+    Object.keys(obj).forEach((propertyName) => {
+      newObj[this.escapePropertyName(propertyName)] = obj[propertyName];
+    });
+
+    return newObj;
+  }
+
   set(doc) {
-    this._set = doc;
+    this._set = this.escapeObject(doc);
     return this;
   }
 
