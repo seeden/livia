@@ -1,5 +1,5 @@
 import SubType from './SubType';
-import _ from 'lodash';
+import isObject from 'lodash/isObject';
 import Data from '../Data';
 
 export default class ObjectType extends SubType {
@@ -32,7 +32,7 @@ export default class ObjectType extends SubType {
   }
 
   _serialize(props) {
-    if (!_.isObject(props)) {
+    if (!isObject(props)) {
       throw new Error(`Property ${this.name} value must be an object you gave: ${props}`);
     }
 
@@ -40,11 +40,11 @@ export default class ObjectType extends SubType {
 
     if (props instanceof Data) {
       return props;
-    } else {
-      Object.keys(props).forEach(function(propName) {
-        value.set(propName, props[propName]);
-      });
     }
+
+    Object.keys(props).forEach((propName) => {
+      value.set(propName, props[propName]);
+    });
 
     return value;
   }
@@ -69,7 +69,7 @@ export default class ObjectType extends SubType {
 
     try {
       this._value.set(key, value, setAsOriginal);
-    } catch(e) {
+    } catch (e) {
       this._value = before;
       throw e;
     }

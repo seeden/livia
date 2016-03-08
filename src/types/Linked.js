@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import isPlainObject from 'lodash/isPlainObject';
 import StringType from './String';
 import Document from '../Document';
 
@@ -6,7 +6,7 @@ export default class LinkedType extends StringType {
   _serialize(value) {
     if (value instanceof Document) {
       return value;
-    } else if (_.isPlainObject(value)) {
+    } else if (isPlainObject(value)) {
       const Doc = this.getDocumentClass();
       if (!Doc) {
         throw new Error(`Document is not defined for property ${this.name}`);

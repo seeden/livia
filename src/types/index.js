@@ -10,7 +10,7 @@ import LinkedType from './Linked';
 import ObjectIdType from './ObjectId';
 
 export default {
-  'Type': Type,
+  Type,
   'Boolean': BooleanType,
   'String': StringType,
   'Number': NumberType,

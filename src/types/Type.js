@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import upperFirst from 'lodash/upperFirst';
 
 export default class Type {
   constructor(data, prop, name, mainData) {
@@ -75,11 +75,11 @@ export default class Type {
     return this._serialize(value);
   }
 
-  _serialize(/*value*/) {
+  _serialize(/* value*/) {
     throw new Error('You need to override _serialize');
   }
 
-  _deserialize(/*value*/) {
+  _deserialize(/* value*/) {
     throw new Error('You need to override _deserialize');
   }
 
@@ -164,13 +164,13 @@ export default class Type {
   }
 
   toJSON(options = {}) {
-    return this._preDeserialize(function(value) {
+    return this._preDeserialize((value) => {
       return value && value.toJSON ? value.toJSON(options) : value;
     }, options.disableDefault);
   }
 
   toObject(options = {}) {
-    return this._preDeserialize(function(value) {
+    return this._preDeserialize((value) => {
       return value && value.toObject ? value.toObject(options) : value;
     }, options.disableDefault);
   }
@@ -185,7 +185,7 @@ export default class Type {
     return this;
   }
 
-  get(path) {
+  get(/* path */) {
     return this.value;
   }
 
@@ -215,23 +215,23 @@ export default class Type {
     return true;
   }
 
-  static getPropertyConfig(/*options*/) {
+  static getPropertyConfig(/* options*/) {
     return {};
   }
 
   static computeAbstractClassName(className, propName) {
-    return className + 'A' + _.capitalize(propName);
+    return className + 'A' + upperFirst(propName);
   }
 
-  static isEmbedded(/*prop*/) {
+  static isEmbedded(/* prop*/) {
     return false;
   }
 
-  static isAbstract(/*prop*/) {
+  static isAbstract(/* prop*/) {
     return false;
   }
 
-  static getEmbeddedSchema(/*prop*/) {
+  static getEmbeddedSchema(/* prop*/) {
     return null;
   }
 }

@@ -1,5 +1,8 @@
 import Kareem from 'kareem';
-import _ from 'lodash';
+import isObject from 'lodash/isObject';
+import isPlainObject from 'lodash/isPlainObject';
+import isFunction from 'lodash/isFunction';
+import isArray from 'lodash/isArray';
 import debug from 'debug';
 import SchemaBase from './SchemaBase';
 import VirtualType from '../types/Virtual';
@@ -44,7 +47,7 @@ export default class Schema extends SchemaBase {
   }
 
   add(props = {}) {
-    if (!_.isObject(props)) {
+    if (!isObject(props)) {
       throw new Error('Props is not an object');
     }
 
@@ -57,9 +60,7 @@ export default class Schema extends SchemaBase {
   }
 
   _indexName(properties) {
-    const props = Object.keys(properties).map(function(prop) {
-      return prop.replace('.', '-');
-    });
+    const props = Object.keys(properties).map((prop) => prop.replace('.', '-'));
 
     return props.join('_');
   }
@@ -165,7 +166,7 @@ export default class Schema extends SchemaBase {
 
       try {
         normalizedOptions = this.normalizeOptions(options, path);
-      } catch(e) {
+      } catch (e) {
         log('Problem with path: ' + path);
         throw e;
       }
@@ -217,7 +218,7 @@ export default class Schema extends SchemaBase {
   }
 
   method(name, fn) {
-    if (_.isObject(name)) {
+    if (isObject(name)) {
       Object.keys(name).forEach((index) => this.methods[index] = name[index]);
       return this;
     }
@@ -227,7 +228,7 @@ export default class Schema extends SchemaBase {
   }
 
   static(name, fn) {
-    if (_.isObject(name)) {
+    if (isObject(name)) {
       Object.keys(name).forEach((index) => this.statics[index] = name[index]);
       return this;
     }
@@ -264,11 +265,11 @@ export default class Schema extends SchemaBase {
       SchemaType: VirtualType,
       options: options,
       getset: {
-        get: function(fn) {
+        get: function (fn) {
           options.get = fn;
           return this;
         },
-        set: function(fn) {
+        set: function (fn) {
           options.set = fn;
           return this;
         }
@@ -279,9 +280,9 @@ export default class Schema extends SchemaBase {
   }
 
   alias(to, from) {
-    this.virtual(from).get(function() {
+    this.virtual(from).get(function () {
       return this[to];
-    }).set(function(value) {
+    }).set(function (value) {
       this[to] = value;
     });
 
@@ -321,7 +322,7 @@ export default class Schema extends SchemaBase {
     const props = this._props;
     const virtuals = this._virtuals;
 
-    Object.keys(props).forEach(function(name) {
+    Object.keys(props).forEach(function (name) {
       const prop = props[name];
       const path = parentPath ? parentPath + '.' + name : name;
 
@@ -340,7 +341,7 @@ export default class Schema extends SchemaBase {
     });
 
     // traverse virtual poroperties
-    Object.keys(virtuals).forEach(function(name) {
+    Object.keys(virtuals).forEach(function (name) {
       const prop = virtuals[name];
       const path = parentPath ? parentPath + '.' + name : name;
 
@@ -351,7 +352,7 @@ export default class Schema extends SchemaBase {
   }
 
   eachPath(fn) {
-    this.traverse(function(name, prop, path, isVirtual) {
+    this.traverse(function (name, prop, path, isVirtual) {
       if (isVirtual) {
         return false;
       }
@@ -383,21 +384,21 @@ export default class Schema extends SchemaBase {
     }
 
     // if it is one of our types
-    if (_.isFunction(options)) {
+    if (isFunction(options)) {
       options = {
         type: options
       };
     }
 
     // 1. convert objects
-    if (_.isPlainObject(options) && (!options.type || options.type.type)) {
+    if (isPlainObject(options) && (!options.type || options.type.type)) {
       options = {
         type: options
       };
     }
 
     // 2. prepare array
-    if (_.isArray(options)) {
+    if (isArray(options)) {
       options = {
         type: options
       };
@@ -410,7 +411,7 @@ export default class Schema extends SchemaBase {
     const SubSchema = this.getSubdocumentSchemaConstructor();
 
     // create schema from plain object
-    if (_.isPlainObject(type)) {
+    if (isPlainObject(type)) {
       type = Object.keys(type).length
         ? new SubSchema(type)
         : MixedType;
@@ -423,7 +424,7 @@ export default class Schema extends SchemaBase {
       options: options
     };
 
-    if (_.isArray(type)) {
+    if (isArray(type)) {
       const itemOptions = type.length ? type[0] : { type: MixedType };
       normalised.item = this.normalizeOptions(itemOptions);
     }

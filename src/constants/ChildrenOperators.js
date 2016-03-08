@@ -1,4 +1,4 @@
 export default {
   $contains: 'CONTAINS',
-  $containsAll: 'CONTAINSALL'
+  $containsAll: 'CONTAINSALL',
 };

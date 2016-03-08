@@ -1,5 +1,6 @@
 import SubType from './SubType';
-import _ from 'lodash';
+import isObject from 'lodash/isObject';
+import startsWith from 'lodash/startsWith';
 import ExtendArray from '../utils/ExtendedArray';
 
 export default class ArrayType extends SubType {
@@ -59,7 +60,7 @@ export default class ArrayType extends SubType {
 
     if (!this._customArray) {
       const arr = this._customArray = new ExtendArray(this);
-      value.forEach(function(val, index) {
+      value.forEach(function (val, index) {
         arr[index] = val;
       });
     }
@@ -123,7 +124,7 @@ export default class ArrayType extends SubType {
 
       item.set(newPath, value, setAsOriginal);
       this._value = items;
-    } catch(e) {
+    } catch (e) {
       this._value = before;
       throw e;
     }
@@ -140,7 +141,7 @@ export default class ArrayType extends SubType {
     }
     */
 
-    return this._preDeserialize(function(items) {
+    return this._preDeserialize(function (items) {
       return items.map((item) => item.toJSON(options));
     }, options.disableDefault);
   }
@@ -155,7 +156,7 @@ export default class ArrayType extends SubType {
       };
     }*/
 
-    return this._preDeserialize(function(items) {
+    return this._preDeserialize(function (items) {
       return items.map((item) => item.toObject(options));
     }, options.disableDefault);
   }
@@ -175,9 +176,8 @@ export default class ArrayType extends SubType {
     for (let i = 0; i < value.length; i++) {
       const val = value[i];
       const org = original[i];
-      const isObject = _.isObject(val);
 
-      if (isObject && JSON.stringify(val) === JSON.stringify(org)) {
+      if (isObject(val) && JSON.stringify(val) === JSON.stringify(org)) {
         continue;
       }
 
@@ -240,7 +240,7 @@ export default class ArrayType extends SubType {
 
   static isEmbedded(prop) {
     const dbType = ArrayType.getDbType(prop);
-    return _.startsWith(dbType, 'EMBEDDED');
+    return startsWith(dbType, 'EMBEDDED');
   }
 
   static isAbstract(prop) {

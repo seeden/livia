@@ -258,14 +258,14 @@ export default class Document {
     const schema = model.schema;
 
     // add basic data getters and setters
-    schema.traverse(function(fieldName) {
+    schema.traverse(function (fieldName) {
       Object.defineProperty(DocumentModel.prototype, fieldName, {
         enumerable: true,
         configurable: true,
-        get: function() {
+        get: function () {
           return this.get(fieldName);
         },
-        set: function(value) {
+        set: function (value) {
           this.set(fieldName, value);
           return this;
         }
@@ -273,13 +273,13 @@ export default class Document {
     });
 
     // add methods
-    Object.keys(schema.methods).forEach(function(methodName) {
+    Object.keys(schema.methods).forEach(function (methodName) {
       const fn = schema.methods[methodName];
       DocumentModel.prototype[methodName] = fn;
     });
 
     // add statics
-    Object.keys(schema.statics).forEach(function(staticName) {
+    Object.keys(schema.statics).forEach(function (staticName) {
       const fn = schema.statics[staticName];
       DocumentModel[staticName] = fn;
     });

@@ -3,17 +3,17 @@ import ModelBase from './ModelBase';
 import Schema from './schemas/Schema';
 import Edge from './schemas/Edge';
 import Document from './Document';
-import _ from 'lodash';
+import isPlainObject from 'lodash/isPlainObject';
 
 const log = debug('orientose:model');
 
 export default class Model extends ModelBase {
-  constructor(name, schema, connection, options = {}, callback = function() {}) {
+  constructor(name, schema, connection, options = {}, callback = function () {}) {
     if (!name) {
       throw new Error('Name is undefined');
     }
 
-    if (_.isPlainObject(schema)) {
+    if (isPlainObject(schema)) {
       schema = new Schema(schema);
     }
 

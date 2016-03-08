@@ -1,4 +1,6 @@
-import _ from 'lodash';
+import isObject from 'lodash/isObject';
+import isArray from 'lodash/isArray';
+import isPlainObject from 'lodash/isPlainObject';
 import Document from './Document';
 import LogicOperators from './constants/LogicOperators';
 import ComparisonOperators from './constants/ComparisonOperators';
@@ -89,14 +91,14 @@ export default class Query {
 
     if (value === null) {
       if (operator === '=') {
-        return propertyName + ' IS NULL';
+        return this.escapePropertyName(propertyName) + ' IS NULL';
       } else if (operator === '!=' || operator === '<>' || operator === 'NOT') {
-        return propertyName + ' IS NOT NULL';
+        return this.escapePropertyName(propertyName) + ' IS NOT NULL';
       }
     }
 
     this.addParam(paramName, value);
-    return propertyName + ' ' + operator + ' :' + paramName;
+    return this.escapePropertyName(propertyName) + ' ' + operator + ' :' + paramName;
   }
 
   prepareValue(value) {
@@ -104,7 +106,7 @@ export default class Query {
       return value;
     } else if (value instanceof Document) {
       return value.toObject();
-    } else if (_.isArray(value)) {
+    } else if (isArray(value)) {
       return value.map(item => this.prepareValue(item));
     }
 
@@ -136,6 +138,9 @@ export default class Query {
     return '(' + subQueries.join(` ${operator} `) + ')';
   }
 
+  escapePropertyName(propertyName) {
+    return '`' + propertyName + '`';
+  }
 
   queryLanguage(conditions, parentPath) {
     const items = [];
@@ -156,7 +161,7 @@ export default class Query {
 
       value = this.prepareValue(value);
 
-      if (!_.isPlainObject(value)) {
+      if (!isPlainObject(value)) {
         const query = this.createComparisonQuery(propertyName, '=', value);
         items.push(query);
         return;
@@ -181,7 +186,7 @@ export default class Query {
             return;
           }
 
-          query = `${propertyName} ${subOperation} (${subQuery})`;
+          query = `${this.escapePropertyName(propertyName)} ${subOperation} (${subQuery})`;
         } else if (ComparisonOperators[operation]) {
           hasOperator = true;
 
@@ -241,11 +246,11 @@ export default class Query {
       conditions = void 0;
     }
 
-    if (_.isObject(conditions)) {
+    if (isObject(conditions)) {
       if (conditions instanceof Document) {
         this._target = conditions;
         conditions = void 0;
-      } else if (conditions && !_.isPlainObject(conditions)) {
+      } else if (conditions && !isPlainObject(conditions)) {
         this._target = conditions;
         conditions = void 0;
       } else {
@@ -258,7 +263,7 @@ export default class Query {
 
   or(conditions) {
     let self = this;
-    conditions.forEach(function(condition) {
+    conditions.forEach(function (condition) {
       self = self.operator(Operator.OR, condition);
     });
 
@@ -267,7 +272,7 @@ export default class Query {
 
   and(conditions) {
     let self = this;
-    conditions.forEach(function(condition) {
+    conditions.forEach(function (condition) {
       self = self.operator(Operator.AND, condition);
     });
     return self;
@@ -360,7 +365,7 @@ export default class Query {
       const order = {};
 
       const parts = sort.split(' ');
-      parts.forEach(function(part) {
+      parts.forEach(function (part) {
         let direction = 1;
         if (part[0] === '-') {
           part = part.substr(1);
@@ -398,7 +403,7 @@ export default class Query {
     }
 
     Object.keys(options).forEach((key) => {
-      if(typeof this[key] !== 'function') {
+      if (typeof this[key] !== 'function') {
         return;
       }
 
@@ -455,7 +460,7 @@ export default class Query {
       .condExec(conditions, callback);
   }
 
-  exec(/*callback*/) {
+  exec(/* callback*/) {
     throw new Error('Override exec method for query');
   }
 }

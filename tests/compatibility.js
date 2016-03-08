@@ -3,7 +3,6 @@ import Query from '../src/Query';
 import { Schema, Model } from '../src';
 import mongoose, { Schema as SchemaMongoose } from 'mongoose';
 import { waterfall } from "async";
-import extend from "node.extend";
 import keymirror from 'keymirror';
 
 const DBType = keymirror({
@@ -764,17 +763,19 @@ describe('Mongoose compatibility', function() {
   });
 
   it('should be able to create simple livia schema', function() {
-    schema = new Schema(extend(true, {}, basicSchema, {
-      sub: [new Schema(subSchema)]
-    }));
+    schema = new Schema({
+      ...basicSchema,
+      sub: [new Schema(subSchema)],
+    });
     applyVirtual(schema);
     validateBasicSchema(schema, true);
   });
 
   it('should be able to create simple mongoose schema', function() {
-    schemaMongoose = new SchemaMongoose(extend(true, {}, basicSchema, {
-      sub: [new SchemaMongoose(subSchema)]
-    }));
+    schemaMongoose = new SchemaMongoose({
+      ...basicSchema,
+      sub: [new SchemaMongoose(subSchema)],
+    });
     applyVirtual(schemaMongoose);
     validateBasicSchema(schemaMongoose);
   });
@@ -827,7 +828,7 @@ describe('Query', function() {
       }
     });
 
-    q._operators[0].query.should.equal('providers CONTAINS (nameUID = :nameUID__1)');
+    q._operators[0].query.should.equal('`providers` CONTAINS (`nameUID` = :nameUID__1)');
   });
 
   it('should be able to use $or correctly inside property', function() {
@@ -838,7 +839,7 @@ describe('Query', function() {
       } }, { locale: 234 }]
     });
 
-    q._operators[0].query.should.equal('(locale IN :locale__1 OR locale = :locale__2)');
+    q._operators[0].query.should.equal('(`locale` IN :locale__1 OR `locale` = :locale__2)');
   });
 
   it('should be able to use $or correctly inside property', function() {
@@ -849,7 +850,7 @@ describe('Query', function() {
       }
     });
 
-    q._operators[0].query.should.equal('(user.locale = :userlocale__1 OR user.locale = :userlocale__2)');
+    q._operators[0].query.should.equal('(`user.locale` = :userlocale__1 OR `user.locale` = :userlocale__2)');
   });
 
   it('should be able to use exact match document ', function() {
@@ -861,7 +862,7 @@ describe('Query', function() {
       },
     });
 
-    q._operators[0].query.should.equal('user = :user__1');
+    q._operators[0].query.should.equal('`user` = :user__1');
   });
 
   it('should be able to use and with or ', function() {
@@ -871,7 +872,7 @@ describe('Query', function() {
       $or: [ { qty: { $gt: 100 } }, { price: { $lt: 9.95 } } ]
     });
 
-    q._operators[0].query.should.equal('type = :type__1 AND (qty > :qty__2 OR price < :price__3)');
+    q._operators[0].query.should.equal('`type` = :type__1 AND (`qty` > :qty__2 OR `price` < :price__3)');
   });
 });
 

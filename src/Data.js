@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import isPlainObject from 'lodash/isPlainObject';
 import debug from 'debug';
 import VirtualType from './types/Virtual';
 import Mixed from './types/Mixed';
@@ -68,7 +68,7 @@ export default class Data {
 
     const opt = {
       ...options,
-      sub: true
+      sub: true,
     };
 
     Object.keys(this._data).forEach(propName => {
@@ -99,7 +99,7 @@ export default class Data {
       }
 
       // MONGOOSE: empty object is undefined for parent
-      if (_.isPlainObject(value) && !Object.keys(value).length) {
+      if (isPlainObject(value) && !Object.keys(value).length) {
         return;
       }
 
@@ -130,7 +130,7 @@ export default class Data {
       }
 
       // MONGOOSE: empty object is undefined for parent
-      if (_.isPlainObject(value) && !Object.keys(value).length) {
+      if (isPlainObject(value) && !Object.keys(value).length) {
         return;
       }
 
@@ -141,10 +141,10 @@ export default class Data {
   }
 
   isModified(path) {
-    return process(this._data, path, 'isModified', false, function(data) {
+    return process(this._data, path, 'isModified', false, (data) => {
       let isModified = false;
 
-      Object.keys(data).forEach(function(propName) {
+      Object.keys(data).forEach((propName) => {
         const prop = data[propName];
         isModified = prop.isModified() || isModified;
       });
@@ -154,13 +154,11 @@ export default class Data {
   }
 
   get(path) {
-    return process(this._data, path, 'get', void 0, function(data) {
-      return data;
-    });
+    return process(this._data, path, 'get', void 0, (data) => data);
   }
 
   set(path, value, setAsOriginal) {
-    if (_.isPlainObject(path)) {
+    if (isPlainObject(path)) {
       Object.keys(path).forEach(key => {
         this.set(key, path[key], setAsOriginal);
       });
@@ -247,14 +245,14 @@ export default class Data {
     }
 
     // define properties
-    schema.traverse(function(fieldName) {
+    schema.traverse(function (fieldName) {
       Object.defineProperty(DataClass.prototype, fieldName, {
         enumerable: true,
         configurable: true,
-        get: function() {
+        get: function () {
           return this.get(fieldName);
         },
-        set: function(value) {
+        set: function (value) {
           return this.set(fieldName, value);
         }
       });

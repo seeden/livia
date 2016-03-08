@@ -2,7 +2,7 @@ import { EventEmitter } from 'events';
 import Model from './Model';
 
 export default class Connection extends EventEmitter {
-  constructor(adapter, callback = function() {}) {
+  constructor(adapter, callback = function () {}) {
     super();
 
     this._adapter = adapter;
@@ -27,7 +27,7 @@ export default class Connection extends EventEmitter {
     return this.adapter.query(model, options);
   }
 
-  model(name, schema, options = {}, callback = function() {}) {
+  model(name, schema, options = {}, callback = function () {}) {
     if (typeof options === 'function') {
       callback = options;
       options = {};
@@ -45,7 +45,7 @@ export default class Connection extends EventEmitter {
       throw new Error('Model already exists');
     }
 
-    this._models.set(name, new Model(name, schema, this, options, function(err, model) {
+    this._models.set(name, new Model(name, schema, this, options, function (err, model) {
       if (err) {
         return callback(err);
       }

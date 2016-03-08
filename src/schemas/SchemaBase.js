@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import _ from 'lodash';
+import isArray from 'lodash/isArray';
 
 import Types from '../types/index';
 
@@ -24,7 +24,7 @@ export default class SchemaBase extends EventEmitter {
       return Types.Object;
     } else if (type.isDocumentClass) {
       return Types.Linked;
-    } else if (_.isArray(type)) {
+    } else if (isArray(type)) {
       return Types.Array;
     } else if (type === String) {
       return Types.String;

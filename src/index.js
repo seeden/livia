@@ -24,4 +24,6 @@ Connection.Document = Document;
 
 Connection.Index = Index;
 
+export { Schema, Model, Types, Adapter, Query, Document };
+
 export default Connection;
