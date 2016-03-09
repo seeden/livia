@@ -217,7 +217,9 @@ export default class Query {
       return null;
     }
 
-    return items.join(' AND ');
+    return items.length === 1
+      ? items[0]
+      : '( ' + items.join(' AND ') + ' )';
   }
 
   operator(operator, conditions) {

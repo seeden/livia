@@ -872,7 +872,7 @@ describe('Query', function() {
       $or: [ { qty: { $gt: 100 } }, { price: { $lt: 9.95 } } ]
     });
 
-    q._operators[0].query.should.equal('`type` = :type__1 AND (`qty` > :qty__2 OR `price` < :price__3)');
+    q._operators[0].query.should.equal('( `type` = :type__1 AND (`qty` > :qty__2 OR `price` < :price__3) )');
   });
 });
 
