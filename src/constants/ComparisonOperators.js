@@ -14,11 +14,12 @@ export default {
   $intersect: 'INTERSECT',
 
   $lucene: 'LUCENE',
+  $contains: 'CONTAINS',
   $containsKey: 'CONTAINSKEY',
   $containsValue: 'CONTAINSVALUE',
   $containsText: 'CONTAINSTEXT',
 
   $is: 'IS',
   $instanceof: 'INSTANCEOF',
-  $like: 'LIKE'
+  $like: 'LIKE',
 };
