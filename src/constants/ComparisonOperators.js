@@ -14,7 +14,6 @@ export default {
   $intersect: 'INTERSECT',
 
   $lucene: 'LUCENE',
-  $contains: 'CONTAINS',
   $containsKey: 'CONTAINSKEY',
   $containsValue: 'CONTAINSVALUE',
   $containsText: 'CONTAINSTEXT',

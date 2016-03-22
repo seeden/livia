@@ -88,14 +88,14 @@ export default class Schema extends SchemaBase {
     }
 
     if (this._indexes[name]) {
-      throw new Error('Index with name ${name} is already defined.');
+      log(`Index with name ${name} is already defined.`);
     }
 
     this._indexes[name] = {
       ...options,
-      properties: properties,
-      type: type,
-      nullValuesIgnored: !options.sparse
+      properties,
+      type,
+      nullValuesIgnored: !options.sparse,
     };
 
     return this;
