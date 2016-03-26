@@ -100,7 +100,7 @@ export default class Document {
 
       // TODO add validation features
 
-      return hooks.execPost('validate', this, (errorPost) => {
+      return hooks.execPost('validate', this, [this], (errorPost) => {
         if (errorPost) {
           return callback(errorPost);
         }
@@ -160,7 +160,7 @@ export default class Document {
                 metadata: true,
               }));
 
-              return hooks.execPost('save', this, (errorPost) => {
+              return hooks.execPost('save', this, [this], (errorPost) => {
                 if (errorPost) {
                   return callback(errorPost);
                 }
@@ -188,7 +188,7 @@ export default class Document {
 
           this.setupData(properties);
 
-          return hooks.execPost('save', this, (errorPost) => {
+          return hooks.execPost('save', this, [this], (errorPost) => {
             if (errorPost) {
               return callback(errorPost);
             }
@@ -217,7 +217,7 @@ export default class Document {
       }
 
       return model.remove(this, (...args) => {
-        hooks.execPost('remove', this, (errorPost) => {
+        hooks.execPost('remove', this, [this], (errorPost) => {
           if (errorPost) {
             return callback(errorPost);
           }
