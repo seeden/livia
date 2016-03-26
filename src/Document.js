@@ -117,78 +117,84 @@ export default class Document {
       return this.save({}, options);
     }
 
-    const hooks = this._model.schema.hooks;
-    hooks.execPre('save', this, (err) => {
+    this.validate((err) => {
       if (err) {
         return callback(err);
       }
 
-      if (this.isNew) {
-        const properties = this.toObject({
-          create: true,
-        });
-
-        const model = this._model;
-        const q = model.create(properties);
-
-        if (model.isEdge) {
-          const from = this.from();
-          const to = this.to();
-
-          if (from) {
-            q.from(from);
-          }
-
-          if (to) {
-            q.to(to);
-          }
-        }
-
-        q
-          .options(options)
-          .exec((err2, user) => {
-            if (err2) {
-              return callback(err2);
-            }
-
-            this.setupData(user.toJSON({
-              metadata: true,
-            }));
-
-            return hooks.execPost('save', this, (errorPost) => {
-              if (errorPost) {
-                return callback(errorPost);
-              }
-
-              return callback(null, this);
-            });
-          });
-
-        return null;
-      }
-
-      if (!this.isModified()) {
-        return callback(null, this);
-      }
-
-      const properties = this.toObject({
-        modified: true,
-        update: true,
-      });
-
-      return this._model.update(this, properties, options).exec((err) => {
+      const hooks = this._model.schema.hooks;
+      hooks.execPre('save', this, (err) => {
         if (err) {
           return callback(err);
         }
 
-        this.setupData(properties);
+        if (this.isNew) {
+          const properties = this.toObject({
+            create: true,
+          });
 
-        return hooks.execPost('save', this, (errorPost) => {
-          if (errorPost) {
-            return callback(errorPost);
+          const model = this._model;
+          const q = model.create(properties);
+
+          if (model.isEdge) {
+            const from = this.from();
+            const to = this.to();
+
+            if (from) {
+              q.from(from);
+            }
+
+            if (to) {
+              q.to(to);
+            }
           }
 
+          q
+            .options(options)
+            .exec((err2, user) => {
+              if (err2) {
+                return callback(err2);
+              }
+
+              this.setupData(user.toJSON({
+                metadata: true,
+              }));
+
+              return hooks.execPost('save', this, (errorPost) => {
+                if (errorPost) {
+                  return callback(errorPost);
+                }
+
+                return callback(null, this);
+              });
+            });
+
+          return null;
+        }
+
+        if (!this.isModified()) {
           return callback(null, this);
+        }
+
+        const properties = this.toObject({
+          modified: true,
+          update: true,
+        });
+
+        return this._model.update(this, properties, options).exec((err) => {
+          if (err) {
+            return callback(err);
+          }
+
+          this.setupData(properties);
+
+          return hooks.execPost('save', this, (errorPost) => {
+            if (errorPost) {
+              return callback(errorPost);
+            }
+
+            return callback(null, this);
+          });
         });
       });
     });
