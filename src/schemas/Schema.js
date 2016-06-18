@@ -419,9 +419,9 @@ export default class Schema extends SchemaBase {
 
     const normalised = {
       schema: this,
-      type: type,
+      type,
       SchemaType: this.convertType(type, options),
-      options: options
+      options,
     };
 
     if (isArray(type)) {

@@ -42,6 +42,7 @@ export default class Query {
     this._fetchPlan = null;
     this._return = null;
     this._populate = [];
+    this._group = [];
 
     this._from = null;
     this._to = null;
@@ -362,6 +363,11 @@ export default class Query {
 
   populate(value) {
     this._populate.push(value);
+    return this;
+  }
+
+  group(value) {
+    this._group.push(value);
     return this;
   }
 
