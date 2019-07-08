@@ -32,11 +32,12 @@
     "node": ">= 0.10.0"
   },
   "scripts": {
-    "prepublish": "npm run build",
+    "prepublish": "npm run snyk-protect; npm run build",
     "build": "node ./node_modules/gulp/bin/gulp.js build",
     "test": "babel-node ./node_modules/gulp/bin/gulp.js test",
     "eslint": "node ./node_modules/eslint/bin/eslint.js ./src || exit 0",
-    "eslintautofix": "node ./node_modules/eslint/bin/eslint.js --fix --ext .js,.jsx ./src"
+    "eslintautofix": "node ./node_modules/eslint/bin/eslint.js --fix --ext .js,.jsx ./src",
+    "snyk-protect": "snyk protect"
   },
   "dependencies": {
     "async": "^1.5.2",
@@ -44,7 +45,8 @@
     "events": "^1.1.0",
     "kareem": "^1.1.0",
     "keymirror": "^0.1.1",
-    "lodash": "^4.13.1"
+    "lodash": "^4.13.1",
+    "snyk": "^1.192.3"
   },
   "devDependencies": {
     "babel-cli": "^6.10.1",
@@ -65,5 +67,6 @@
     "gulp-mocha": "^2.2.0",
     "mongoose": "^4.5.0",
     "should": "^9.0.2"
-  }
+  },
+  "snyk": true
 }
