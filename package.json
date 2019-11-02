@@ -63,7 +63,7 @@
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
     "gulp-mocha": "^2.2.0",
-    "mongoose": "^4.5.0",
+    "mongoose": "^5.7.7",
     "should": "^9.0.2"
   }
 }
